@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body class="page-header-fixed" id="mchdenyBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="mchallow_add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="mchallow_batchImport">
+                    <a href="#" class='btn white '></a>
+                    <a href="tobatchadd" class='btn blue '><span>批量新增</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="mchallow_export">
+                    <a href="#" class='btn white '></a>
+                    <button id="export" class='btn blue '><span>批量导出</span></button>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="mchallow_search">
+            <form th:action="@{search}" method="post" id="mchallowFrom">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            卡判别方式
+                        </label>
+                        <div class="col-sm-6 input-group" style="white-space:nowrap;">
+                            <div class="radio-list">
+                                <label>
+                                    <div class="input-group">
+                                        <input th:checked="${mchAllowVo.cidType == 1}" data-id="1" style="width: 30%" type="radio" name="cidType" id="cidType1" value="1"> 按产品子类型
+                                        <span style="width: 70%" class="input-group-btn">
+                            <select type="text" class="form-control input-large select2me" name="cid" id="cid1" value="" th:disabled="${mchAllowVo.cidType != 1}" >
+                                <option value=""></option>
+                                <option th:each="productType: ${productInfoList}" th:value="${productType.productType}" th:text="${productType.productType} + '-' + ${productType.productType} + '-'+ ${productType.productName}"></option>
+                            </select>
+                        </span>
+                                    </div>
+                                </label>
+                                <label>
+                                    <div class="input-group">
+                                        <input th:checked="${mchAllowVo.cidType == 2}" data-id="2" style="width: 30%" type="radio" name="cidType" id="cidType2" value="2" > 按客户号
+                                        <span style="width: 70%" class="input-group-btn">
+                            <select type="text" class="form-control input-large select2me" name="cid" id="cid2" value="" th:disabled="${mchAllowVo.cidType != 2}" >
+                                <option value=""></option>
+                                <option th:each="mcustInfo: ${mcustInfos}" th:value="${mcustInfo.custNo}" th:text="${mcustInfo.custNo} + '-' + ${mcustInfo.cliName}"></option>
+                            </select>
+                        </span>
+                                    </div>
+                                </label>
+                                <label>
+                                    <div class="input-group">
+                                        <input th:checked="${mchAllowVo.cidType == 3}" data-id="3" style="width: 30%" type="radio" name="cidType" id="cidType3" value="3" > 按账号
+                                        <span style="width: 70%" class="input-group-btn">
+                            <input type="text" class="form-control input-large" maxlength="20" name="cid" id="cid3" value="" th:disabled="${mchAllowVo.cidType != 3}" >
+                        </span>
+                                    </div>
+                                </label>
+                                <label>
+                                    <div class="input-group">
+                                        <input th:checked="${mchAllowVo.cidType == 4}" data-id="4" style="width: 30%" type="radio" name="cidType" id="cidType4" value="4" > 按卡号
+                                        <span style="width: 70%" class="input-group-btn">
+                            <input type="text" class="form-control input-large" maxlength="20" name="cid" id="cid4" value="" th:disabled="${mchAllowVo.cidType != 4}" >
+                        </span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-3">
+                            <label>SID</label>
+                            <div class="input-group spinner">
+                                <input type="text" style="display: none" id="cid" th:value="${mchAllowVo.cid}"  />
+                                <!--<input type="text" class="form-control" name="sid" id="sid" th:value="${mchAllowVo.sid}" placeholder="请输入SID" />-->
+                                <input type="text" id="sid" readonly name="sid" class="form-control" th:value="${mchAllowVo.sid}">
+                                <span id="grp5" class="input-group-addon btn blue btn-default" data-toggle="modal" data-target="#shopInfoModel" onclick="initShopInfoTables();">门店管理</span>
+                            </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>开通标志</label>
+                            <div class="input-icon">
+                                <select name="status" id="status" class="form-control" data-type="select"
+                                        data-category="MCHDENY_FLAG" th:data-value="${mchAllowVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>修改日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${mchAllowVo.modiDateBegin}"
+                                        name="modiDateBegin" id="modiDateBegin" maxlength="19" placeholder="请选择开始时间"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="modiDateBeginClear" type="button"><i
+                                             class="icon-remove"></i></button>
+                               </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${mchAllowVo.modiDateEnd}"
+                                        name="modiDateEnd" id="modiDateEnd" maxlength="19" placeholder="请选择结束时间"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="modiDateEndClear" type="button"><i
+                                              class="icon-remove"></i></button>
+                               </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- 搜索内容 end -->
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()" id="btnSearch"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>规则号</th>
+                                <th>发卡机构</th>
+                                <th>卡判别方式</th>
+                                <th>CID</th>
+                                <th>商户判别方式</th>
+                                <th>SID</th>
+                                <th>规则说明</th>
+                                <th>开通标志</th>
+                                <th>操作员</th>
+                                <th>修改日期</th>
+                                <shiro:hasAnyPermissions name="mchallow_detail,mchallow_update,mchallow_delete">
+                                    <th>操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="mchallow : ${list}">
+                                <td th:text="${mchallow.ruleId}"></td>
+                                <td th:text="${mchallow.instName}"></td>
+                                <td th:text="${ItemUtil.getName(mchallow.cidType,'CID_TYPE')}"></td>
+                                <td th:text="${mchallow.cid}"></td>
+                                <td th:text="${ItemUtil.getName(mchallow.sidType,'SID_TYPE')}"></td>
+                                <td th:text="${mchallow.sid}"></td>
+                                <td th:text="${mchallow.ruleDesc}"></td>
+                                <td th:text="${ItemUtil.getName(mchallow.status,'MCHDENY_FLAG')}"></td>
+                                <td th:text="${mchallow.teller}"></td>
+                                <td th:text="${#calendars.format(mchallow.modiDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+
+                                <shiro:hasAnyPermissions name="mchallow_detail,mchallow_update,mchallow_delete">
+                                    <td>
+                                        <shiro:hasPermission name="mchallow_detail">
+                                            <a th:href="@{todetail(ruleId=${mchallow.ruleId})}" class='btn green btn-xs'>详情</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchallow_update">
+                                            <a th:href="@{toupdate(ruleId=${mchallow.ruleId})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchallow_delete">
+                                            <a data-toggle="modal" class='btn red btn-xs'
+                                                    th:onclick="'javascript:deletemchallow(\''+${mchallow.ruleId}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div th:utext="${pageHtml}" class="row page_info" data-search="mchallowFrom"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div class="modal fade" id="shopInfoModel" tabindex="-1" role="dialog" aria-labelledby="shopInfoModelLabel">
+    <div class="modal-dialog" role="document" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="shopInfoModelLabel">门店信息</h4>
+            </div>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="shopInfoFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>门店代码(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="shopInfoId" type="text" class="form-control" placeholder="输入门店代码">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>门店名称(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="shopName" type="text" class="form-control" placeholder="输入门店名称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>业务员代码(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="ywyId" type="text" class="form-control" placeholder="输入业务员代码">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="form-inline">
+                            <button onclick="initShopInfoTables()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                            <button onclick="cleanShopQuery()" type="button"
+                                    class="btn btn-primary">重置
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="shop_info_tables"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="shopInfoBtn">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#cid1").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+        $("#cid2").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/lockconsumption/mchallow-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/fileinput.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/bootstrap-fileinput.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</body>
+</html>

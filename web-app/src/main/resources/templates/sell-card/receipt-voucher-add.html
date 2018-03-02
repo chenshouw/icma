@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+<body class="page-header-fixed" id="addBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+        <form id="addForm" class="form-horizontal" role="form" th:action="@{add}" method="post">
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    发卡机构<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <!--<div id="tree_cl"></div>-->
+                    <!--<input type="text" style="display: none" name="issuId" id="issuId"/>-->
+                    <select name="issuId" id="issuId" class="form-control">
+                        <option value="">请选择</option>
+                        <option th:each="minst : ${minstList}" th:text="${minst.instId}+'-'+${minst.instName}"
+                                th:value="${minst.instId}" ></option>
+                    </select>
+                    <!--<select name="issuId" id="issuId" class="form-control" required="required">
+                        <option th:each="minst : ${minstList}" th:text="${minst.instName}" th:value="${minst.instId}"></option>
+                    </select>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    收款收据号<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="sksj" id="sksj" placeholder="请输入收款收据号" maxlength="20" required="required"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    客户号&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="custNo" id="custNo" placeholder="请输入客户号" maxlength="20"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    凭证金额<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="popAmt" id="popAmt" placeholder="请输入凭证金额" required="required"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    已使用金额<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="usedAmt" id="usedAmt" placeholder="请输入已使用金额" required="required"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    在途金额<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="ztzjAmt" id="ztzjAmt" placeholder="请输入在途金额" required="required"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    付款单位<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="payer" id="payer" placeholder="请输入付款单位" maxlength="50" required="required"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    备注
+                </label>
+                <div class="col-sm-6">
+                    <textarea class="form-control" name="memo" id="memo" maxlength="200"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script type="application/javascript">
+    jQuery(document).ready(function () {
+        App.init();
+        $("#issuId").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/sell-card/receipt-voucher-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

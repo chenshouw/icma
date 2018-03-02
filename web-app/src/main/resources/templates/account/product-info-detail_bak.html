@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <a href="javascript:history.back(-1);" class='btn blue ' id="export"><span>返回</span></a>
+            </li>
+        </ul>
+
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>用户</th>
+                   <th>账号</th>
+                     <th>卡号</th>
+                    <th>卡类型</th>
+                    <th>开卡机构</th>
+                    <th>可用余额(元)</th>
+                    <th>开卡日期</th>
+                    <th>有效期</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="productInfo : ${list}">
+                    <td th:text="${productInfo.userName}" ></td>
+
+                    <td th:text="${productInfo.account}"></td>
+                    <td th:text="${productInfo.productId}"></td>
+                    <td th:text="${productInfo.ProductType}"></td>
+                    <td th:text="${productInfo.instName}"></td>
+                    <!--<td sl:type="STATUS" sl:text="${productInfo.ProductType}"></td>-->
+                    <td th:text="${productInfo.proAcc.currBal}"></td>
+                    <td th:text="${productInfo.openDate}"></td>
+                    <td th:text="${productInfo.expDate}"></td>
+
+                </tr>
+                </tbody>
+            </table>
+            <!--<div th:utext="${pageHtml}" class="row page_info" data-search="mobileForm"></div>-->
+
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<!--<script type="text/javascript" th:src="@{/js/account/mobile-phone-list.js}" charset="utf-8"></script>-->
+<!--<script type="text/javascript" th:src="@{/js/account/product-info-list.js}" charset="utf-8"></script>-->
+
+</body>
+</html>

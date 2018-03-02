@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="respCode_add">
+                    <a href="resp-code-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="respCode_search">
+            <form method="post" id="respCodeInfo">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>返回码</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="respCode" id="respCode"
+                                       placeholder="请输入返回码" th:value="${respCode.respCode}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>返回码说明</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="respCodeText" id="respCodeText"
+                                       placeholder="请输入返回说明" th:value="${respCode.respCodeText}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>返回码详情</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="respDetail" id="respDetail"
+                                       placeholder="请输入返回详情" th:value="${respCode.respDetail}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 25%">返回码</th>
+                                <th style="width: 25%">返回码说明</th>
+                                <th style="width: 25%">返回码详情</th>
+                                <th style="width: 25%;">详情</th>
+                                <shiro:hasAnyPermissions name="respCode_update,respCode_delete">
+                                    <th>操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="respCode : ${list}" class="list-display">
+                                <td th:text="${respCode.respCode}"></td>
+                                <td th:text="${respCode.respCodeText}"></td>
+                                <td th:text="${respCode.respDetail}"></td>
+                                <td th:text="${respCode.detail}"></td>
+                                <shiro:hasAnyPermissions name="respCode_update,respCode_delete">
+                                    <td>
+                                        <shiro:hasPermission name="respCode_update">
+                                            <a class='btn blue btn-xs'
+                                               th:href="@{resp-code-update-page(respCode=${respCode.respCode})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="respCode_delete">
+                                            <a class='btn red btn-xs'
+                                               th:onclick="'javascript:respCodeDel(\''+${respCode.respCode}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="respCodeInfo"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/resp-code.js}"></script>
+</body>
+</html>

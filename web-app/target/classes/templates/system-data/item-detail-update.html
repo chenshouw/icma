@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${pageTitle}"></title>
+<head th:include="/commons/head::header" />
+<link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+</head>
+<body class="page-header-fixed" id="itemDetailBody">
+	<div th:replace="/commons/page_head::pageHead"></div>
+	<div class="clearfix"></div>
+	<div class="page-container">
+		<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+		<div class="page-content">
+			<ul class="page-breadcrumb breadcrumb">
+				<li th:utext="${locationMenu}"></li>
+				<li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>修改</a></li>
+			</ul>
+			<form class="form-horizontal" role="form" id="itemDetailForm" method="post">
+                <div class="form-group">
+                    <label for="name" class="col-sm-4 control-label">名称<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="name" id="name" placeholder="请输入名称" style="width: 300px;" th:value="${itemDetail.name}">
+                        <input type="hidden" id="itemId" name="itemId" th:value="${itemId}">
+                        <input type="hidden" id="id" name="id" th:value="${id}">
+                        <input type="hidden" id="category" name="category" th:value="${itemDetail.category}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-sm-4 control-label">描述</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="description" id="description" placeholder="请输入描述" style="width: 300px;" th:value="${itemDetail.description}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="code" class="col-sm-4 control-label">编号<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="code" id="code" placeholder="请输入编号" style="width: 300px;" th:value="${itemDetail.code}">
+                    </div>
+                </div>
+				<div class="form-group">
+					<label for="status" class="col-sm-4 control-label">请选择状态<span style="color:red;">*</span></label>
+					    <div class="col-sm-6" style="width: 330px;">
+                            <select name="status" class="form-control" id="status" data-type="select" data-category="STATUS" th:data-value="${itemDetail.status}"></select>
+                        </div>
+				</div>
+
+                <div class="form-group">
+                    <label for="orderId" class="col-sm-4 control-label">序号<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="orderId" name="orderId" placeholder="请输入序号" style="width: 300px;" th:value="${itemDetail.orderId}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="supperCode" class="col-sm-4 control-label">父级编号<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="supperCode" name="supperCode" placeholder="请输入父级编号" style="width: 300px;" th:value="${itemDetail.supperCode}">
+                    </div>
+                </div>
+
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-6">
+						<button style="background-color: gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+						<button style="margin-left: 30px; background-color: #0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div th:replace="/commons/scripts::scripts" /></div>
+	<div th:replace="/commons/foot::foot"></div>
+	<script>
+		jQuery(document).ready(function() {
+			App.init();
+		});
+	</script>
+</body>
+<script type="text/javascript" th:src="@{/js/system-data/item-detail-add.js}" charset="utf-8"></script>
+</html>

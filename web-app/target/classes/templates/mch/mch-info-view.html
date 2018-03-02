@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="mchInfoBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>详情</a>
+            </li>
+            <li class="btn-group">
+                <a onclick="javascript:history.go(-1)" class='btn blue '><span>返回</span></a>
+            </li>
+        </ul>
+        <form class="form-horizontal" th:object="${mchInfo}">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户号：</label>
+                    <label th:text="*{mid}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户名称：</label>
+                    <label th:text="*{midName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>联系人：</label>
+                    <label th:text="*{linkMan}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户简称：</label>
+                    <label th:text="*{midShortName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>联系电话：</label>
+                    <label th:text="*{phone}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户类型：</label>
+                    <label th:text="*{mccName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>邮件：</label>
+                    <label th:text="*{email}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户地区：</label>
+                    <label th:text="*{areaName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>传真：</label>
+                    <label th:text="*{fax}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户地址：</label>
+                    <label th:text="*{mchAddr}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>开户行：</label>
+                    <label th:text="*{settleBank}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>开户行名：</label>
+                    <label th:text="*{accName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>开户行账号：</label>
+                    <label th:text="*{settleAccno}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>结算间隔时间(天)：</label>
+                    <label th:text="*{settleInterval}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>经度：</label>
+                    <label th:text="*{longitude}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>纬度：</label>
+                    <label th:text="*{latitude}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>状态：</label>
+                    <label sl:type="MCH_STATUS" sl:text="*{status}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>操作员：</label>
+                    <label th:text="*{teller}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>创建日期：</label>
+                    <label th:text="*{#calendars.format(openDate,'yyyy-MM-dd')}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>操作日期：</label>
+                    <label th:text="*{#calendars.format(modifyTime,'yyyy-MM-dd')}"></label>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>备注：</label>
+                    <label th:text="*{memo}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6" th:each="txnOnOff: ${txnOnOffs}">
+                <div class="form-group">
+                    <label th:text="${txnOnOff.name+'：'}"></label>
+                    <label sl:post="${txnOnOff.post}" sl:onoff="*{onOffCode}+','+${onOffResult}"></label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

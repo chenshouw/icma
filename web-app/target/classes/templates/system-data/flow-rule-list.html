@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed" id="flowRuleBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="flowRule_add">
+                    <a href="to-add" class='btn blue ' style="margin-right: 10px;"><span>新增</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="flowRule_export">
+                    <a href="javascript:void(0);" class='btn blue ' id="export"><span>导出</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="flowRule_search">
+            <form action="/system-data/flow-rule/search" id="flowRuleForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="operation">流程</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="operation" name="operation"
+                                       th:value="${flowRuleVo.operation}" maxlength="50" placeholder="请输入流程">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="preStatus">前置状态</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="preStatus" name="preStatus"
+                                       th:value="${flowRuleVo.preStatus}" maxlength="30" placeholder="请输入前置状态">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="postStatus">后续状态</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="postStatus" name="postStatus"
+                                       th:value="${flowRuleVo.postStatus}" maxlength="30" placeholder="请输入后续状态">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="memo">备注（%）</label>
+                            <div class="input-icon right">
+                                <input type="text" class="form-control" id="memo" name="memo"
+                                       th:value="${flowRuleVo.memo}" maxlength="30" placeholder="请输入备注">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>创建日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${flowRuleVo.createTimeBegin}"
+                                       name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始时间"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${flowRuleVo.createTimeEnd}"
+                                       name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+
+                    </div>
+                    <div class="col-md-5">
+
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>流程</th>
+                                <th>前置状态</th>
+                                <th>后续状态</th>
+                                <th>备注</th>
+                                <th>创建人</th>
+                                <th>创建时间</th>
+                                <th>更新人</th>
+                                <th>更新时间</th>
+                                <shiro:hasAnyPermissions name="flowRule_update,flowRule_delete">
+                                    <th style="width:60px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="flowRule : ${list}">
+                                <td th:text="${flowRule.operation}"></td>
+                                <td th:text="${ItemUtil.getName(flowRule.preStatus,'ECARD_ORDER')}"></td>
+                                <td th:text="${ItemUtil.getName(flowRule.postStatus,'ECARD_ORDER')}"></td>
+                                <td th:text="${flowRule.memo}"></td>
+                                <td th:text="${flowRule.createBy}"></td>
+                                <td th:text="${#calendars.format(flowRule.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${flowRule.updateBy}"></td>
+                                <td th:text="${#calendars.format(flowRule.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasAnyPermissions name="flowRule_update,flowRule_delete">
+                                    <td>
+                                    <span class="input-group-btn">
+                                    <shiro:hasPermission name="flowRule_update">
+                                        <a th:href="@{to-update(id=${flowRule.id})}" class='btn blue btn-xs'>修改</a>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="flowRule_delete">
+                                        <a data-toggle="modal" href="#static" class='btn red  btn-xs'
+                                           th:onclick="'javascript:deleteFlowRule(\''+${flowRule.id}+'\');'"
+                                           style="margin-left: 5px;">删除</a>
+                                    </shiro:hasPermission>
+                                    </span>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="flowRuleForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<script type="text/javascript" th:src="@{/js/system-data/flow-rule-list.js}" charset="utf-8"></script>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

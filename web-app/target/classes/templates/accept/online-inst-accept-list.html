@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="onlineInstAccept_add">
+                <a href="online-inst-accept-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="onlineInstAccept_search">
+        <form th:action="@{online-inst-accept-search}" method="post" id="onlineInstAccept">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>发卡机构代码</label>
+                        <select class="form-control select2me" data-placeholder="Select..." tabindex="1" onchange="changeInstId(this.options[this.options.selectedIndex].value)" id="issuId" name="issuId">
+                            <option value="">请选择发卡机构代码</option>
+                            <option th:each="instMinst: ${instList}" th:value="${instMinst.instId}" th:text="${instMinst.instId}+'-'+${instMinst.instName}"
+                                    th:selected="('_'+${instMinst.instId}== '_'+${onlineInstAccept.issuId})"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>受理机构代码</label>
+                        <select class="form-control select2me"  id="acqId" name="acqId" data-placeholder="Select..." tabindex="1" onchange="changeInstId(this.options[this.options.selectedIndex].value)" >
+                            <option value="">请选择受理机构代码</option>
+                            <option th:each="acqMinst: ${acqList}" th:value="${acqMinst.instId}" th:text="${acqMinst.instId}+'-'+${acqMinst.instName}" th:selected="('_'+${acqMinst.instId}=='_'+${onlineInstAccept.acqId})"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="search()"
+                            class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="cleanQuery()"
+                            class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width:15%;">发卡机构代码</th>
+                            <th style="width:15%;">发卡机构名称</th>
+                            <th style="width:15%;">受理机构代码</th>
+                            <th style="width:15%;">受理机构名称</th>
+                            <th style="width:10%;">生效标志</th>
+                            <th style="width:15%;">修改日期</th>
+                            <th style="width:10%;">操作员</th>
+                            <th style="width:25%;">备注</th>
+                            <shiro:hasAnyPermissions name="onlineInstAccept_update,onlineInstAccept_delete">
+                            <th style="width: 180px;">操作</th>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="onlineInstAccept : ${list}" class="list-display">
+                            <td th:text="${onlineInstAccept.issuId}"></td>
+                            <td th:text="${onlineInstAccept.issuName}"></td>
+                            <td th:text="${onlineInstAccept.acqId}"></td>
+                            <td th:text="${onlineInstAccept.acqName}"></td>
+                            <td th:text="${onlineInstAccept.flag}==1?' 激活':'未激活'"></td>
+                            <td th:text="${#calendars.format(onlineInstAccept.modiDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${onlineInstAccept.teller}"></td>
+                            <td th:text="${onlineInstAccept.memo}"></td>
+                            <shiro:hasAnyPermissions name="onlineInstAccept_update,onlineInstAccept_delete">
+                            <td>
+                                <shiro:hasPermission name="onlineInstAccept_update">
+                                <a class='btn blue btn-xs' th:href="@{online-inst-accept-update-page(issuId=${onlineInstAccept.issuId},acqId=${onlineInstAccept.acqId})}">修改</a>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="onlineInstAccept_delete">
+                                <a class='btn red btn-xs' th:onclick="'javascript:onlineInstAcceptDel(\''+${onlineInstAccept.issuId}+'\',\''+${onlineInstAccept.acqId}+'\')'">删除</a>
+                                </shiro:hasPermission>
+                            </td>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="onlineInstAccept"></div>
+        </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#issuId").select2({
+            formatNoMatches: function (term) {
+                return "没找到数据";
+            }
+        })
+        $("#acqId").select2({
+            formatNoMatches: function (term) {
+                return "没找到数据";
+            }
+        })
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/accept/online-inst-accept.js}"></script>
+</body>
+</html>

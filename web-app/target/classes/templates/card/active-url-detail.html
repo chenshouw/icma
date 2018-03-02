@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/card/active-url-add.css}">
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>详情</a>
+            </li>
+        </ul>
+
+        <div class="body">
+            <div class="container_box">
+                <div class="main_bd">
+                    <!--左侧显示效果-->
+                    <div class="card_preview_area member_card affix-top" data-offset-bottom="0" data-offset-top="220" data-spy="affix" style="">
+                        <div class="card_body">
+                            <!--卡面显示详情，固定的-->
+                            <div class="msg_card_section shop">
+                                <div class="shop_panel" style="background-color: rgb(85, 189, 71);">
+                                    <div class="logo_area">
+                                    <span class="logo">
+                                        <img src="/images/card/logo_area.jpg">
+                                    </span>
+                                        <span>中经汇通电子商务有限公司</span>
+                                    </div>
+                                    <div class="msg_area">
+                                        <span class="member_number">0268 8888 8888</span>
+                                        <span class="icon_info"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--余额，固定的-->
+                            <div class="msg_card_cell member_extend_area">
+                                <div class="member_extend_item">
+                                    <div class="member_extend_des" style="color: rgb(85, 189, 71);">余额：100</div>
+                                </div>
+                            </div>
+
+                            <!--顶部居中按钮及下方提示-->
+                            <div class="msg_card_cell quick_pay">
+                                <a th:if="${wxActiveUrl.centerUrlName != null}" th:text="${wxActiveUrl.centerUrlName}" class="btn_card_preview js_title_color_preview js_use_card_button" style="color: rgb(85, 189, 71);">按钮名称（选填）</a>
+                                <p th:if="${wxActiveUrl.centerUrlSubTitle != null}" th:text="${wxActiveUrl.centerUrlSubTitle}">按钮提示（选填）</p>
+                            </div>
+
+                            <!--公众号详情，门店（会员卡详情)。固定的-->
+                            <div class="msg_card_cell shop_detail last_cell">
+                                <ul class="list">
+                                    <li class="msg_card_section">
+                                        <div class="li_panel" href="">
+                                            <div class="li_content">
+                                                <p>适用门店</p>
+                                            </div>
+                                            <span class="ic ic_go"></span>
+                                        </div>
+                                    </li>
+                                    <li class="msg_card_section last_li">
+                                        <div class="li_panel" href="">
+                                            <div class="li_content">
+                                                <p>公众号</p>
+                                            </div>
+                                            <span class="ic ic_go"></span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!--自定义入口-->
+                            <div class="msg_card_cell custom_detail">
+                                <ul class="list" id="js_custom_url_preview">
+                                    <li class="msg_card_section">
+                                        <div class="li_panel">
+                                            <div class="li_content">
+                                                <p>
+                                                <span class="supply_area">
+                                                    <span class="js_custom_url_tips_pre" th:text="${wxActiveUrl.customUrlSubTitle}"></span>
+                                                    <span class="ic ic_go"></span>
+                                                </span>
+                                                    <span class="js_custom_url_name_pre" th:text="${wxActiveUrl.customUrlName}">入口一（必填）</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="msg_card_section" th:if="${wxActiveUrl.customCellUrl != null}">
+                                        <div class="li_panel">
+                                            <div class="li_content">
+                                                <p>
+                                                <span class="supply_area">
+                                                    <span class="js_custom_url_tips_pre" th:text="${wxActiveUrl.customCellTips}"></span>
+                                                    <span class="ic ic_go"></span>
+                                                </span>
+                                                    <span class="js_custom_url_name_pre" th:text="${wxActiveUrl.customCellName}">入口二</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="msg_card_section" th:if="${wxActiveUrl.promotionUrl != null}">
+                                        <div class="li_panel">
+                                            <div class="li_content">
+                                                <p>
+                                                <span class="supply_area">
+                                                    <span class="js_custom_url_tips_pre" th:text="${wxActiveUrl.promotionUrlSubTitle}"></span>
+                                                    <span class="ic ic_go"></span>
+                                                </span>
+                                                    <span class="js_custom_url_name_pre" th:text="${wxActiveUrl.promotionUrlName}">入口三</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Form表单输入内容-->
+                    <form class="media_edit" novalidate="novalidate" id="editForm">
+                        <div class="media_edit_area">
+                            <div class="portable_editor to_left appmsg_editor">
+                                <div class="inner">
+                                    <!--基本信息-->
+                                    <div class="editor_section">
+                                        <h3 class="title">基本信息</h3>
+                                        <div class="frm_control_group frm_card_extend">
+                                            <label class="frm_label">
+                                                <strong class="title">活动名称</strong>
+                                            </label>
+                                            <span class="frm_input_box with_counter counter_in append">
+                                                <input name="activeName" id="activeName" th:value="${wxActiveUrl.activeName}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" >
+                                            </span>
+                                        </div>
+                                        <div class="frm_control_group frm_card_extend">
+                                            <label class="frm_label">
+                                                <strong class="title">激活会员卡URL</strong>
+                                            </label>
+                                            <span class="frm_input_box with_counter counter_in append">
+                                                <input name="activateUrl" id="activateUrl"  th:value="${wxActiveUrl.activateUrl}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                            </span>
+                                        </div>
+                                        <div class="frm_control_group frm_card_extend">
+                                            <label class="frm_label">
+                                                <strong class="title">查看余额详情URL</strong>
+                                            </label>
+                                            <span class="frm_input_box with_counter counter_in append">
+                                                <input name="balanceUrl" id="balanceUrl"  th:value="${wxActiveUrl.balanceUrl}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!--顶部居中按钮-->
+                                    <div class="editor_section">
+                                        <h3 class="title">顶部居中按钮</h3>
+                                        <div class="frm_control_group frm_card_extend">
+                                            <label class="frm_label">
+                                                <strong class="title">顶部居中按钮URL</strong>
+                                            </label>
+                                            <span class="frm_input_box with_counter counter_in append">
+                                                <input name="centerUrl" id="centerUrl"  th:value="${wxActiveUrl.centerUrl}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                            </span>
+                                        </div>
+                                        <div class="frm_control_group frm_card_extend">
+                                            <label class="frm_label">
+                                                <strong class="title">顶部居中按钮名称</strong>
+                                            </label>
+                                            <span class="frm_input_box with_counter counter_in append">
+                                                <input name="centerUrlName" id="centerUrlName"  th:value="${wxActiveUrl.centerUrlName}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                            </span>
+                                        </div>
+                                        <div class="frm_control_group frm_card_extend">
+                                            <label class="frm_label">
+                                                <strong class="title">顶部居中按钮下方提示语</strong>
+                                            </label>
+                                            <span class="frm_input_box with_counter counter_in append">
+                                                <input name="centerUrlSubTitle" id="centerUrlSubTitle" cnMaxLength="8"  th:value="${wxActiveUrl.centerUrlSubTitle}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!--自定义入口-->
+                                    <div class="entranceDiv">
+                                        <div class="editor_section">
+                                            <h3 class="title">入口一</h3>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口一跳转链接</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="customUrl" id="customUrl" th:value="${wxActiveUrl.customUrl}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口一名称</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="customUrlName" id="customUrlName" th:value="${wxActiveUrl.customUrlName}" cnMaxLength="5" onchange="showMsg(0, 'js_custom_url_name_pre', this)" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口一右侧提示语</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="customUrlSubTitle" id="customUrlSubTitle" onchange="showMsg(0, 'js_custom_url_tips_pre', this)" th:value="${wxActiveUrl.customUrlSubTitle}" cnMaxLength="6" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="editor_section" th:if="${wxActiveUrl.customCellUrl != null}">
+                                            <h3 class="title">入口二</h3>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口二跳转链接</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="customCellUrl" id="customCellUrl"   th:value="${wxActiveUrl.customCellUrl}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口二名称</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="customCellName" id="customCellName"  cnMaxLength="5"   th:value="${wxActiveUrl.customCellName}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+
+                                            </div>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口二右侧提示语</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="customCellTips" id="customCellTips"   th:value="${wxActiveUrl.customCellTips}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="editor_section" th:if="${wxActiveUrl.promotionUrl != null}">
+                                            <h3 class="title">入口三</h3>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口三跳转链接</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="promotionUrl" id="promotionUrl"   th:value="${wxActiveUrl.promotionUrl}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口三名称</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="promotionUrlName" id="promotionUrlName"  cnMaxLength="5"   th:value="${wxActiveUrl.promotionUrlName}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                            <div class="frm_control_group frm_card_extend">
+                                                <label class="frm_label">
+                                                    <strong class="title">入口三右侧提示语</strong>
+                                                </label>
+                                                <span class="frm_input_box with_counter counter_in append">
+                                                    <input name="promotionUrlSubTitle" id="promotionUrlSubTitle"    th:value="${wxActiveUrl.promotionUrlSubTitle}" th:readonly="true" class="frm_input js_can_preview js_maxlength valid" type="text" placeholder="" value="">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="tool_bar tc" style="border-top: 1px solid #e7e7eb;">
+                         <span class="btn btn_input btn_default" id="btnBack">
+                            <button>返回</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/wx-active-url.js}"></script>
+</body>
+</html>

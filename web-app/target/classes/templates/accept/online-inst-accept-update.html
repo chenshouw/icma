@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="onlineInstAcceptBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" method="post" id="onlineInstAcceptForm">
+            <div class="form-group">
+                <label for="issuId" class="col-sm-4 control-label"><font color="#FF0000">*</font>发卡机构代码</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="issuId" id="issuId" th:value="${onlineInstAccept.issuId}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="issuName" class="col-sm-4 control-label">发卡机构名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="issuName" id="issuName" th:value="${onlineInstAccept.issuName}" placeholder="请输入发卡机构名称" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="acqId" class="col-sm-4 control-label"><font color="#FF0000">*</font>受理机构代码</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="acqId" id="acqId" th:value="${onlineInstAccept.acqId}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="acqName" class="col-sm-4 control-label">受理机构名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="acqName" id="acqName" th:value="${onlineInstAccept.acqName}" placeholder="请输入受理机构名称" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="flag" class="col-sm-4 control-label">激活标记</label>
+                <div class="col-sm-4">
+                    <select id="flag" name="flag" class="form-control">
+                        <option value="">请选择激活标记</option>
+                        <option value="0" th:selected="(${onlineInstAccept.flag==0})">未激活</option>
+                        <option value="1" th:selected="(${onlineInstAccept.flag==1})">激活</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="memo" class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-4">
+                    <textarea rows="3" name="memo" id="memo" class="form-control" th:text="${onlineInstAccept.memo}"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/accept/online-inst-accept.js}"></script>
+</body>
+</html>

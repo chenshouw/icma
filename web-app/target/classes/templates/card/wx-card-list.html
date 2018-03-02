@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            width: 100px;
+        }
+
+        input {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="wxCard_add">
+                    <a href="wx-card-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="wxCard_search">
+            <form th:action="@{wx-card-search}" method="post" id="wxCardInfo">
+                <input type="hidden" class="form-control" id="id"/>
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>卡券名称</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="title" id="title" placeholder="请输入卡券名称" th:value="${wxCardInfoVo.title}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>批次号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="batchNo" id="batchNo" placeholder="请输入批次号" th:value="${wxCardInfoVo.batchNo}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>期限类型</label>
+                            <select name="validDateStatus" class="form-control" data-type="select" data-category="CARD_VALID_DATE_STATUS"
+                                    th:data-value="${wxCardInfoVo.validDateStatus}"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>创建日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="createTimeBegin" id="createTimeBegin"
+                                        maxlength="19" placeholder="请选择开始时间" readonly th:value="${wxCardInfoVo.createTimeBegin}"/>
+                                <span class="input-group-btn">
+                                 <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" name="createTimeEnd" id="createTimeEnd"
+                                        maxlength="19" placeholder="请选择结束时间" readonly th:value="${wxCardInfoVo.createTimeEnd}"/>
+                                <span class="input-group-btn">
+                                 <button class="btn default date-reset" id="createTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>是否删除</label>
+                            <select name="isDelete" class="form-control" data-type="select" data-category="IS_DELETE" data-first="false"
+                                    th:data-value="${wxCardInfoVo.isDelete}"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()" class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()" class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>卡券名称</th>
+                                <th>商户名称</th>
+                                <th>批次号</th>
+                                <th>开卡数量</th>
+                                <th>颜色</th>
+                                <th>LOGO</th>
+                                <th>背景</th>
+                                <th>转赠</th>
+                                <th>期限类型</th>
+                                <th>创建日期</th>
+                                <th>客服电话</th>
+                                <shiro:hasAnyPermissions name="wxCard_update,wxCard_copy,wxCard_remove,wxCard_detail,wxCard_detailSearch">
+                                    <th style="width: 200px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="wxCardInfo : ${list}" class="list-display">
+                                <input type="hidden" id="cardColor" th:value="${ItemUtil.getName(wxCardInfo.color,'WX_CARD_COLOR')}"/>
+                                <input type="hidden" id="logoId" th:value="${wxCardInfo.logoImgId}"/>
+                                <input type="hidden" id="bgId" th:value="${wxCardInfo.bgImgId}"/>
+                                <td th:text="${wxCardInfo.title}"></td>
+                                <td th:text="${wxCardInfo.brandName}"></td>
+                                <td th:text="${wxCardInfo.batchNo}"></td>
+                                <td th:text="${wxCardInfo.quantity}"></td>
+                                <td><p id="colorDisplay" style="width:60px;height: 36px;"></p></td>
+                                <td><img id="logoDisplay" style="width:60px;height: 36px;"/></td>
+                                <td><img id="bgDisplay" style="width:60px;height: 36px;"/></td>
+                                <td th:text="${ItemUtil.getName(wxCardInfo.canGiveFriend,'CAN_GIVE_FRIEND')}"></td>
+                                <td th:text="${ItemUtil.getName(wxCardInfo.validDateStatus,'CARD_VALID_DATE_STATUS')}"></td>
+                                <td th:text="${#calendars.format(wxCardInfo.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${wxCardInfo.servicePhone}"></td>
+                                <shiro:hasAnyPermissions name="wxCard_update,wxCard_copy,wxCard_remove,wxCard_detail,wxCard_detailSearch">
+                                    <td>
+                                        <shiro:hasPermission name="wxCard_update">
+                                            <a th:if="${wxCardInfo.isDelete} == 0" class='btn blue btn-xs' th:href="@{wx-card-update-page(id=${wxCardInfo.id})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="wxCard_copy">
+                                            <a th:if="${wxCardInfo.isDelete} == 0" class='btn blue btn-xs' th:href="@{wx-card-copy-page(id=${wxCardInfo.id})}">复制</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="wxCard_remove">
+                                            <a th:if="${wxCardInfo.isDelete} == 0" class='btn red btn-xs'
+                                               th:onclick="'javascript:cardInfoDel(\''+${wxCardInfo.id}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="wxCard_detail">
+                                           <!-- <a class='btn blue btn-xs'
+                                               th:onclick="'javascript:showDetail(\''+${wxCardInfo.id}+'\')'">详情</a>-->
+                                            <a th:if="${wxCardInfo.isDelete} == 0" class='btn green btn-xs'
+                                                    th:href="@{wx-card-detail-page(id=${wxCardInfo.id})}">详情</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="wxCard_detailSearch">
+                                            <a class='btn green btn-xs'
+                                               th:href="@{wx-batch-detail-search(batchNo=${wxCardInfo.batchNo})}">批次卡详情</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="wxCardInfo"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div id="detail-modal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;" role='basic'>
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title">微信卡券详情</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row margin-top-20">
+                    <div id="detail-panel" class="col-md-12">
+                        <form class="form-horizontal">
+                            <ul class="nav nav-tabs" id="inputTab">
+                                <li class="active"><a href="#baseSetting">基本信息</a></li>
+                                <li><a href="#marketSetting">营销信息</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="baseSetting">
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>卡券名称</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_title" style="border: none"/>
+                                            </div>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>开卡数量</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_quantity" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>批次编号</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_batchNo" style="border: none"/>
+                                            </div>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>商户名称</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_brandName" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>客服电话</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_servicePhone" style="border: none"/>
+                                            </div>
+
+                                            <label class='col-sm-2 control-label'>卡券类型</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_cardType" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>会员卡特权说明</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_prerogative" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>卡券使用提醒</label>
+                                            <div class='col-sm-4'>
+                                                <textarea rows='6' class='form-control' readonly id="detail_notice" style="border: none"></textarea>
+                                            </div>
+                                            <label class='col-sm-2 control-label'>卡券说明</label>
+                                            <div class='col-sm-4'>
+                                                <textarea rows='6' class='form-control' readonly id="detail_desn" style="border: none"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>颜色</label>
+                                            <div class='col-sm-4'>
+                                                <p style='width: 200px;height: 120px;' id="detail_color"/>
+                                            </div>
+                                            <label class='col-sm-2 control-label'>LOGO</label>
+                                            <div class='col-sm-4'>
+                                                <img style='width: 200px;height: 120px;' id="detail_logo"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>背景</label>
+                                            <div class='col-sm-4'>
+                                                <img style='width: 200px;height: 120px;' id="detail_bg"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-2 control-label'>期限类型</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_dateType" style="border: none"/>
+                                            </div>
+                                            <div id="effDate" style="display: none">
+                                                <label class='col-sm-2 control-label'>有效天数</label>
+                                                <div class='col-sm-4'>
+                                                    <input type='text' class='form-control' readonly id="detail_effDate" style="border: none"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <div id="dateBegin" style="display: none">
+                                                <label class='col-sm-2 control-label'>开始日期</label>
+                                                <div class='col-sm-4'>
+                                                    <input type='text' class='form-control' readonly id="detail_dateBegin" style="border: none"/>
+                                                </div>
+                                            </div>
+                                            <div id="dateEnd" style="display: none">
+                                                <label class='col-sm-2 control-label'>结束日期</label>
+                                                <div class='col-sm-4'>
+                                                    <input type='text' class='form-control' readonly id="detail_dateEnd" style="border: none"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>是否可转赠微信好友</label>
+                                            <div class='col-sm-4'>
+                                                <input type='text' class='form-control' readonly id="detail_giveFriend" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="marketSetting">
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>会员卡激活的URL</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_activateUrl" style="border: none"/>
+                                            </div>
+                                            <label class='col-sm-3 control-label'>查看余额详情URL</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_balanceUrl" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>顶部居中按钮URL</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly id="detail_centerUrl" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>顶部居中按钮名称</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_centerTitle" style="border: none"/>
+                                            </div>
+                                            <label class='col-sm-3 control-label'>顶部居中按钮提示</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_centerSubTitle" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>自定义跳转外链URL1</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly id="detail_customUrl" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>自定义跳转外链名称1</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_customUrlName" style="border: none"/>
+                                            </div>
+                                            <label class='col-sm-3 control-label'>自定义跳转外链提示1</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_customUrlSubTitle" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>自定义跳转外链URL2</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_customCellUrl" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>自定义跳转外链名称2</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_customCellName" style="border: none"/>
+                                            </div>
+                                            <label class='col-sm-3 control-label'>自定义跳转外链提示2</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_customCellTips" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>营销场景入口URL</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_promotionUrl" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group'>
+                                            <label class='col-sm-3 control-label'>营销场景入口名称</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_promotionUrlName" style="border: none"/>
+                                            </div>
+                                            <label class='col-sm-3 control-label'>营销场景入口提示</label>
+                                            <div class='col-sm-3'>
+                                                <input type='text' class='form-control' readonly
+                                                        id="detail_promotionUrlSubTitle" style="border: none"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type='button' class='btn btn-default  btn-sm' data-dismiss='modal'>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+    $(function () {
+        $('#inputTab a[href="#baseSetting"]').tab('show');
+    });
+    $('#inputTab a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/wx-card-list.js}"></script>
+</body>
+</html>

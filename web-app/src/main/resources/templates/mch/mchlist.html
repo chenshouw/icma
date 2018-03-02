@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="mchlist">
+        <div class="row pre-scrollable">
+            <table  class="table table-bordered" id="item_info_table">
+                <thead>
+                <tr>
+                    <th>商户号</th>
+                    <th>商户名称</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="mchInfo : ${list}">
+                    <td th:text="${mchInfo.mId}"></td>
+                    <td th:text="${mchInfo.mIdName}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:utext="${pageHtml}" class="row page_info" data-search="MchInfoFrom"></div>
+<script type="application/javascript">
+//    $().ready(function() {
+//        // bootstrapTable 表格数据初始化
+//        var table = $('#item_info_table').bootstrapTable({
+//            url             : "<c:url value='/mch/info/search'/>",
+//            method          : 'GET',                   // GET
+//            uniqueId        : 'mId',                     // 绑定ID
+//            toolbar         : '#item_info_toolbar',     // 搜索框绑定
+//            search          : true,                     // 搜索框
+//            pagination      : true,                     // 显示页码等信息
+//            singleSelect    : true,                     // 单选checkbox
+//            showRefresh     : true,                     // 显示刷新按钮
+//            showColumns     : true,                     // 选择显示的列
+//            pageSize        : pageSize,                 // 当前分页值
+//            pageList        : pageList,                 // 分页选页
+//            dataType        : dataType,                 // JSON
+//            sidePagination  : sidePagination,           // 服务端请求
+//            buttonsAlign    : buttonsAlign,             // 刷新,显示列按钮位置
+//            toolbarAlign    : toolbarAlign,             // 搜索框位置
+//            columns         : [
+//                {
+//                    checkbox: true
+//                }, {
+//                    title   : '商户号',
+//                    field   : 'mId',
+//                    align   : 'center',
+//                    formatter:function(value,row,index){
+//                        var url = '';
+//                        if (isSingleItem(value)) url = '<a href="#" mce_href="#" onclick="single_item_edit_fun(\'' + row.infoId + '\')">' + row.itemNum + '</a>   ';
+//                        if (isJoinItem(value))   url = '<a href="#" mce_href="#" onclick="join_item_edit_fun(\'' + row.infoId + '\')">' + row.itemNum + '</a>   ';
+//                        return url;
+//                    }
+//                }, {
+//                    title   : '商户名称',
+//                    field   : 'mIdName',
+//                    align   : 'center'
+//                }
+//            ]
+//        })
+
+jQuery(document).ready(function () {
+    App.init();
+});
+</script>
+
+</div>

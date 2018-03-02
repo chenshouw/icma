@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${pageTitle}"></title>
+<head th:include="/commons/head::header" />
+<link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+</head>
+<body class="page-header-fixed"  id="productTypeDetailBody">
+	<div th:replace="/commons/page_head::pageHead"></div>
+	<div class="clearfix"></div>
+	<div class="page-container">
+		<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+		<div class="page-content">
+			<ul class="page-breadcrumb breadcrumb">
+				<li th:utext="${locationMenu}"></li>
+				<li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>新增</a></li>
+			</ul>
+			<form class="form-horizontal" role="form" id="productTypeDetailForm" method="post">
+                <div class="form-group">
+                    <label for="productAttrArgs" class="col-sm-4 control-label">产品属性参数</label>
+                    <div class="col-sm-6">
+                        <input type="hidden" id="productType" name="productType" th:value="${productAddAttr.productType}">
+                        <select name="productAttrArgs" id="productAttrArgs" class="form-control" data-type="select" data-category="PRODUCT_ATTR_ARGS"  th:data-value="${itemDetail.code}" disabled></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productAttrValue" class="col-sm-4 control-label">产品属性值</label>
+                    <div class="col-sm-6">
+                        <select name="productAttrValue" id="productAttrValue" class="form-control" data-type="select" data-category="PRODUCT_ATTR_VALUE" th:data-value="${productAddAttr.productAttrValue}"></select>
+                    </div>
+                </div>
+
+
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-6">
+						<button style="background-color: gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+						<button style="margin-left: 30px; background-color: #0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div th:replace="/commons/scripts::scripts" /></div>
+	<div th:replace="/commons/foot::foot"></div>
+	<script>
+		jQuery(document).ready(function() {
+			App.init();
+		});
+	</script>
+</body>
+<script type="text/javascript" th:src="@{/js/media/product-type-detail-add.js}" charset="utf-8"></script>
+</html>

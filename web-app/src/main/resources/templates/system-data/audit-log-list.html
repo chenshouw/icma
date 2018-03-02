@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="auditLog_export">
+                    <a href="javascript:void(0);" class='btn blue ' id="export"><span>导出</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="auditLog_search">
+            <form action="/system-data/audit-log/search" id="auditLogForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="message">审计内容（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="message" name="message"
+                                        th:value="${auditLogVo.message}" placeholder="请输入审计内容" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="target">审计目标（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="target" name="target"
+                                        th:value="${auditLogVo.target}" placeholder="请输入审计目标" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>创建日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${auditLogVo.createTimeBegin}" readonly name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始时间">
+                                <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${auditLogVo.createTimeEnd}" readonly name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间">
+                                <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="createTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>标志</label>
+                            <div class="input-icon">
+                                <input type="hidden" id="flag-exp" th:value="${auditLogVo.flag}"/>
+                                <select id="flag" name="flag" class="form-control" data-type="select" data-category="AUDIT_LOG_FLAG" th:data-value="${auditLogVo.flag}"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>审计内容</th>
+                                <th>审计目标</th>
+                                <th>创建日期</th>
+                                <th>标志</th>
+                                <th>操作人</th>
+                                <th>操作人id</th>
+                                <th>操作人ip</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="auditLog : ${auditLogs}">
+                                <td th:text="${auditLog.message}"></td>
+                                <td th:text="${auditLog.target}"></td>
+                                <td th:text="${#calendars.format(auditLog.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td>
+                                    <span sl:type="AUDIT_LOG_FLAG" sl:text="${auditLog.flag}"></span>
+                                </td>
+                                <td th:text="${auditLog.operator}"></td>
+                                <td th:text="${auditLog.operatorId}"></td>
+                                <td th:text="${auditLog.ip}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="auditLogForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/audit-log-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

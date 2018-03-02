@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="cardImgBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+        <form class="form-horizontal" role="form" th:action="@{update}" method="post" id="updateFrom">
+            <input type="text" class="form-control" id="id" name="id" style="display:none" th:value="${cardImg.id}"/>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">卡面<font color="#FF0000">*</font></label>
+                <div class="col-sm-3">
+                    <img id="cardShow" th:src="${imagePath}+${cardImg.uri}+${cardImg.imgName}" style="width:400px;height: 240px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="describe" class="col-sm-4 control-label">描述<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" style="display: none"/>
+                    <input type="text" class="form-control" id="describe" name="describe" onkeyup="WidthCheck(this,200);" th:value="${cardImg.describe}"/>
+                </div>
+                <div class="col-sm-2">多个描述用“/”分隔；例如：购物卡/加油卡</div>
+            </div>
+            <div class="form-group">
+                <label for="memo" class="col-sm-4 control-label">产品子类型<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="productType" id="productType" class="form-control" data-type="select" th:data-value="${cardImg.productType}">
+                        <option th:each="productType : ${productTypes}" th:value="${productType.productType}" th:text="${productType.productName+'['+productType.minst.shortName+']'}" th:selected="(${cardImg.productType.toString()==productType.productType})"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="imgType" class="col-sm-4 control-label">图片类型<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="imgType" id="imgType" class="form-control" data-type="select" data-category="CARD_IMG_TYPE" th:data-value="${cardImg.imgType}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="status" class="col-sm-4 control-label">状态</label>
+                <div class="col-sm-6">
+                    <select name="status" id="status" class="form-control" data-type="select" data-category="CARD_IMG_STATUS" th:data-value="${cardImg.status}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-6">
+                    <div class="dropdown">
+                        <div style="margin-top: 10px;">
+                            <textarea th:text="${cardImg.memo}" name="memo" id="memo" style="width:100%;height:200px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default btn-info btn-search">取 消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnUpdate">修改</button>
+                </div>
+                <div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div th:replace="/commons/scripts::scripts"/>
+</div>
+
+
+<div id="updateAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>修改完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/foot::foot"></div>
+<script type="text/javascript" th:src="@{/js/basic-data/card-img.js}"></script>
+<script type="text/javascript" th:src="@{/js/basic-data/card-img-check.js}"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/fileinput/fileinput.css}"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="productGroup_add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="productGroup_search">
+            <form th:action="@{search}" method="post" id="productTypeGroupFrom">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>产品类型</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="parProductType" name="parProductType" maxlength="18"
+                                        th:value="${productTypeGroup.parProductType}"
+                                        onkeyup="(this.v=function(){this.value=this.value.replace(/[^\d]/g,'');}).call(this)"
+                                        onblur="this.v();" placeholder="请输入你要搜索的产品类型(只能输入数字)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>产品名称</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="productGroupName" name="productGroupName"
+                                        th:value="${productTypeGroup.productGroupName}" placeholder="请输入要搜索的产品名称"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon right">
+                                <select name="status" id="status" class="form-control" data-type="select"
+                                        data-category="PRODUCT_GROUP_STATUS"
+                                        th:data-value="${productTypeGroup.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 20%;">产品类型</th>
+                                <th style="width: 20%;">产品名称</th>
+                                <th style="width: 20%;">状态</th>
+                                <th style="width: 20%;">操作者</th>
+                                <th style="width: 20%;">修改时间</th>
+                                <shiro:hasAnyPermissions
+                                        name="productGroup_update,productGroupDetail_search,productGroup_delete">
+                                    <th style="width: 100px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="productTypeGroup : ${list}">
+                                <td th:text="${productTypeGroup.parProductType}"></td>
+                                <td th:text="${productTypeGroup.productGroupName}"></td>
+                                <td th:text="${ItemUtil.getName(productTypeGroup.status,'PRODUCT_GROUP_STATUS')}"></td>
+                                <td th:text="${productTypeGroup.teller}"></td>
+                                <td th:text="${#calendars.format(productTypeGroup.modifyTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasAnyPermissions
+                                        name="productGroup_update,productGroupDetail_search,productGroup_delete">
+                                    <td>
+                                        <shiro:hasPermission name="productGroupDetail_search">
+                                            <a class='btn green btn-xs '
+                                                    th:href="@{to-detail(productTypeGroup=${productTypeGroup.parProductType})}">详情</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="productGroup_update">
+                                            <a class='btn blue btn-xs '
+                                                    th:href="@{to-update(productTypeGroup=${productTypeGroup.parProductType})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="productGroup_delete">
+                                            <a class='btn red btn-xs'
+                                                    th:onclick="'javascript:deleteproductTypeGroup(\''+${productTypeGroup.parProductType}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="productTypeGroupFrom"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+
+</script>
+<script type="text/javascript" th:src="@{/js/media/product-type-group-list.js}" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>详情</a></li>
+            <li class="btn-group"><a href="#" class='btn blue ' id="goBack"><span>返回</span></a></li>
+        </ul>
+
+        <shiro:hasPermission name="cardPresent_getDetails">
+            <form action="/account-manage/card-present/to-cardDetail" id="cardPresentDetailForm" method="post">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>批次号：</label>
+                            <input type="hidden" th:value="${cardPresent.batchNo}" id="batchNo" name="batchNo">
+                            <input type="hidden" th:value="${cardPresent.id}" id="id" name="id">
+                            <label th:text="${cardPresent.batchNo}"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>描述：</label>
+                            <label th:text="${cardPresent.memo}"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>操作员：</label>
+                            <label th:text="${cardPresent.createBy}"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th>卡号</th>
+                        <th>赠卡时间</th>
+                        <th>领取状态</th>
+                        <th>领取时间</th>
+                        <th>短信状态</th>
+                        <shiro:hasPermission name="getDetails_reSendMsg">
+                            <th width="70px">操作</th>
+                        </shiro:hasPermission>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cardPresentDetail : ${list}">
+                        <td th:text="${cardPresentDetail.name}"></td>
+                        <td th:text="${cardPresentDetail.phone}"></td>
+                        <td th:text="${cardPresentDetail.pan}"></td>
+                        <td th:text="${#calendars.format(cardPresentDetail.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td sl:type="CARD_PRESENT_STATUS" sl:text="${cardPresentDetail.status}"></td>
+                        <td th:text="${#calendars.format(cardPresentDetail.gainTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td sl:type="SEND_MSG_STATUS" sl:text="${cardPresentDetail.sendStatus}"></td>
+                        <shiro:hasPermission name="getDetails_reSendMsg">
+                            <td>
+                                <a th:if="${cardPresentDetail.status}==0" class="btn green btn-xs" href="#" th:onclick="'javascript:reSendCardPresent(\''+${cardPresentDetail.phone}+'\')'">重发短信</a>
+                            </td>
+                        </shiro:hasPermission>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="cardPresentDetailForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/account/card-present-detail.js}" charset="utf-8"></script>
+</body>
+</html>

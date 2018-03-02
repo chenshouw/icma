@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="respCodeBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" method="post" id="respCodeForm">
+            <div class="form-group">
+                <label for="respCode" class="col-sm-4 control-label"><font color="#FF0000">*</font>返回码</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="respCode" id="respCode" th:value="${respCode.respCode}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="respCodeText" class="col-sm-4 control-label"><font color="#FF0000">*</font>返回码说明</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="respCodeText" id="respCodeText" th:value="${respCode.respCodeText}" placeholder="请输入返回码说明"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="respDetail" class="col-sm-4 control-label"><font color="#FF0000">*</font>返回码详情</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="respDetail" id="respDetail" th:value="${respCode.respDetail}" placeholder="请输入返回码详情"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="detail" class="col-sm-4 control-label"><font color="#FF0000">*</font>详情</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="detail" id="detail" th:value="${respCode.detail}" placeholder="请输入详情"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/resp-code.js}"></script>
+</body>
+</html>

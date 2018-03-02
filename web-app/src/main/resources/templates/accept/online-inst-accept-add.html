@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed"  id="onlineInstAcceptBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" method="post" id="onlineInstAcceptForm">
+            <div class="form-group">
+                <label for="issuId" class="col-sm-4 control-label"><font color="#FF0000">*</font>发卡机构代码</label>
+                <div class="col-sm-4">
+                    <select id="issuId" name="issuId" class="form-control">
+                        <option value="" disabled selected>请选择发卡机构代码</option>
+                        <option th:each="instMinst: ${instList}" th:value="${instMinst.instName}" th:text="${instMinst.instId}+'-'+${instMinst.instName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="issuName" class="col-sm-4 control-label">发卡机构名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="issuName" id="issuName" value="" placeholder="请输入发卡机构名称" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="acqId" class="col-sm-4 control-label"><font color="#FF0000">*</font>受理机构代码</label>
+                <div class="col-sm-4">
+                    <select id="acqId" name="acqId" class="form-control">
+                        <option value="" disabled selected>请选择受理机构代码</option>
+                        <option th:each="acqMinst: ${acqList}" th:value="${acqMinst.instName}" th:text="${acqMinst.instId}+'-'+${acqMinst.instName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="acqName" class="col-sm-4 control-label">受理机构名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="acqName" id="acqName" value="" placeholder="请输入受理机构名称" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="flag" class="col-sm-4 control-label"><font color="#FF0000">*</font>激活标记</label>
+                <div class="col-sm-4">
+                    <select id="flag" name="flag" class="form-control">
+                        <option value="" disabled selected>请选择激活标记</option>
+                        <option value="0">未激活</option>
+                        <option value="1">激活</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="memo" class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-4">
+                    <textarea rows="3" name="memo" id="memo" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#issuId").select2({
+            formatNoMatches: function (term) {
+                return "没找到数据";
+            }
+        })
+        $("#acqId").select2({
+            formatNoMatches: function (term) {
+                return "没找到数据";
+            }
+        })
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/accept/online-inst-accept.js}"></script>
+</body>
+</html>
+

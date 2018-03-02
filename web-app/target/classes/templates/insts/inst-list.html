@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>-->
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+
+<body class="page-header-fixed" id="instBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="instManage_add">
+                    <a href="javascript:addNew();" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="instManage_look">
+            <div class="row">
+                <div class="col-md-6">
+                    <!--<div class="portlet grey box">-->
+                    <div class="portlet-body">
+                        <div id="tree_cl"></div>
+                        <shiro:hasPermission name="instManage_childAdd">
+                            <input type="hidden" id="optChildAdd" name="optChildAdd" value="childAdd"/>
+                        </shiro:hasPermission>
+
+                        <shiro:hasPermission name="instManage_update">
+                            <input type="hidden" id="optUpdate" name="optUpdate" value="update"/>
+                        </shiro:hasPermission>
+
+                        <shiro:hasPermission name="instManage_delete">
+                            <input type="hidden" id="optDelete" name="optDelete" value="delete"/>
+                        </shiro:hasPermission>
+
+                        <shiro:hasPermission name="instManage_detail">
+                            <input type="hidden" id="optDetail" name="optDetail" value="detail"/>
+                        </shiro:hasPermission>
+
+                    </div>
+                    <!--</div>-->
+                </div>
+                <div class="col-md-6">
+                    <div class="portlet-body form">
+                        <!-- BEGIN FORM-->
+                        <form action="#" id="form_cl" class="form-horizontal" style="display: none">
+                            <div class="form-body">
+                                <div class="form-group" id="instDiv">
+                                    <label class="control-label col-md-3">机构编码
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="hidden" id="parentInstId" name="parentInstId"/>
+                                        <input type="hidden" id="instOperatorType" name="instOperatorType" value=""/>
+                                        <input type="text" id="instId" name="instId" class="form-control" onkeyup="WidthCheck(this,60);" placeholder="请输入机构编码"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">机构名称
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input id="instName" name="instName" type="text" class="form-control" onkeyup="WidthCheck(this,100);" placeholder="请输入机构名称"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">机构简称
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                    <input id="shortName" name="shortName" type="text" class="form-control" onkeyup="WidthCheck(this,32);" placeholder="请输入机构简称"/>
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">所属地区
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                            <select id="areaCode" name="areaCode" class="form-control" data-placeholder="请选择地区编码">
+                                        </select>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">机构等级
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="instLevel" name="instLevel" class="form-control" onkeyup="WidthCheck(this,22);" placeholder="请输入机构等级"/>
+                                        <div class="col-sm- 2">
+                                            <span style="color: red;">99为渠道,请勿填99</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">联系人 &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="linkMan" name="linkMan" class="form-control" onkeyup="WidthCheck(this,40);" placeholder="请输入联系人"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">电话 &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="phone" name="phone" class="form-control" onkeyup="WidthCheck(this,14);" placeholder="请输入电话"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">结算行 &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="settleBank" name="settleBank" class="form-control" onkeyup="WidthCheck(this,30);" placeholder="请输入结算行"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">结算账户 &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="settleAcc" name="settleAcc" class="form-control" onkeyup="WidthCheck(this,30);" placeholder="请输入结算账户"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">账户名 &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="accName" name="accName" class="form-control" onkeyup="WidthCheck(this,60);" placeholder="请输入账户名"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">备注 &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="memo" name="memo" class="form-control" onkeyup="WidthCheck(this,200);" value="" placeholder="备注"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">状态&nbsp;&nbsp;
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="status" id="status" class="form-control " data-type="select" data-category="INST_STATUS">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">本地标志&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="localFlag" id="localFlag" class="form-control " data-type="select" data-category="INST_LOCAL_FLAG">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">配置标志&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="quotaFlag" id="quotaFlag" class="form-control " data-type="select" data-category="INST_QUOTA_FLAG">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">管理标志&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="mngTag" id="mngTag" class="form-control " data-type="select" data-category="INST_MNG_TAG">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">发行标志&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="issuTag" id="issuTag" class="form-control " data-type="select" data-category="INST_ISSU_TAG">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">受理标志&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="acqTag" id="acqTag" class="form-control " data-type="select" data-category="INST_ACQ_TAG">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">转接标志&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="fwdTag" id="fwdTag" class="form-control" data-type="select" data-category="INST_FWD_TAG">
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-actions fluid" id="buttonId">
+                                <div class="col-md-offset-4 col-md-6">
+                                    <button type="button" style="margin-left:40px;" class="btn default" onclick="history.go(0)">取消</button>
+                                    <a data-toggle="modal" href="#static" class='btn blue ' th:onclick="'javascript:save();'" style="margin-left: 20px;">保存</a>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="portlet-body form">
+                        <!-- BEGIN FORM-->
+                        <form action="#" id="form_detail" class="form-horizontal" style="display: none">
+                            <div class="form-body">
+                                <div class="form-group" id="d_instDiv">
+                                    <label class="control-label col-md-3">机构编码:
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="hidden" id="d_parentInstId" name="parentInstId"/>
+                                        <input type="hidden" id="d_instOperatorType" name="instOperatorType" value=""/>
+                                        <p id="d_instId" name="instId" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">机构名称:
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_instName" name="instName" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">机构简称:
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_shortName" name="shortName" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">所属地区:
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_areaCode" name="d_areaCode" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">机构等级:
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_instLevel" name="instLevel" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">联系人: &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_linkMan" name="linkMan" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">电话: &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_phone" name="phone" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">结算行: &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_settleBank" name="settleBank" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">结算账户: &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_settleAcc" name="settleAcc" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">账户名: &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_accName" name="accName" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">备注: &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p id="d_memo" name="memo" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">状态:&nbsp;&nbsp;
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="status" id="d_status" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">本地标志:&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="localFlag" id="d_localFlag" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">配置标志:&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="quotaFlag" id="d_quotaFlag" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">管理标志:&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="mngTag" id="d_mngTag" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">发行标志:&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="issuTag" id="d_issuTag" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">受理标志:&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="acqTag" id="d_acqTag" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">转接标志:&nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <p name="fwdTag" id="d_fwdTag" style="margin-bottom: 0;padding-top: 7px"></p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+            </div>
+        </shiro:hasPermission>
+
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        getSelect();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/insts/inst-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+</body>
+</html>

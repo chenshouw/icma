@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/fileinput/fileinput.css}"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="productType_add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="productType_search">
+            <form th:action="@{search}" method="post" id="productBinFrom">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>产品子类型</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="productType" name="productType"
+                                       th:value="${productTypeVo.productType}"
+                                       onkeyup="(this.v=function(){this.value=this.value.replace(/[^\d]/g,'');}).call(this)"
+                                       onblur="this.v();" placeholder="请输入你要搜索的产品类型(只能输入数字)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>产品名称(%)</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="productName" name="productName"
+                                       th:value="${productTypeVo.productName}" placeholder="请输入要搜索的产品名称"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>介质类型</label>
+                            <select class="select2_category form-control" name="mediaType" id="mediaType"
+                                    data-placeholder="Choose a mediaType" tabindex="1"
+                                    onchange="changeInventoryFlag();">
+                                <option value="">请选择</option>
+                                <option th:each="MediaType : ${mediaTypes}" th:value="${MediaType.mediaType}"
+                                        th:text="${MediaType.name}"
+                                        th:selected="('_'+${productTypeVo.mediaType} == '_'+${MediaType.mediaType})"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>账户属性类别</label>
+                            <div class="input-icon right">
+                                <select name="accAttrCode" id="accAttrCode" class="form-control">
+                                    <option value="">请选择</option>
+                                    <option th:each="proAccManage : ${proAccManages}"
+                                            th:value="${proAccManage.accAttrCode}"
+                                            th:text="${proAccManage.accAttrCode}+'-'+${proAccManage.accAttrName}"
+                                            th:selected="('_'+${productTypeVo.accAttrCode} == '_'+${proAccManage.accAttrCode})"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon right">
+                                <select name="status" id="status" class="form-control" data-type="select"
+                                        data-category="PRODUCT_TYPE_STATUS"
+                                        th:data-value="${productTypeVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>修改日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${productTypeVo.modiDateBegin}"
+                                       name="modiDateBegin" id="modiDateBegin" maxlength="19" placeholder="请选择开始时间"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${productTypeVo.modiDateEnd}"
+                                       name="modiDateEnd" id="modiDateEnd" maxlength="19" placeholder="请选择结束时间"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">产品子类型</th>
+                                <th scope="col">产品名称</th>
+                                <th scope="col">产品类型</th>
+                                <th scope="col">介质类型</th>
+                                <th scope="col">库存管理标志</th>
+                                <th scope="col">前缀设置</th>
+                                <th scope="col">账户属性编号</th>
+                                <th scope="col">发行面额（元）</th>
+                                <th scope="col">有效期月数</th>
+                                <th scope="col">续期月数</th>
+                                <th scope="col">单笔消费上限（元）</th>
+                                <th scope="col">充值单笔上限（元）</th>
+                                <th scope="col">余额上限（元）</th>
+                                <th scope="col">透支额度（元）</th>
+                                <th scope="col">密码标志</th>
+                                <th scope="col">ID加密标志</th>
+                                <th scope="col">最大延期次数</th>
+                                <th scope="col">自动销毁标志</th>
+                                <th scope="col">余额打印标志</th>
+                                <th scope="col">账单标志</th>
+                                <th scope="col">状态</th>
+                                <th scope="col">操作者</th>
+                                <th scope="col">修改时间</th>
+                                <shiro:hasAnyPermissions
+                                        name="productType_update,productType_delete,productTypeDetail_search">
+                                    <th style="width: 180px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="productType : ${list}">
+                                <td th:text="${productType.productType}"></td>
+                                <td th:text="${productType.productName}"></td>
+                                <td th:text="${productType.productGroupName}"></td>
+                                <td th:text="${productType.name}"></td>
+                                <td th:text="${productType.inventoryFlag}"></td>
+                                <td th:text="${productType.bin}"></td>
+                                <td th:if="${productType.accAttrName} == null"></td>
+                                <td th:if="${productType.accAttrName} != null"
+                                    th:text="${productType.accAttrCode}+'-'+${productType.accAttrName}"></td>
+                                <td th:text="${#numbers.formatCurrency(productType.parAmt)}"></td>
+                                <td th:text="${productType.validMon}"></td>
+                                <td th:text="${productType.renewMon}"></td>
+                                <td th:text="${#numbers.formatCurrency(productType.saleHwm)}"></td>
+                                <td th:text="${#numbers.formatCurrency(productType.chargeHwm)}"></td>
+                                <td th:text="${#numbers.formatCurrency(productType.balanceHwm)}"></td>
+                                <td th:text="${#numbers.formatCurrency(productType.overdraw)}"></td>
+                                <td th:text="${ItemUtil.getName(productType.pinFlag,'PRODUCT_TYPE_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(productType.idEncFlag,'PRODUCT_TYPE_FLAG')}"></td>
+                                <td th:text="${productType.maxRenewCnt}"></td>
+                                <td th:text="${ItemUtil.getName(productType.autoFlag,'PRODUCT_TYPE_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(productType.balPrn,'PRODUCT_TYPE_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(productType.billFlag,'PRODUCT_TYPE_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(productType.status,'PRODUCT_TYPE_STATUS')}"></td>
+                                <td th:text="${productType.teller}"></td>
+                                <td th:text="${#calendars.format(productType.modifyTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasAnyPermissions
+                                        name="productType_update,productType_delete,productTypeDetail_search">
+                                    <td>
+                                        <shiro:hasPermission name="productTypeDetail_search">
+                                            <a class='btn green btn-xs '
+                                               th:href="@{detail(productType=${productType.productType})}">详情</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="productType_update">
+                                            <a class='btn blue btn-xs '
+                                               th:href="@{to-update(productType=${productType.productType})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="productType_delete">
+                                            <a class='btn red btn-xs'
+                                               th:onclick="'javascript:deleteProductType(\''+${productType.productType}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="productBinFrom"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#mediaType").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+        $("#accAttrCode").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+
+    });
+
+</script>
+<script type="text/javascript" th:src="@{/js/media/product-type-list.js}" charset="utf-8"></script>
+</body>
+</html>

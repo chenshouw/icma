@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="item_add">
+                    <a th:href="toadd-item" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="item_search">
+            <form action="/system-data/item/search" id="orderForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="category">类型（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="category" name="category"
+                                       th:value="${itemVo.category}" placeholder="请输入类型">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="name">名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       th:value="${itemVo.name}" placeholder="请输入名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" class="form-control" data-type="select" data-category="STATUS"
+                                        th:data-value="${itemVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 20%;">类型</th>
+                                <th style="width: 20%;">名称</th>
+                                <th style="width: 20%;">描述</th>
+                                <th style="width: 20%;">状态</th>
+                                <th style="width: 20%;">排序号</th>
+                                <shiro:hasAnyPermissions name="itemDetail_search,item_update,item_delete">
+                                    <th style="width: 100px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="itemDto : ${list}">
+                                <td th:text="${itemDto.category}"></td>
+                                <td th:text="${itemDto.name}"></td>
+                                <td th:text="${itemDto.description}"></td>
+                                <td th:text="${ItemUtil.getName(itemDto.status,'STATUS')}"></td>
+                                <td th:text="${itemDto.orderId}"></td>
+                                <shiro:hasAnyPermissions name="itemDetail_search,item_update,item_delete">
+                                    <td>
+                                        <shiro:hasPermission name="itemDetail_search">
+                                            <a th:href="@{detail(id=${itemDto.id})}" class='btn green btn-xs'>详细</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="item_update">
+                                            <a class='btn blue btn-xs' style="margin-left: 5px;"
+                                               th:href="@{toupdate-item(id=${itemDto.id})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="item_delete">
+                                            <a class='btn red btn-xs'
+                                               th:onclick="'javascript:deleteItemAndItemDetail(\''+${itemDto.id}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="orderForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/item-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

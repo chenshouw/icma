@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/fileinput/fileinput.css}"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>查询</a>
+	      	</li>
+	      	<li class="btn-group">
+                <shiro:hasPermission name="accType_add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+	     </ul>
+
+        <shiro:hasPermission name="accType_search">
+	     <form th:action="@{search}" method="post" id="accTypeFrom">
+	           <!-- 搜索内容start -->
+             <div class="row">
+                 <div class="col-md-4">
+                     <div class="form-group">
+                         <label >账户类型</label>
+                         <div class="input-icon right">
+                             <i class="icon-edit"></i>
+                             <input type="text" class="form-control" id="accType" name="accType" th:value="${accType.accType}" onkeyup="(this.v=function(){this.value=this.value.replace(/[^\d]/g,'');}).call(this)" onblur="this.v();" placeholder="请输入你要搜索的账户类型(只能输入数字)" />
+                         </div>
+                     </div>
+                 </div>
+                 <div class="col-md-4">
+                       <div class="form-group">
+                            <label >有效期设定方式</label>
+                               <select id="expFlag" name="expFlag" class="form-control" data-type="select" data-category="EXP_FLAG" th:data-value="${accType.expFlag}"></select>
+                       </div>
+                   </div>
+                 </div>
+
+             <div class="row form-group">
+                 <div class="col-md-5"></div>
+                 <div class="col-md-1">
+                     <button type="submit" onclick="search()"
+                             class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                 </div>
+                 <div class="col-md-1">
+                     <button type="submit" onclick="cleanQuery()"
+                             class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                 </div>
+                 <div class="col-md-5"></div>
+             </div>
+
+
+             <div class="portlet-body">
+                 <div class="table-scrollable">
+                     <table class="table table-striped table-bordered table-hover">
+					  <thead>
+					    <tr>
+                        <th scope="col">账户类型</th>
+                        <th scope="col">账户名称</th>
+                        <th scope="col">金额单位</th>
+                        <th scope="col">使用优先级</th>
+                        <th scope="col">整笔使用标志</th>
+                        <th scope="col">余额上限（元）</th>
+                        <th scope="col">充值上限（元）</th>
+                        <th scope="col">回收低限（元）</th>
+                        <th scope="col">透支标志</th>
+                        <th scope="col">有效期限月数</th>
+                        <th scope="col">有效期设定方式</th>
+                        <th scope="col">使用范围</th>
+                        <th scope="col">账户类型分组</th>
+                            <shiro:hasAnyPermissions name="accType_update,accType_delete">
+                                <th style="width: 180px;">操作</th>
+                            </shiro:hasAnyPermissions>
+					    </tr>
+				        </thead>
+                        <tbody>
+					          <tr th:each="accType : ${list}">
+                              <td  th:text="${accType.accType}"></td>
+                              <td  th:text="${accType.accName}"></td>
+				              <td th:text="${accType.amtUnit}"></td>
+                              <td  th:text="${accType.pri}"></td>
+                              <td  th:text="${accType.iflag}"></td>
+                              <td th:text="${#numbers.formatCurrency(accType.balanceHwm)}"></td>
+                              <td th:text="${#numbers.formatCurrency(accType.chargeHwm)}"></td>
+                              <td th:text="${#numbers.formatCurrency(accType.revokeWm)}"></td>
+                              <td th:text="${ItemUtil.getName(accType.overdrawFlag,'OVERDRAW_FLAG')}"></td>
+                              <td th:text="${accType.dftPeriod}"></td>
+                              <td th:text="${ItemUtil.getName(accType.expFlag,'EXP_FLAG')}"></td>
+                              <td th:text="${accType.scope}"></td>
+                              <td th:text="${accType.accGrp}"></td>
+                                  <shiro:hasAnyPermissions name="accType_update,accType_delete">
+                                      <td>
+                                          <shiro:hasPermission name="accType_update">
+                                              <a class='btn blue btn-xs ' th:href="@{to-update(accType=${accType.accType})}">修改</a>
+                                          </shiro:hasPermission>
+                                          <shiro:hasPermission name="accType_delete">
+                                              <a class='btn red btn-xs'  th:onclick="'javascript:deleteAccType(\''+${accType.accType}+'\')'">删除</a>
+                                          </shiro:hasPermission>
+                                      </td>
+                                  </shiro:hasAnyPermissions>
+				           </tr>
+                      </tbody>
+                     </table>
+                 </div>
+             </div>
+             <div th:utext="${pageHtml}" class="row page_info" data-search="accTypeFrom"></div>
+          </form>
+        <!--</shiro:hasPermission>-->
+	</div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+       /* $("select").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });*/
+    });
+
+</script>
+<script type="text/javascript" th:src="@{/js/media/acc-type-list.js}" charset="utf-8"></script>
+</body>
+</html>

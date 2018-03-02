@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="accTypeBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>修改</a>
+	      	</li>
+	     </ul>
+	     <form class="form-horizontal" role="form" id="updateForm" th:method="post" th:object="${accType}">
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账户类型<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="accType" id="accType" th:field="*{accType}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账户名称<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="accName" id="accName" th:field="*{accName}"/>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label">
+                     金额单位
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="amtUnit" id="amtUnit" th:field="*{amtUnit}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     使用优先级
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="pri" id="pri" th:field="*{pri}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     整笔使用标志
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="iflag" id="iflag" th:field="*{iflag}"/>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label">
+                     余额上限<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="balanceHwm" id="balanceHwm" th:field="*{balanceHwm}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     充值上限<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="chargeHwm" id="chargeHwm" th:field="*{chargeHwm}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     回收低限<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="revokeWm" id="revokeWm" th:field="*{revokeWm}"/>
+                 </div>
+             </div>
+
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     透支标志
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="overdrawFlag" id="overdrawFlag" class="form-control" data-type="select" data-category="OVERDRAW_FLAG" th:data-value="*{overdrawFlag}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     有效月数<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="dftPeriod" id="dftPeriod" th:field="*{dftPeriod}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     有效期设定方式<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="expFlag" id="expFlag" class="form-control" data-type="select" data-category="EXP_FLAG" th:data-value="*{expFlag}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     使用范围<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="scope" id="scope"  th:field="*{scope}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账户类型分组<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="accGrp" id="accGrp"  th:field="*{accGrp}"/>
+                 </div>
+             </div>
+
+             <div class="form-group">
+                 <div class="col-sm-offset-4 col-sm-6">
+                     <button style="background-color:gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+                     <button  style="margin-left:30px;background-color:#0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                 </div>
+             </div>
+        </form>
+	</div>
+</div>
+
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/media/acc-type-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

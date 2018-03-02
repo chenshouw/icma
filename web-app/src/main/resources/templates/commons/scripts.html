@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="scripts">
+    <script th:src="@{/metronic/plugins/respond.min.js}"></script>
+    <script th:src="@{/metronic/plugins/excanvas.min.js}"></script>
+    <script th:src="@{/metronic/plugins/jquery-1.10.2.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery-migrate-1.2.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap/js/bootstrap.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery-slimscroll/jquery.slimscroll.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery.blockui.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery.cookie.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/uniform/jquery.uniform.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/jquery.vmap.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/flot/jquery.flot.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/flot/jquery.flot.resize.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery.pulsate.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap-daterangepicker/moment.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}" type="text/javascript"></script>
+    <!--支持中文日期插件-->
+    <script th:src="@{/metronic/plugins/bootstrap-datepicker/js/locales/bootstrap-datepicker.zh-CN.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap-daterangepicker/daterangepicker.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js}" type="text/javascript"></script>
+    <!--支持中文时间插件-->
+    <script th:src="@{/metronic/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/gritter/js/jquery.gritter.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/fullcalendar/fullcalendar/fullcalendar.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/jquery.sparkline.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/scripts/app.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/scripts/index.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/scripts/tasks.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/select2/select2.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/data-tables/jquery.dataTables.min.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/data-tables/DT_bootstrap.js}" type="text/javascript"></script>
+    <script th:src="@{/metronic/plugins/bootstrap-toastr/toastr.min.js}"></script>
+    <!--弹出框-->
+    <script th:src="@{/js/commons/bootbox/bootbox.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/commons/bootbox/bootbox-extend.js}" type="text/javascript"></script>
+    <!--大遮罩-->
+    <script th:src="@{/js/commons/bootbox/shade.js}" type="text/javascript"></script>
+    <!--分页-->
+    <script th:src="@{/js/commons/pageInfo.js}"></script>
+    <script th:src="@{/js/commons/util/map.js}"></script>
+    <!--自定义下拉标签-->
+    <script th:src="@{/js/commons/util/selectItem.js}"></script>
+    <script th:src="@{/js/commons/util/itemInfo.js}"></script>
+    <!--数据验证-->
+    <script th:src="@{/js/commons/form-validate/jquery.validate.min.js}" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/commons/form-validate/additional-methods.min.js}" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/commons/form-validate/additional-methods-extend.js}" type="text/javascript"></script>
+    <script th:src="@{/js/commons/form-validate/messages_cn.js}" type="text/javascript"></script>
+
+    <!--日期转换-->
+    <script th:src="@{/js/commons/util/dateUtil.js}"></script>
+    <script th:src="@{/js/commons/content.js}"></script>
+    <!--异步请求异常统一处理-->
+    <script th:src="@{/js/commons/jquery-ext-min.js}"></script>
+
+
+</head>

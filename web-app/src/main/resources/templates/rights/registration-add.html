@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/login/login-soft.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="login">
+<!-- BEGIN LOGO -->
+<div class="logo">
+    <img th:src="@{/images/logo-big.png}" alt="" />
+</div>
+<!-- END LOGO -->
+<!-- BEGIN LOGIN -->
+<div class="content">
+    <form >
+        <h3 class="form-title">用户注册</h3>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">用户名</label>
+            <div class="input-icon">
+                <i class="icon-user"></i>
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名"  id="userName" name="userName"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">账户</label>
+            <div class="input-icon">
+                <i class="icon-font"></i>
+                <input class="form-control placeholder-no-fix" type="text" placeholder="账户" name="userAccount" id="userAccount"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">密码</label>
+            <div class="input-icon">
+                <i class="icon-lock"></i>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="userPassword" placeholder="密码" name="userPassword" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">确定密码</label>
+            <div class="controls">
+                <div class="input-icon">
+                    <i class="icon-ok"></i>
+                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="确定密码" name="rpassword" id="rpassword" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">性别</label>
+            <div class="controls">
+                <select name="userSex" id="userSex" class="select2_category form-control" data-type="select" data-category="USER_SEX"></select>
+            </div>
+        </div>
+       <!-- <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">性别</label>
+            <div class="">
+                <select  name="userSex" placeholder="性别" data-placeholder="Choose a menu" tabindex="1" id="userSex"/>
+                    <option placeholder="请选择性别">请选择性别</option>
+                    <option th:value="男">男</option>
+                    <option th:value="女">女</option>
+                </select>
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">手机号</label>
+            <div class="input-icon">
+                <i class="icon-ok"></i>
+                <input class="form-control placeholder-no-fix" type="text" placeholder="手机号" name="mobile" id="mobile"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">邮箱</label>
+            <div class="input-icon">
+                <i class="icon-envelope"></i>
+                <input class="form-control placeholder-no-fix" type="text" placeholder="邮箱" name="email" id="email"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="tnc"/> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </label>
+            <div id="register_tnc_error"></div>
+        </div>
+    </form>
+    <div class="form-actions">
+        <button id="register-back-btn" type="button" class="btn" onclick="history.go(-1)" >
+            <i class="m-icon-swapleft"></i>  取消
+        </button>
+        <button class="btn blue pull-right" id=btnSave>
+            确定 <i class="m-icon-swapright m-icon-white"></i>
+        </button>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+
+<script th:src="@{/js/login/registration.js}" type="text/javascript"></script>
+<script>
+    jQuery(document).ready(function() {
+        App.init();
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <!--<link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>-->
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>查询</a>
+	      	</li>
+             <li class="btn-group">
+                 <a href="javascript:addNew();"  class='btn blue '><span>新增</span></a>
+             </li>
+	     </ul>
+        <div class="row">
+            <div class="col-md-6">
+                <!--<div class="portlet grey box">-->
+                    <div class="portlet-body">
+                        <div id="tree_cl">
+                        </div>
+                    </div>
+                <!--</div>-->
+            </div>
+            <div class="col-md-6">
+                    <div class="portlet-body form">
+                        <!-- BEGIN FORM-->
+                        <form action="#" id="form_cl" class="form-horizontal" style="display: none">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">组织机构编码
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="hidden" id="orgId" name="orgId"/>
+                                        <input type="hidden" id="parentOrgId" name="parentOrgId"/>
+                                        <input type="hidden" id="orgOpratorType" name="orgOpratorType"/>
+                                        <input type="text" id="orgCode" name="orgCode" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">组织机构名称
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input id="orgName" name="orgName" type="text" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">组织机构简称
+                                        &nbsp;&nbsp;
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="orgShortName" name="orgShortName" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">组织机构序号
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="sortNo" name="sortNo" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">组织机构类型
+                                        <span class="required">
+											 *
+										</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <select name="orgType" id="orgType" class="form-control" data-type="select" data-category="ORGANIZATION_TYPE" >
+                                            <th:value></th:value>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions fluid">
+                                <div class="col-md-offset-4 col-md-9">
+                                    <a data-toggle="modal"  href="#static" class='btn red ' th:onclick="'javascript:save();'" style="margin-left: 50px;">保存</a>
+                                    <button type="button" style="margin-left:40px;"  class="btn blue" onclick="history.go(0)">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+	</div>
+</div>	
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/rights/org-list.js}" charset="utf-8"></script>
+</body>
+</html>

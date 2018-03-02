@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed" id="listBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+            <shiro:hasPermission name="histInstGl_export">
+                <button class='btn blue ' id="export"><span>导出</span></button>
+            </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="histInstGl_search">
+            <form th:action="@{search}" method="post" id="histInstGlForm">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="instId">机构名称</label>
+                            <div class="input-icon right" th:if="${flags}==1">
+
+                                <select class="form-control select2me" data-placeholder="Select..." id="instIds" tabindex="1"onchange="changeInstId(this.options[this.options.selectedIndex].value)">
+                                    <option value="">请选择</option>
+                                    <option th:each="mins,minsStat : ${minsts}"
+                                            th:value="${mins.instId}" th:text="${mins.instId}+'-'+${mins.instName}"
+                                            th:selected="('_'+${histInstGlVo.instId} == '_'+${mins.instId})"></option>
+                                </select>
+
+                            </div>
+
+                            <div class="input-icon right" th:if="${flags}==2">
+                                <input type="text" class="form-control" th:value="${inst.instName}" disabled>
+                            </div>
+                            <input type="hidden" class="redss"  name="instId" th:if="${flags}==1" th:value="${histInstGlVo.instId}">
+                            <input type="hidden" id="instId" name="instId" th:if="${flags}==2" th:value="${inst.instId}">
+
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>产品类型</label>
+                            <div class="input-icon">
+                                <select class="form-control select2me" data-placeholder="Select..." id="parProductType" name="parProductType" tabindex="1">
+                                    <option value="">请选择</option>
+                                    <option th:each="parType : ${parProductTypes}" th:value="${parType.parProductType}" th:text="${parType.parProductType}+'-'+${parType.productGroupName}" th:selected="('_'+${parType.parProductType}=='_'+${histInstGlVo.parProductType})"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="accType">账户类型</label>
+                            <div class="input-icon">
+                                <select class="form-control" data-placeholder="Select..." name="accType" id="accType" tabindex="1">
+                                    <option value="">请选择</option>
+                                    <option th:each="acType,minsStat : ${accTypes}"
+                                            th:value="${acType.accType}" th:text="${acType.accName}"
+                                            th:selected="('_'+${histInstGlVo.accType} == '_'+${acType.accType})"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>清算日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${histInstGlVo.settDateBegin}" name="settDateBegin" id="settDateBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="settDateBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${histInstGlVo.settDateEnd}" name="settDateEnd" id="settDateEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="settDateEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>请选择查询纬度</label>
+                            <div class="input-icon">
+                                <select name="selectStatus" id="selectStatus" class="form-control" data-type="select" data-category="INST_GL_SELECT"
+                                        th:data-value="${histInstGlVo.selectStatus}" onchange="selectOpt()"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--按日查询-->
+                    <div class="col-md-6" id="dayOpt" style="display: none">
+                        <div class="form-group">
+                            <label>请选择日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectDayBegin}" readonly name="selectDayBegin" id="selectDayBegin" maxlength="19" placeholder="请选择开始日期">
+                                <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="selectDayBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectDayEnd}" readonly name="selectDayEnd" id="selectDayEnd" maxlength="19" placeholder="请选择结束日期">
+                                <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="selectDayEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--按月查询-->
+                    <div class="col-md-6" id="monthOpt" style="display: none">
+                        <div class="form-group">
+                            <label>请选择月份</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectMonthBegin}" name="selectMonthBegin" id="selectMonthBegin" maxlength="19" placeholder="请选择开始月份" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="selectMonthBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectMonthEnd}" name="selectMonthEnd" id="selectMonthEnd" maxlength="19" placeholder="请选择结束月份" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="selectMonthEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--按年查询-->
+                    <div class="col-md-6" id="yearOpt" style="display: none">
+                        <div class="form-group">
+                            <label>请选择年份</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectYearBegin}" name="selectYearBegin" id="selectYearBegin" maxlength="19" placeholder="请选择开始年份" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="selectYearBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectYearEnd}" name="selectYearEnd" id="selectYearEnd" maxlength="19" placeholder="请选择结束年份" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="selectYearEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--按季查询-->
+                    <div class="col-md-3" id="yearQuarterOpt" style="display: none">
+                        <div class="form-group">
+                            <label>请选择年份</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${histInstGlVo.selectYearQuarter}" name="selectYearQuarter" id="selectYearQuarter" maxlength="19" placeholder="请选择年份" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="selectYearQuarterClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon" style="display: none">至</span>
+                                <input type="hidden" class="form-control" name="selectYearQuarter2" id="selectYearQuarter2" maxlength="19" placeholder="请选择结束年份" readonly/>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3" id="quarterOpt" style="display: none">
+                        <div class="form-group">
+                            <label>请选择季度</label>
+                            <div class="input-icon">
+                                <select name="selectQuarter" id="selectQuarter" class="form-control" data-type="select" data-category="QUARTER_TYPE" onchange="changeQuarter()"
+                                        th:data-value="${histInstGlVo.selectQuarter}"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 20%;">机构编号</th>
+                                <th style="width: 20%;">机构名称</th>
+                                <th style="width: 20%;">产品类型</th>
+                                <th style="width: 20%;">账户类型</th>
+                                <th style="width: 20%;">清算日期</th>
+                                <th style="width: 20%;">期初金额（元）</th>
+                                <th style="width: 20%;">期末金额（元）</th>
+                                <th style="width: 20%;">进账金额（元）</th>
+                                <th style="width: 20%;">出账金额（元）</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="info : ${list}">
+                                <td th:text="${info?.instId?:''}"></td>
+                                <td th:text="${info.minst?.instId}+'-'+${info.minst?.instName}"></td>
+                                <td th:text="${info?.productGroupName?:''}"></td>
+                                <td th:text="${info.aType?.accName?:''}"></td>
+                                <td th:text="${info?.settDate?:''}"></td>
+                                <td th:text="${#numbers.formatCurrency(info?.iniBal?:0.0)}"></td>
+                                <td th:text="${#numbers.formatCurrency(info?.finBal?:0.0)}"></td>
+                                <td th:text="${#numbers.formatCurrency(info?.inAmt?:0.0)}"></td>
+                                <td th:text="${#numbers.formatCurrency(info?.outAmt?:0.0)}"></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 20%;">合计</th>
+                                <th style="width: 20%;"></th>
+                                <th style="width: 20%;"></th>
+                                <th style="width: 20%;"></th>
+                                <td style="width: 20%;"></td>
+                                <th style="width: 20%;" th:text="${#numbers.formatCurrency(histInstGlVo?.iniBalSum?:0.0)}"></th>
+                                <th style="width: 20%;" th:text="${#numbers.formatCurrency(histInstGlVo?.finBalSum?:0.0)}"></th>
+                                <th style="width: 20%;" th:text="${#numbers.formatCurrency(histInstGlVo?.inAmtSum?:0.0)}"></th>
+                                <th style="width: 20%;" th:text="${#numbers.formatCurrency(histInstGlVo?.outAmtSum?:0.0)}"></th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="histInstGlForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        setSearchParam();
+        $("#productType").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+        $("#instIds").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/statistic/hist-inst-gl-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/fileinput.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/bootstrap-fileinput.js}" charset="utf-8"></script>
+</body>
+</html>

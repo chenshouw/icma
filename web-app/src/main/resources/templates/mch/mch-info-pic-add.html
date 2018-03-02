@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="mchInfoPicBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" id="addFrom" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="cardPic" name="cardPic">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">图片<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="file" class="form-control" name="picture" id="picture">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    商户
+                </label>
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <input type="text" id="mchInfoShortName" name="mchInfoShortName" class="form-control" placeholder="请选择商户" readonly>
+                        <input type="hidden" id="mchInfoId" name="mchInfoId" class="form-control" readonly>
+                        <span class="input-group-btn" style="vertical-align:baseline">
+                        <button type="button" class="btn btn-default" onclick="clearMchInfoTable();">
+                             <i class="icon-remove"></i>
+                            </button>
+                            <button type="button" class="btn blue btn-default" data-toggle="modal" data-target="#mchInfoModal" onclick="initMchInfoTable();">
+                             选择 <i class="icon-plus"></i>
+                            </button>
+					    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="describe" class="col-sm-4 control-label">描述<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="describe" id="describe" onkeyup="WidthCheck(this,200);" placeholder="请输入描述信息"/>
+                    <input type="text" style="display: none"/>
+                </div>
+                <div class="col-sm-2">多个描述用“/”分隔；例如：购物卡/加油卡</div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mchInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="mchInfoModalLabel">商户信息</h4>
+            </div>
+            <div class="modal-body" style="height: auto;max-height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="mchInfoShowFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户号</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midSearch" type="text" class="form-control" placeholder="请输入商户号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户简称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midShortNameSearch" type="text" class="form-control" placeholder="请输入商户简称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户名称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midNameSearch" type="text" class="form-control" placeholder="请输入商户名称">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="form-inline">
+                            <button onclick="refreshAlertMchData()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                            <button onclick="cleanMchInfoQuery()" type="button"
+                                    class="btn btn-primary">重置
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="mchInfoTable" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="selectMchInfo();">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/mch/mch-info-pic.js}"></script>
+<script type="text/javascript" th:src="@{/js/mch/mch-info-pic-check.js}"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/mch/mch-info-pic-modal.js}"></script>
+</body>
+</html>

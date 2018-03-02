@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="appSetting:add">
+                <a href="app-setting-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="appSetting:search">
+        <form th:action="@{app-setting-search}" method="get" id="appSetting">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>appID</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" name="appId" id="appId" placeholder="请输入appID" th:value="${wxAppSetting.appId}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>token</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" name="token" id="token" placeholder="请输入token" th:value="${wxAppSetting.token}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>商户名称</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" name="brandName" id="brandName" placeholder="请输入商户名称" th:value="${wxAppSetting.brandName}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>客服电话</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" name="servicePhone" id="servicePhone" placeholder="请输入客服电话" th:value="${wxAppSetting.servicePhone}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select name="status" class="form-control" data-type="select" data-category="APP_SETTING_STATUS" th:data-value="${wxAppSetting.status}"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn blue btn-block">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>appID</th>
+                            <th>token</th>
+                            <th>appSecret</th>
+                            <th>aesKey</th>
+                            <th>重定向Url</th>
+                            <th>商户名称</th>
+                            <th>客服电话</th>
+                            <th>协议</th>
+                            <th style="width: 125px;">微信认证回调域名</th>
+                            <th>状态</th>
+                            <shiro:hasAnyPermissions name="appSetting:update,appSetting:delete">
+                            <th style="width: 180px;">操作</th>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="appSetting : ${list}" class="list-display">
+                            <td th:text="${appSetting.appId}"></td>
+                            <td th:text="${appSetting.token}"></td>
+                            <td th:text="${appSetting.appSecret}"></td>
+                            <td th:text="${appSetting.aesKey}"></td>
+                            <td th:text="${appSetting.redirectUrl}"></td>
+                            <td th:text="${appSetting.brandName}"></td>
+                            <td th:text="${appSetting.servicePhone}"></td>
+                            <td th:text="${appSetting.protocol}"></td>
+                            <td th:text="${appSetting.wxCallbackDomain}"></td>
+                            <td th:text="${ItemUtil.getName(appSetting.status,'APP_SETTING_STATUS')}"></td>
+                            <shiro:hasAnyPermissions name="appSetting:update,appSetting:delete">
+                            <td>
+                                <shiro:hasPermission name="appSetting:update">
+                                <a class='btn blue ' th:href="@{app-setting-update-page(id=${appSetting.id})}">修改</a>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="appSetting:delete">
+                                <a class='btn blue ' th:onclick="'javascript:appSettingDel(\''+${appSetting.id}+'\')'">删除</a>
+                                </shiro:hasPermission>
+                            </td>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="appSetting"></div>
+        </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/app-setting.js}"></script>
+</body>
+</html>

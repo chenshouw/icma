@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="appConfBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" method="post" id="appConfForm">
+            <div class="form-group">
+                <label for="appId" class="col-sm-4 control-label"><font color="#FF0000">*</font>APP应用ID</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="appId" id="appId" value="" placeholder="请输入APP应用ID"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="instId" class="col-sm-4 control-label"><font color="#FF0000">*</font>渠道类型ID</label>
+                <div class="col-sm-4">
+                    <select name="instId" id="instId" class="form-control">
+                        <option value="">请选择</option>
+                        <!--<option th:each="minst : ${channel}" th:text="${minst.instId}+'-'+${minst.instName}"
+                                th:value="${minst.instId}"></option>-->
+                        <option th:each="minst : ${channel}" th:text="${minst.channels}+'-'+${minst.name}"
+                                th:value="${minst.channels}" ></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="appKey" class="col-sm-4 control-label"><font color="#FF0000">*</font>秘钥</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="appKey" id="appKey" value="" placeholder="请输入秘钥"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="appKey" class="col-sm-4 control-label"><font color="#FF0000">*</font>第三方接口的秘钥</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="appKeyThirdPart" id="appKeyThirdPart" value="" placeholder="请输入第三方接口的秘钥"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="appKey" class="col-sm-4 control-label"><font color="#FF0000">*</font>第三方接口的接口链接地址</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="appUrlThirdPart" id="appUrlThirdPart" value="" placeholder="请输入第三方接口的接口链接地址"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#instId").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/app-conf-add.js}"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="productBinBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>新增</a>
+	      	</li>
+	     </ul>
+	     <form id="addForm"  class="form-horizontal" role="form" th:action="@{add}"  method="post">
+
+              <div class="form-group" >
+                <label class="col-sm-4 control-label">
+                    产品BIN<font color="#FF0000">*</font>
+                </label>
+                  <div class="col-sm-6">
+                      <input type="text" class="form-control" name="productBin" id="productBin" value=""  placeholder="请输入产品BIN"/>
+                  </div>
+              </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     发卡机构代码<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select class="select2_category form-control" name="issuId" id="issuId" data-placeholder="Choose a issuId" tabindex="1">
+                         <option value="">请选择</option>
+                         <option th:each="Minst : ${insts}" th:value="${Minst.instId}" th:text="${Minst.instId}+'-'+${Minst.instName}"></option>
+                     </select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     联名机构代码&nbsp;&nbsp;
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="lmIssuId" id="lmIssuId" value="" placeholder="请输入联名机构代码"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     卡号长度<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="idLen" id="idLen" value="" placeholder="请输入卡号长度"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     当前发行序号<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="currSeq" id="currSeq" value="0" placeholder="请输入当前发行序号"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     最大发行序号<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="maxSeq" id="maxSeq"  value="9999999" placeholder="请输入最大发行序号"/>
+                 </div>
+             </div>
+
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     开通标志<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="status" id="status" class="form-control" data-type="select" data-category="PRODUCT_BIN_STATUS" ></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     备注&nbsp;&nbsp;
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="memo" id="memo" value="" placeholder="请输入备注"/>
+                 </div>
+             </div>
+
+              <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                   <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                   <button  style="margin-left:30px;"  type="button" class="btn blue   btn-info btn-search"  id="btnSave">提交</button>
+                </div>
+              </div>
+        </form>
+	</div>
+</div>
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#issuId").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/media/product-bin-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

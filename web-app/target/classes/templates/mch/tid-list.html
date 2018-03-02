@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/fileinput/fileinput.css}"/>
+</head>
+
+<body class="page-header-fixed" id="tidBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="mchTid_add">
+                    <a href="to-add" class='btn blue' style="margin-left: 10px;"><span>新增</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="mchTid_batchImport">
+                    <button onclick="clearFile();" class='btn blue' type="button" data-toggle="modal"
+                            data-target="#batchImportModal" style="margin-left: 10px;"><span>批量导入</span></button>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="mchTid_batchExport">
+                    <button id="export" class='btn blue' style="margin-left: 10px;"><span>导出</span></button>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="mchTid_search">
+            <form th:action="@{search}" method="post" id="tidFrom">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>终端号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="tid" name="tid" th:value="${tidInfoVo.tid}"
+                                        placeholder="请输入终端号"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>终端名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="tidName" name="tidName"
+                                        th:value="${tidInfoVo.tidName}" placeholder="请输入终端名称"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>商户简称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="midShortName" name="midShortName"
+                                        th:value="${tidInfoVo.midShortName}" placeholder="请输入商户简称"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>子商户简称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="subMidShortName" name="subMidShortName"
+                                        th:value="${tidInfoVo.subMidShortName}" placeholder="请输入子商户简称"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" id="status" class="form-control" data-type="select"
+                                        data-category="TID_STATUS" th:data-value="${tidInfoVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>操作日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${tidInfoVo.modifyTimeBegin}"
+                                        name="modifyTimeBegin" id="modifyTimeBegin" maxlength="19" placeholder="请选择开始时间"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${tidInfoVo.modifyTimeEnd}"
+                                        name="modifyTimeEnd" id="modifyTimeEnd" maxlength="19" placeholder="请选择结束时间"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>终端号</th>
+                                <th>终端名称</th>
+                                <th>终端简称</th>
+                                <th>商户简称</th>
+                                <th>子商户简称</th>
+                                <th>状态</th>
+                                <th>操作人</th>
+                                <th>操作时间</th>
+                                <th>流水号</th>
+                                <th>机器指纹</th>
+                                <th>激活时间</th>
+                                <th>最后签到时间</th>
+                                <th>备注</th>
+                                <shiro:hasAnyPermissions name="mchTid_update,mchTid_delete,mchTid_view">
+                                    <th style="width: 90px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="tidInfo : ${list}">
+                                <td th:text="${tidInfo.tid}"></td>
+                                <td th:text="${tidInfo.tidName}"></td>
+                                <td th:text="${tidInfo.tidShortName}"></td>
+                                <td th:text="${tidInfo.midShortName}"></td>
+                                <td th:text="${tidInfo.subMidShortName}"></td>
+                                <td sl:type="TID_STATUS" sl:text="${tidInfo.status}"></td>
+                                <td th:text="${tidInfo.teller}"></td>
+                                <td th:text="${#calendars.format(tidInfo.modifyTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${#numbers.formatInteger(tidInfo.trace,6)}"></td>
+                                <td th:text="${tidInfo.machineCode}"></td>
+                                <td th:text="${#calendars.format(tidInfo.activateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${#calendars.format(tidInfo.signTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${tidInfo.memo}"></td>
+                                <shiro:hasAnyPermissions name="mchTid_update,mchTid_delete,mchTid_reset,mchTid_view">
+                                    <td>
+                                        <shiro:hasPermission name="mchTid_update">
+                                            <a class='btn blue btn-xs ' th:href="@{to-update(tid=${tidInfo.tid})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchTid_delete">
+                                            <a class='btn red btn-xs'
+                                                    th:onclick="'javascript:deleteTidInfo(\''+${tidInfo.tid}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchTid_reset">
+                                            <a class='btn red btn-xs' th:if="${tidInfo.status}==2"
+                                                    th:onclick="'javascript:reset(\''+${tidInfo.tid}+'\')'">激活重置</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchTid_view">
+                                            <a class='btn green btn-xs ' th:href="@{view(tid=${tidInfo.tid})}">详情</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="tidFrom"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<!--导入数据操作层-->
+<div id="batchImportModal" class="modal fade" role="dialog"
+     aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="myModalLabel">批量导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a id="downId" onclick="down()">
+                        <span style="font-size:larger;font-weight:200;color:red;cursor:pointer;">终端批量导入-模板.xlsx</span>
+                    </a>
+                </div>
+                <div class="form-group" id="passwordDiv">
+                    <label>选择终端数据文件(<span style="color: red;">请先在右上角下载模板填导入内容</span>)</label>
+                    <input class="form-control" type="file" id="batchFile">
+                </div>
+                <div><span color="red" id="content"></span></div>
+                <div class="progress progress-striped active" style="display: none">
+                    <div id="progressBar" class="progress-bar progress-bar-info"
+                         role="progressbar" aria-valuemin="0" aria-valuenow="0"
+                         aria-valuemax="100" style="width: 0%">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="batchImportBtn" type="submit" name="submit" class="btn btn-success" value="上传"/>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/mch/tid-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/fileinput.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/bootstrap-fileinput.js}" charset="utf-8"></script>
+</body>
+</html>

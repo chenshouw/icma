@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <a href="javascript:void(0);" class='btn blue ' id="export"><span>导出</span></a>
+            </li>
+        </ul>
+        <form action="/basic-data/user/search" id="userForm" method="post">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="userId">用户编号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="userId" name="userId" th:value="${userVo.userId}" maxlength="50" placeholder="请输入用户编号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sysUserId">系统用户编号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="sysUserId" name="sysUserId" th:value="${userVo.sysUserId}" maxlength="60" placeholder="请输入系统用户编号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="openId">openid</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="openId" name="openId" th:value="${userVo.openId}" maxlength="30" placeholder="请输入openid">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="bingStatus">关注状态</label>
+                        <div class="input-icon">
+                            <select id="bingStatus" name="bingStatus" class="form-control" data-type="select" data-category="BING_STATUS" th:data-value="${userVo.bingStatus}"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>注册日期</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" th:value="${userVo.createTimeBegin}" name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                            <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" th:value="${userVo.createTimeEnd}" name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                            <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn blue btn-block">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>用户编号</th>
+                            <th>系统用户编号</th>
+                            <th>openid</th>
+                            <th>unionid</th>
+                            <th>注册时间</th>
+                            <th>关注状态</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${list}">
+                            <td th:text="${user.userId}"></td>
+                            <td th:text="${user.sysUserId}"></td>
+                            <td th:text="${user.openId}"></td>
+                            <td th:text="${user.unionId}"></td>
+                            <td th:text="${#calendars.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${ItemUtil.getName(user.bingStatus,'BING_STATUS')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="userForm"></div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<script type="text/javascript" th:src="@{/js/basic-data/user-list.js}" charset="utf-8"></script>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+
+
+</script>
+
+
+</body>
+</html>

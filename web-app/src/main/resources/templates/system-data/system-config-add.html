@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="systemConfigBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form id="addForm" class="form-horizontal" role="form" th:action="@{add}" method="post">
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">名称<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="name" id="name" onkeyup="WidthCheck(this,50);" value="" placeholder="请输入名称"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">编码<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="code" id="code" onkeyup="WidthCheck(this,100);" value="" placeholder="请输入编码"/><div class="cos-sm-2">请输入数字、字母或者“-”，“_”符号</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">值<span style="color:#FF0000;">*</span>
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="value" name="value" onkeyup="WidthCheck(this,1000);" class="form-control" placeholder="请输入值"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">备注 &nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="memo" name="memo" onkeyup="WidthCheck(this,500);" class="form-control" placeholder="请输入备注"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-5 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:60px;" type="button" class="btn blue   btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/system-config.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i><a href='javascript:void(0);'>查询</a></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="shopGrp_toadd">
+                    <a href="shop-grp-toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="shopGrp_search">
+            <form th:action="@{shop-grp-search}" method="post" id="shopGrpVo">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>门店分组代码</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="shopGrp" name="shopGrp" th:value="${shopGrpVo.shopGrp}" placeholder="请输入你要搜索的商户分组代码"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>门店分组名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="grpName" name="grpName" th:value="${shopGrpVo.grpName}" placeholder="请输入你要搜索的商户分组名称"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>受理机构</label>
+                            <div class="input-icon">
+                                <select id="acqId" name="acqId" class="form-control">
+                                    <option value="">请选择</option>
+                                    <option th:each="minst: ${minsts}" th:value="${minst.instId}" th:text="${minst.instName}" th:selected="(${'_'+minst.instId=='_'+shopGrpVo.acqId})"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 搜索内容 end -->
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()" class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()" class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>门店分组代码</th>
+                                <th>门店分组名称</th>
+                                <th>受理机构</th>
+                                <shiro:hasAnyPermissions name="shopGrp_update,shopGrp_delete,shopGrpDef_search">
+                                    <th style="width: 100px">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="shopGrp : ${list}">
+                                <td th:text="${shopGrp.shopGrp}"></td>
+                                <td th:text="${shopGrp.grpName}"></td>
+                                <td th:text="${shopGrp.acqName}"></td>
+                                <shiro:hasAnyPermissions name="shopGrp_update,shopGrp_delete,shopGrpDef_search">
+                                    <td style="width: 100px">
+                                        <shiro:hasPermission name="shopGrp_update">
+                                            <a th:href="@{shop-grp-toupdate(shopGrp=${shopGrp.shopGrp})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="shopGrp_delete">
+                                            <a data-toggle="modal" class='btn red btn-xs' th:onclick="'javascript:deleteShopGrp(\''+${shopGrp.shopGrp}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="shopGrpDef_search">
+                                            <a th:onclick="'javascript:shopSetting(\''+${shopGrp.shopGrp}+'\');'" class='btn blue btn-xs'>组内门店</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="shopGrpVo"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/mch/shop-grp.js}" charset="utf-8"></script>
+</body>
+</html>

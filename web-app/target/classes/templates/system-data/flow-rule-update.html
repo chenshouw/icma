@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="flowRuleBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+        <form id="updateFrom" class="form-horizontal" role="form" th:action="@{update}" method="post">
+            <div class="form-group">
+                <input type="hidden" name="id" th:value="${flowRule.id}"/>
+                <label class="col-sm-4 control-label">流程<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <div class="input-icon right">
+                        <i class="icon-edit"></i>
+                        <input type="text" class="form-control" name="operation" id="operation" th:value="${flowRule.operation}" placeholder="请输入流程" maxlength="50"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">前置状态</label>
+                <div class="col-sm-6">
+                    <div class="input-icon right">
+                        <i class="icon-edit"></i>
+                        <input type="text" class="form-control" name="preStatus" id="preStatus" th:value="${flowRule.preStatus}" placeholder="请输入前置状态"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">后续状态<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <div class="input-icon right">
+                        <i class="icon-edit"></i>
+                        <input type="text" class="form-control" name="postStatus" id="postStatus" th:value="${flowRule.postStatus}" placeholder="请输入后续状态" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-6">
+                    <div class="input-icon right">
+                        <i class="icon-edit"></i>
+                        <input type="text" class="form-control" name="memo" id="memo" placeholder="请输入备注" maxlength="50" th:value="${flowRule.memo}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script th:src="@{/js/system-data/flow-rule-update.js}" type="text/javascript"></script>
+<script th:src="@{/js/system-data/flow-rule-check.js}" type="text/javascript"></script>
+</body>
+</html>

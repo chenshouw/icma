@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/card/wx-card.css}">
+    <link rel="stylesheet" th:href="@{/css/card/active-url-add.css}">
+</head>
+<body class="page-header-fixed" id="updateBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <div class="body">
+            <div class="container_box">
+                <div class="main_bd">
+                    <!--左侧显示效果-->
+                    <div class="card_preview_area member_card affix-top" data-offset-bottom="0" data-offset-top="220" data-spy="affix" style="">
+                        <div class="card_body">
+                            <!--卡面显示详情，固定的-->
+                            <div class="msg_card_section shop">
+                                <div class="shop_panel" style="background-color: rgb(85, 189, 71);" th:style="|background-image: url(${bgUrl})|">
+                                    <div class="logo_area">
+                                        <span class="logo">
+                                            <img id="logoImg" src="/images/card/logo_area.jpg" th:src="${logoUrl}">
+                                        </span>
+                                        <span id="js_brand_name_preview" th:text="${wxCardInfo.brandName}"></span>
+                                        <p class="card_name" id="js_title_preview" th:text="${wxCardInfo.title}"></p>
+                                    </div>
+                                    <div class="msg_area">
+                                        <span class="member_number">0268 8888 8888</span>
+                                        <span class="icon_info"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--余额，固定的-->
+                            <div class="msg_card_cell member_extend_area">
+                                <div class="member_extend_item">
+                                    <div class="member_extend_des" style="color: rgb(85, 189, 71);">余额：100</div>
+                                </div>
+                            </div>
+
+                            <!--顶部居中按钮及下方提示-->
+                            <div class="msg_card_cell quick_pay">
+                                <a class="btn_card_preview js_title_color_preview js_use_card_button" th:style="(${wxCardInfo.centerTitle == null?'color: rgb(85, 189, 71);display: none;':'color: rgb(85, 189, 71);'})" th:text="${wxCardInfo.centerTitle}">按钮名称（选填）</a>
+                                <p th:style="(${wxCardInfo.centerSubTitle == null?'display: none;':''})"  th:text="${wxCardInfo.centerSubTitle}">按钮提示（选填）</p>
+                            </div>
+
+                            <!--公众号详情，门店（会员卡详情)。固定的-->
+                            <div class="msg_card_cell shop_detail last_cell">
+                                <ul class="list">
+                                    <li class="msg_card_section">
+                                        <div class="li_panel" href="">
+                                            <div class="li_content">
+                                                <p>适用门店</p>
+                                            </div>
+                                            <span class="ic ic_go"></span>
+                                        </div>
+                                    </li>
+                                    <li class="msg_card_section last_li">
+                                        <div class="li_panel" href="">
+                                            <div class="li_content">
+                                                <p>公众号</p>
+                                            </div>
+                                            <span class="ic ic_go"></span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!--自定义入口-->
+                            <div class="msg_card_cell custom_detail">
+                                <ul class="list" id="js_custom_url_preview">
+                                    <li class="msg_card_section">
+                                        <div class="li_panel">
+                                            <div class="li_content">
+                                                <p>
+                                                <span class="supply_area">
+                                                    <span class="js_custom_url_tips_pre" th:text="${wxCardInfo.customUrlSubTitle}"></span>
+                                                    <span class="ic ic_go"></span>
+                                                </span>
+                                                    <span class="js_custom_url_name_pre" th:text="${wxCardInfo.customUrlName}">入口一（必填）</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="msg_card_section" th:if="${wxCardInfo.customCellUrl != null}">
+                                        <div class="li_panel">
+                                            <div class="li_content">
+                                                <p>
+                                                <span class="supply_area">
+                                                    <span class="js_custom_url_tips_pre" th:text="${wxCardInfo.customCellTips}"></span>
+                                                    <span class="ic ic_go"></span>
+                                                </span>
+                                                    <span class="js_custom_url_name_pre" th:text="${wxCardInfo.customCellName}">入口二</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="msg_card_section" th:if="${wxCardInfo.promotionUrl != null}">
+                                        <div class="li_panel">
+                                            <div class="li_content">
+                                                <p>
+                                                <span class="supply_area">
+                                                    <span class="js_custom_url_tips_pre" th:text="${wxCardInfo.promotionUrlSubTitle}"></span>
+                                                    <span class="ic ic_go"></span>
+                                                </span>
+                                                    <span class="js_custom_url_name_pre" th:text="${wxCardInfo.promotionUrlName}">入口三</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--form表单-->
+                    <form class="form-horizontal media_edit" novalidate="novalidate" method="post" id="wxUpdateForm">
+                        <div class="media_edit_area">
+                            <div class="portable_editor to_left appmsg_editor">
+                                <div class="inner">
+                                    <ul class="nav nav-tabs" id="inputTab">
+                                        <li class="active"><a href="#baseSetting">基本信息</a></li>
+                                        <li><a href="#marketSetting">营销信息</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <!--基本设置-->
+                                        <div class="tab-pane active editor_section" id="baseSetting">
+                                            <h3 class="title">基本信息</h3>
+                                            <input type="hidden" class="form-control" name="id" id="id" th:value="${wxCardInfo.id}"/>
+                                            <input type="hidden" class="form-control" name="color" id="color" th:value="${wxCardInfo.color}"/>
+                                            <input type="hidden" class="form-control" name="bgImgId" id="bgImgId" th:value="${wxCardInfo.bgImgId}"/>
+                                            <input type="hidden" class="form-control" name="logoImgId" id="logoImgId" th:value="${wxCardInfo.logoImgId}"/>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="brandName" class="col-sm-4  frm_label"><font color="#FF0000">*</font>商户名称</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" name="brandName" id="brandName" th:value="${wxCardInfo.brandName}" placeholder="请输入商户名称"/>
+                                                    <select style="display: none;" class="select2_category form-control select2me" id="brandNameSelect" data-placeholder="请选择商户名称" tabindex="1">
+                                                        <option value="">请选择</option>
+                                                        <option th:each="brand,brandStat : ${brands}" th:value="${brand.productName}" th:selected="(${brand.productName} == ${wxCardInfo.brandName})" th:text="${brand.productName}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <a class="btn btn-info" id="brandNameEdit">修改</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="title" class="col-sm-4 frm_label"><font color="#FF0000">*</font>卡券名称</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" name="title" id="title" th:value="${wxCardInfo.title}" placeholder="请输入卡券名称"/>
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <font color="#FF0000">修改后需审核</font>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="quantity" class="col-sm-4 frm_label"><font color="#FF0000">*</font>开卡数量</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" name="quantity" id="quantity" th:value="${wxCardInfo.quantity}" readonly/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="quantity" class="col-sm-4 frm_label"><font color="#FF0000">*</font>批次编号</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" name="batchNo" id="batchNo" th:value="${wxCardInfo.batchNo}" readonly/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="servicePhone" class="col-sm-4 frm_label"><font color="#FF0000">*</font>客服电话</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" name="servicePhone" id="servicePhone" th:value="${wxCardInfo.servicePhone}" placeholder="请输入客服电话"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="notice" class="col-sm-4 frm_label"><font color="#FF0000">*</font>卡券使用提醒</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" name="notice" id="notice" th:value="${wxCardInfo.notice}" placeholder="请输入卡券使用提醒"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="desn" class="col-sm-4 frm_label"><font color="#FF0000">*</font>卡券说明</label>
+                                                <div class="col-sm-4">
+                                                    <textarea class="form-control" rows="3" name="desn" id="desn" th:text="${wxCardInfo.desn}"></textarea>
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <font color="#FF0000">修改后需审核</font>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="prerogative" class="col-sm-4 frm_label"><font color="#FF0000">*</font>会员卡特权说明</label>
+                                                <div class="col-sm-4">
+                                                    <textarea class="form-control" rows="3" name="prerogative" id="prerogative" th:text="${wxCardInfo.prerogative}"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label class="col-sm-4 frm_label"><font color="#FF0000">*</font>期限类型</label>
+                                                <div class="col-sm-4" style="width: auto">
+                                                    <label class="checkbox-inline"> <input type="radio" name="validDateStatus" value="1" th:checked="(${wxCardInfo.validDateStatus}=='1')">永久有效</label>
+                                                    <label class="checkbox-inline"> <input type="radio" name="validDateStatus" value="2" th:checked="(${wxCardInfo.validDateStatus}=='2')">日期区间</label>
+                                                    <label class="checkbox-inline"> <input type="radio" name="validDateStatus" value="3" th:checked="(${wxCardInfo.validDateStatus}=='3')">有效天数</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend" id="dateSelect" style="display: none">
+                                                <label class="col-sm-4 frm_label"><font color="#FF0000">*</font>日期区间</label>
+                                                <div class="col-sm-4  input-group" style="width: 60%">
+                                                    <input type="text" class="form-control" name="effDateBegin" id="effDateBegin" maxlength="19" placeholder="请选择开始时间" readonly th:value="${effDateBegin}"/>
+                                                    <span class="input-group-btn">
+                                                         <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                                                    </span>
+                                                    <span class="input-group-addon">至</span>
+                                                    <input type="text" class="form-control" name="effDateEnd" id="effDateEnd" maxlength="19" placeholder="请选择结束时间" readonly th:value="${effDateEnd}"/>
+                                                    <span class="input-group-btn">
+                                                         <button class="btn default date-reset" id="createTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend" id="dateInput" style="display: none">
+                                                <label class="col-sm-4 frm_label"><font color="#FF0000">*</font>有效天数</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" name="effectiveDays" id="effectiveDays" placeholder="请输入有效天数" th:value="${wxCardInfo.effectiveDays}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label class="col-sm-4 frm_label"><font color="#FF0000">*</font>颜色</label>
+                                                <div class="col-sm-2 width-30">
+                                                    <input type="button" class="btn btn-info btn-search" id="colorBtn" style="width:150px;" value="点击选择颜色">
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <p id="colorDisplay" style="width: 200px;height: 120px;"/>
+                                                    <input type="hidden" th:value="${colorValue}" id="colorValue"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label class="col-sm-4 frm_label"><font color="#FF0000">*</font>LOGO</label>
+                                                <div class="col-sm-2 width-30">
+                                                    <input type="button" class="btn btn-info btn-search" id="logoBtn" style="width:150px;" value="点击选择LOGO">
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <img id="logoDisplay" style="width: 200px;height: 120px;" th:src="${logoUrl}"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label class="col-sm-4 frm_label"><font color="#FF0000">*</font>背景</label>
+                                                <div class="col-sm-2 width-30">
+                                                    <input type="button" class="btn btn-info btn-search" id="bgBtn" style="width:150px;" value="点击选择背景">
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <img id="bgDisplay" style="width: 200px;height: 120px;" th:src="${bgUrl}"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label class="col-sm-4 frm_label">是否可转赠微信好友</label>
+                                                <div class="col-sm-4">
+                                                    <label class="checkbox-inline"><input type="radio" name="canGiveFriend" value="0" th:checked="(${wxCardInfo.canGiveFriend}=='0')">不可以</label>
+                                                    <label class="checkbox-inline"><input type="radio" name="canGiveFriend" value="1" th:checked="(${wxCardInfo.canGiveFriend}=='1')">可以</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--营销设置-->
+                                        <div class="tab-pane editor_section" id="marketSetting">
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="brandName" class="col-sm-4  frm_label"><font color="#FF0000">*</font>营销方式</label>
+                                                <div class="col-sm-4">
+                                                    <select class="select2_category form-control select2me" th:disabled="true" name="marketSetting" id="marketSettingSelect" data-placeholder="请选择营销方式" tabindex="1">
+                                                        <option value="">请选择</option>
+                                                        <option th:each="activeUrl,activeUrlStat : ${activeUrls}"  th:value="${activeUrl.id}" th:text="${activeUrl.activeName}"
+                                                                th:data-activateUrl="${activeUrl.activateUrl}"
+                                                                th:data-balanceUrl="${activeUrl.balanceUrl}"
+                                                                th:data-centerUrl="${activeUrl.centerUrl}"
+                                                                th:data-centerUrlName="${activeUrl.centerUrlName}"
+                                                                th:data-centerUrlSubTitle="${activeUrl.centerUrlSubTitle}"
+                                                                th:data-customUrl="${activeUrl.customUrl}"
+                                                                th:data-customUrlName="${activeUrl.customUrlName}"
+                                                                th:data-customUrlSubTitle="${activeUrl.customUrlSubTitle}"
+                                                                th:data-promotionUrl="${activeUrl.promotionUrl}"
+                                                                th:data-promotionUrlName="${activeUrl.promotionUrlName}"
+                                                                th:data-promotionUrlSubTitle="${activeUrl.promotionUrlSubTitle}"
+                                                                th:data-customCellUrl="${activeUrl.customCellUrl}"
+                                                                th:data-customCellName="${activeUrl.customCellName}"
+                                                                th:data-customCellTips="${activeUrl.customCellTips}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 width-30">
+                                                    <a class="btn btn-info" id="activeUrlEdit">修改</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="activateUrl" class="col-sm-4 frm_label">会员卡激活的URL</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.activateUrl}" name="activateUrl" id="activateUrl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="balanceUrl" class="col-sm-4 frm_label">查看余额详情URL</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.balanceUrl}" name="balanceUrl" id="balanceUrl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="centerUrl" class="col-sm-4 frm_label">顶部居中按钮URL</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.centerUrl}" name="centerUrl" id="centerUrl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="centerTitle" class="col-sm-4 frm_label">顶部居中按钮名称</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.centerTitle}" name="centerTitle" id="centerTitle" />
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="centerSubTitle" class="col-sm-4 frm_label">顶部居中按钮提示</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.centerSubTitle}" name="centerSubTitle" id="centerSubTitle" />
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="customUrl" class="col-sm-4 frm_label">入口一跳转链接</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.customUrl}" name="customUrl" id="customUrl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="customUrlName" class="col-sm-4 frm_label">入口一名称</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.customUrlName}" name="customUrlName" id="customUrlName"/>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="customUrlSubTitle" class="col-sm-4 frm_label">入口一右侧提示语</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.customUrlSubTitle}" name="customUrlSubTitle" id="customUrlSubTitle"/>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="customCellUrl" class="col-sm-4 frm_label">入口二跳转链接</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.customCellUrl}" name="customCellUrl" id="customCellUrl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="customCellName" class="col-sm-4 frm_label">入口二名称</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.customCellName}" name="customCellName" id="customCellName" />
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="customCellTips" class="col-sm-4 frm_label">入口二右侧提示语</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.customCellTips}" name="customCellTips" id="customCellTips" />
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="promotionUrl" class="col-sm-4 frm_label">入口三跳转链接</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.promotionUrl}" name="promotionUrl" id="promotionUrl" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="promotionUrlName" class="col-sm-4 frm_label">入口三名称</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.promotionUrlName}" name="promotionUrlName" id="promotionUrlName" />
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group frm_control_group frm_card_extend">
+                                                <label for="promotionUrlSubTitle" class="col-sm-4 frm_label">入口三右侧提示语</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control" th:readonly="true" th:value="${wxCardInfo.promotionUrlSubTitle}" name="promotionUrlSubTitle" id="promotionUrlSubTitle" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!--底部按钮-->
+                    <div class="form-group frm_control_group frm_card_extend tool_bar tc">
+                        <div class="col-sm-offset-4 col-sm-6">
+                            <button style="margin-left:50px;" id="btnBack" type="button" class="btn  default  btn-info btn-search">取消</button>
+                            <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+<div id="color-modal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;" role='basic'>
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title">选择颜色</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row margin-top-20">
+                    <div id="color-panel" class="col-md-12">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type='button' class='btn btn-primary  btn-sm' onclick="updateColorVal();">确定</button>
+                <button type='button' class='btn btn-default  btn-sm' data-dismiss='modal'>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="logo-modal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;" role='basic'>
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title">选择LOGO</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row margin-top-20">
+                    <div id="logo-panel" class="col-md-12">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type='button' class='btn btn-primary  btn-sm' onclick="updateLogoVal();">确定</button>
+                <button type='button' class='btn btn-default  btn-sm' data-dismiss='modal'>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="bg-modal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;" role='basic'>
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h4 class="modal-title">选择背景</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row margin-top-20">
+                    <div id="bg-panel" class="col-md-12">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type='button' class='btn btn-primary  btn-sm' onclick="updateBgVal();">确定</button>
+                <button type='button' class='btn btn-default  btn-sm' data-dismiss='modal'>关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        var colorValue = $("#colorValue").val();
+        $("#colorDisplay").css({"background-color": colorValue});
+
+        var dateType = $("input[name='validDateStatus']:checked").val();//期限类型
+        if (dateType == 2) {
+            $("#dateSelect").show();
+        } else if (dateType == 3) {
+            $("#dateInput").show();
+        }
+
+    });
+
+    $(function () {
+        $('#inputTab a[href="#baseSetting"]').tab('show');
+    });
+    $('#inputTab a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/wx-card.js}"></script>
+</body>
+</html>

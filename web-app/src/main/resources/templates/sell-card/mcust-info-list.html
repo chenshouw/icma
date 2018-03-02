@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="mcustInfo_add">
+                    <a th:href="mcustInfo-add-page" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="mcustInfo_search">
+            <form action="/mcustInfo/mcustInfo-search" id="orderForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="custNo">客户号（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="custNo" name="custNo"
+                                        th:value="${mcustInfoVo.custNo}" placeholder="请输入客户号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="cliName">客户名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="cliName" name="cliName"
+                                        th:value="${mcustInfoVo.cliName}" placeholder="请输入客户名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>客户类型</label>
+                            <div class="input-icon">
+                                <select name="cliType" class="form-control" data-type="select" data-category="CUST_INFO_TYPE"
+                                        th:data-value="${mcustInfoVo.cliType}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>所属发卡机构</label>
+                            <div class="input-icon">
+                                <select class="select2_category form-control select2me" name="issuId" id="issuId" data-placeholder="Choose a org" tabindex="1">
+                                    <option value="">请选择</option>
+                                    <option th:each="Minst : ${orgs}" th:value="${Minst.instId}" th:text="${Minst.instId}+'-'+${Minst.instName}" th:selected="('_'+${mcustInfoVo.issuId} == '_'+${Minst.instId})"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="orgCode">所属部门代码（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="orgCode" name="orgCode"
+                                        th:value="${mcustInfoVo.orgCode}" placeholder="请输入所属部门代码">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="sec">所属片区（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="sec" name="sec"
+                                        th:value="${mcustInfoVo.sec}" placeholder="请输入所属片区">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>报表汇总方式</label>
+                            <div class="input-icon">
+                                <select name="rptDlv" class="form-control" data-type="select" data-category="CUST_INFO_RPTDLV"
+                                        th:data-value="${mcustInfoVo.rptDlv}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" class="form-control" data-type="select" data-category="CHANNELS_STATUS"
+                                        th:data-value="${mcustInfoVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>录入日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${mcustInfoVo.createTimeBegin}"
+                                        name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始时间"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${mcustInfoVo.createTimeEnd}"
+                                        name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>客户号</th>
+                                <th>客户名称</th>
+                                <th>客户类型</th>
+                                <th>客户地址</th>
+                                <th>所属发卡机构</th>
+                                <th>所属部门代码</th>
+                                <th>所属片区</th>
+                                <th>联系人</th>
+                                <th>身份证</th>
+                                <th>联系电话</th>
+                                <th>报表汇总方式</th>
+                                <th>操作员</th>
+                                <th>授权人</th>
+                                <th>业务员</th>
+                                <th>状态</th>
+                                <th>录入时间</th>
+                                <shiro:hasAnyPermissions name="mcustInfo_update,mcustInfo_delete">
+                                    <th style="width: 5%;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="temp : ${list}">
+                                <td th:text="${temp.custNo}"></td>
+                                <td th:text="${temp.cliName}"></td>
+                                <td th:text="${ItemUtil.getName(temp.cliType,'CUST_INFO_TYPE')}"></td>
+                                <td th:text="${temp.cliAddr}"></td>
+                                <td th:text="${temp.issuId}+'-'+${temp.issuName}"></td>
+                                <td th:text="${temp.orgCode}"></td>
+                                <td th:text="${temp.sec}"></td>
+                                <td th:text="${temp.cliCaller}"></td>
+                                <td th:text="${temp.certNo}"></td>
+                                <td th:text="${temp.cliPhone1==null?'':temp.cliPhone1}+${temp.cliPhone2!=null&&temp.cliPhone1!=null?'或':''}+${temp.cliPhone2==null?'':temp.cliPhone2}"></td>
+                                <td th:text="${ItemUtil.getName(temp.rptDlv,'CUST_INFO_RPTDLV')}"></td>
+                                <td th:text="${temp.teller}"></td>
+                                <td th:text="${temp.auditor}"></td>
+                                <td th:text="${temp.ywyId}"></td>
+                                <td th:text="${ItemUtil.getName(temp.status,'CHANNELS_STATUS')}"></td>
+                                <td th:text="${#calendars.format(temp.addDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasAnyPermissions name="mcustInfo_update,mcustInfo_delete">
+                                    <td>
+                                        <shiro:hasPermission name="mcustInfo_update">
+                                            <a class='btn blue btn-xs' style="margin-left: 5px;"
+                                                    th:href="@{mcustInfo-update-page(custNo=${temp.custNo})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mcustInfo_delete">
+                                            <a class='btn red btn-xs'
+                                                    th:onclick="'javascript:deleteMcustInfo(\''+${temp.custNo}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="orderForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/sell-card/mcust-info.js}" charset="utf-8"></script>
+
+</body>
+</html>

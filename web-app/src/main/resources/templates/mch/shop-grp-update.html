@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="shopGrpBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i><a href='javascript:void(0);'>修改</a></li>
+        </ul>
+
+        <form class="form-horizontal" role="form" th:action="@{shop-grp-update}" th:object="${shopGrp}" method="post" id="updateFrom">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">门店分组代码<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="mchGrp" id="mchGrp" value="" th:field="*{shopGrp}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">门店分组名称<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="groupName" id="groupName" value="" th:field="*{grpName}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">受理机构</label>
+                <div class="col-sm-6">
+                    <select class="form-control" name="acqId" id="acqId" th:field="*{acqId}">
+                        <option value="">请选择</option>
+                        <option th:each="minst: ${minsts}" th:value="${minst.instId}" th:text="${minst.instId} + '-'+ ${minst.instName}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default btn-info btn-search">取 消</button>
+                    <button style="margin-left:40px;" type="button" class="btn blue   btn-info btn-search" id="btnUpdate">修 改</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div id="updateAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>修改完成</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/mch/shop-grp.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/mch/shop-grp-check.js}" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <a href="#" class="btn blue " onclick="history.go(-1)"><span>返回</span></a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-md-12 page-500">
+                <div class="number" th:text="${error.status}"></div>
+                <div class="details">
+                    <h3 th:text="${error.msg}"></h3>
+                    <p>
+                        我们将关注此问题并尽快处理。<br/>
+                        给你带来不便，敬请谅解。<br/>
+                        如有疑问，请联系管理员。<br/>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href=""></a>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

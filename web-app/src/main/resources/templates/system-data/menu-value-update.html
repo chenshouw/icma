@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="menuBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>修改</a>
+	      	</li>
+	     </ul>                                                        
+	     <form class="form-horizontal" role="form" id="leftMenuForm" th:method="post" th:object="${leftMenu}">
+                <div class="form-group">
+                    <label for="name" class="col-sm-4 control-label">名称<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" th:field="*{name}" id="name" name="name" placeholder="请输入名称" style="width:300px;">
+                        <input type="hidden" th:field="*{id}" name="id">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="code" class="col-sm-4 control-label">编码<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" th:field="*{code}" id="uCode" name="code" placeholder="请输入编码" style="width:300px;">
+                        <input type="hidden" class="form-control" th:value="*{code}" id="rCode" name="rCode" placeholder="请输入编码" style="width:300px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="href" class="col-sm-4 control-label">链接</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="href" th:field="*{href}" name="href" placeholder="请输入链接" style="width:300px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sort" class="col-sm-4 control-label"><span style="color:red;">*</span>序号</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="sort" th:field="*{sort}" name="sort" placeholder="请输入序号" style="width:300px;">
+                    </div>
+                </div>
+             <div class="form-group">
+                 <label for="superCode" class="col-sm-4 control-label">请选择父级菜单</label>
+                 <input type="hidden" id="superCode1" name="superCode1" th:value="${leftMenu.code}"/>
+                 <input type="hidden" id="superCode2" name="superCode2" th:value="${leftMenu.superCode}"/>
+                 <input type="hidden" id="superCode" name="superCode" th:value="${leftMenu.superCode}"/>
+                 <div class="col-sm-6">
+                     <select  class="form-control select2me" data-placeholder="Select..." id="searchSelect" onchange="changeMenu(this.options[this.options.selectedIndex].value)" tabindex="1" style="width: 300px;">
+                         <option value="">无父菜单</option>
+                         <option th:each="leftMenuSup,leftMenuSupStat : ${leftMenuSuper}" th:value="${leftMenuSup.code}" th:text="${leftMenuSup.name}" th:selected="('_'+${superCode} =='_'+${leftMenuSup.code})"></option>
+                     </select>
+                 </div>
+             </div>
+
+             <div class="form-group">
+                 <label for="sysId" class="col-sm-4 control-label">请选择系统权限<span style="color:red;">*</span></label>
+                 <div class="col-sm-6">
+                     <select class="select2_category form-control" id="sysId1" name="sysId1" data-placeholder="Choose a Category" tabindex="1" style="width: 300px;" onchange="findUpdateSysAPPId2()">
+                         <option value="">请选择</option>
+                         <option th:each="sysApp,sysAppStat : ${sysApps}" th:value="${sysApp.id}" th:text="${sysApp.name}"></option>
+                     </select>
+                     <input class="form-control" name="sysId" id="sysId" th:value="${leftMenu.sysId}" style="width: 300px;" type="hidden">
+                 </div>
+             </div>
+                <div class="form-group">
+                    <label for="icon" class="col-sm-4 control-label">请选择图标：</label>
+                    <div class="col-sm-6">
+                    <div class="dropdown">
+                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                            <span id="icons" th:text="${leftMenu.icon}">请选择图标</span> <span class="caret"></span>
+                            <input type="hidden" id="icon" name="icon" th:value="${leftMenu.icon}"/>
+                        </button>
+                        <ul class="dropdown-menu" id="menus" role="menu" aria-labelledby="dropdownMenu1" style="width:625px;">
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-6">
+                        <button style="background-color:gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+                        <button  style="margin-left:30px;background-color:#0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                    </div>
+                </div>
+            </form>
+	</div>
+</div>
+
+    <div th:replace="/commons/scripts::scripts"/></div>
+    <div th:replace="/commons/foot::foot"></div>
+	<script>
+		jQuery(document).ready(function() {
+			App.init();
+		});
+	</script>
+</body>
+
+<script type="text/javascript" th:src="@{/js/system-data/menu-value-add.js}" charset="utf-8"></script>
+</html>

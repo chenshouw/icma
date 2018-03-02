@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" id="domainForm" method="post">
+            <div class="form-group">
+                <label for="protocol" class="col-sm-4 control-label"><font color="#FF0000">*</font>协&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;议</label>
+                <div class="col-sm-4">
+                    <select id="protocol" name="protocol" class="form-control">
+                        <option value="" disabled selected>请选择协议</option>
+                        <option value="http://">http://</option>
+                        <option value="https://">https://</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="domain" class="col-sm-4 control-label"><font color="#FF0000">*</font>域名或IP</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="domain" id="domain" value="" placeholder="请输入域名或IP"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="status" class="col-sm-4 control-label"><font color="#FF0000">*</font>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态</label>
+                <div class="col-sm-4">
+                    <select class="form-control" name="status" id="status">
+                        <option value="" disabled selected>请选择状态</option>
+                        <option value="1">使用</option>
+                        <option value="2">禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="memo" class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="memo" id="memo"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left: 30px; background-color: #0362FD;" type="button" class="btn btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/domain-info.js}" charset="utf-8"></script>
+</body>
+</html>

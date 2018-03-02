@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>手机组详情</a></li>
+            <li class="btn-group"><a href="#" class='btn blue ' onclick="history.go(-1)"><span>返回</span></a></li>
+        </ul>
+        <form action="/account-manage/card-present/to-cardDetail" id="mobileGroupDetailForm" method="post">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>名称：</label>
+                        <input type="hidden" th:value="${mobileGroup.id}" id="id" name="id">
+                        <label th:text="${mobileGroup.name}"></label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>描述：</label>
+                        <label th:text="${mobileGroup.description}"></label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>操作员：</label>
+                        <label th:text="${mobileGroup.teller}"></label>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>手机号</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="mobile : ${mobilePhoneListSelected}">
+                    <td th:text="${mobile.id}" style="display: none"></td>
+                    <td th:text="${mobile.name}"></td>
+                    <td sl:type="USER_SEX" sl:text="${mobile.sex}"></td>
+                    <td th:text="${mobile.phoneNum}"></td>
+                    <td sl:type="STATUS" sl:text="${mobile.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="mobileGroupDetailForm"></div>
+        </form>
+    </div>
+
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/account/card-present-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

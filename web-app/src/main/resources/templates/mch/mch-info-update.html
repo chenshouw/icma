@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/metronic/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="mchInfoBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" role="form" th:action="@{update}" th:object="${mchInfo}" method="post" id="updateFrom">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">商户号<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="mid" id="mid" value="" th:field="*{mid}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">商户名称<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="midName" id="midName" value="" th:field="*{midName}" maxlength="150"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">商户简称<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="midShortName" id="midShortName" value="" th:field="*{midShortName}" maxlength="150"/>
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <label class="col-sm-4 control-label">商户简称<span style="color:#FF0000;">*</span></label>
+                <div class="col-lg-6">
+                    <input type="text" id="midShortName" name="midShortName" class="form-control" value="" th:field="*{midShortName}" maxlength="150"/>
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label class="col-sm-4 control-label">联系人</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="linkMan" id="linkMan" value="" th:field="*{linkMan}" maxlength="40"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">联系电话</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="phone" id="phone" value="" th:field="*{phone}" maxlength="15"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">传真</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="fax" id="fax" value="" th:field="*{fax}" maxlength="20"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">邮件</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="email" id="email" value="" th:field="*{email}" maxlength="60"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">商户类型</label>
+                <div class="col-sm-6">
+                    <select class="select2_category form-control" name="mcc" id="mcc" th:field="*{mcc}" data-placeholder="Choose a menu" tabindex="1">
+                        <option value="">请选择</option>
+                        <option th:each="MccCode : ${mccCode}" th:value="${MccCode.mcc}" th:text="${MccCode.mccName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">商户地区</label>
+                <div class="col-sm-6">
+                    <select class="select2_category form-control" name="areaCode" id="areaCode" th:field="*{areaCode}" data-placeholder="Choose a menu" tabindex="1">
+                        <option value="">请选择</option>
+                        <option th:each="AuthArea : ${authAreas}" th:value="${AuthArea.areaCode}" th:text="${AuthArea.areaName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">商户地址</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="mchAddr" id="mchAddr" value="" th:field="*{mchAddr}" maxlength="150"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">开户银行</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="settleBank" id="settleBank" value="" th:field="*{settleBank}" maxlength="20"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">开户支行</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="accName" id="accName" value="" th:field="*{accName}" maxlength="60"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">开户行账号</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="settleAccno" id="settleAccno" value="" th:field="*{settleAccno}" maxlength="30"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">结算间隔(天)</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="settleInterval" id="settleInterval" value="" th:field="*{settleInterval}" maxlength="4"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">状态<span style="color:#FF0000;">*</span></label>
+                <div class="col-sm-6">
+                    <select name="status" id="status" class="form-control" data-type="select" data-category="MCH_STATUS" th:data-value="*{status}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="memo" id="memo" value="" th:field="*{memo}"/>
+                </div>
+            </div>
+            <div class="form-group" th:each="txnOnOff,txnOnOffStat: ${list}">
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].id'" th:value="${txnOnOff.id}"/>
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].name'" th:value="${txnOnOff.name}"/>
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].post'" th:value="${txnOnOff.post}"/>
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].orderId'" th:value="${txnOnOff.orderId}"/>
+                <label class="col-sm-4 control-label" th:text="${txnOnOff.name}"></label>
+                <div class="col-sm-6">
+                    <div class="make-switch" data-on="success" data-off="danger" data-on-label="开" data-off-label="关">
+                        <input value="1" th:id="${txnOnOff.id}" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].value'" type="checkbox" th:checked="${txnOnOff.value == 1}" class="toggle"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default btn-info btn-search">取 消</button>
+                    <button style="margin-left:40px;" type="button" class="btn blue   btn-info btn-search" id="btnUpdate">修 改</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#areaCode").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+        $("#mcc").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/mch/mch-info.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/mch/mch-info-check.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/bootstrap-switch/static/js/bootstrap-switch.min.js}" charset="utf-8"></script>
+</body>
+</html>

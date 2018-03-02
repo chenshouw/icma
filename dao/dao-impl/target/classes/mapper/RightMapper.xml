@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.RightMapper">
+    <resultMap id="RightResult" type="org.hengsir.icma.entity.Right">
+        <result property="rightId" column="RIGHT_ID"/>
+        <result property="rightCode" column="RIGHT_CODE"/>
+        <result property="rightDesc" column="RIGHT_DESC"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+        <result property="rightName" column="RIGHT_NAME"/>
+        <result property="menuId" column="MENU_ID"/>
+        <result property="isMenuRight" column="IS_MENU_RIGHT"/>
+        <result property="parentRightId" column="PARENT_RIGHT_ID"/>
+        <result property="parentMenuId" column="PARENT_MENU_ID"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                RIGHT_ID,RIGHT_CODE,RIGHT_DESC,CREATE_TIME,UPDATE_TIME,RIGHT_NAME,
+                MENU_ID,IS_MENU_RIGHT,PARENT_RIGHT_ID,PARENT_MENU_ID
+        </sql>
+
+    <select id="findAllRight" resultMap="RightResult" useCache="false">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_RIGHT ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="findRightByMenuId" resultMap="RightResult" useCache="false">
+                SELECT * FROM T_RIGHT WHERE MENU_ID = #{menuId} ORDER BY CREATE_TIME DESC
+        </select>
+
+    <select id="findByRight" resultMap="RightResult" useCache="false">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_RIGHT
+        <where>
+            <if test="null != rightCode and '' != rightCode">
+                AND RIGHT_CODE LIKE CONCAT(CONCAT('%', #{rightCode}),'%')
+            </if>
+            <if test="null != rightName and '' != rightName">
+                AND RIGHT_NAME LIKE CONCAT(CONCAT('%', #{rightName}),'%')
+            </if>
+            <if test="null != parentMenuId and '' != parentMenuId">
+                AND PARENT_MENU_ID = #{parentMenuId}
+            </if>
+        </where>
+        ORDER BY CREATE_TIME DESC,RIGHT_ID DESC
+    </select>
+
+
+    <select id="findRightByRoleId" resultMap="RightResult" useCache="false">
+                SELECT A.* FROM T_RIGHT A,T_ROLE_RIGHT_RELATION B WHERE A.RIGHT_ID=B.RIGHT_ID AND B.ROLE_ID = #{roleId}
+        </select>
+
+    <select id="findRightByRoleList" resultMap="RightResult" useCache="false">
+        SELECT A.* FROM T_RIGHT A,T_ROLE_RIGHT_RELATION B WHERE A.RIGHT_ID=B.RIGHT_ID AND B.ROLE_ID IN
+        <foreach collection="list" item="role" index="index" open="(" separator="," close=")">
+            #{role.roleId}
+        </foreach>
+    </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="RightResult" useCache="false">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_RIGHT WHERE
+        RIGHT_ID = #{rightId}
+        ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="findByParentRightId" parameterType="java.lang.Integer" resultMap="RightResult" useCache="false">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_RIGHT WHERE
+        PARENT_RIGHT_ID = #{rightId} AND MENU_ID IS NULL
+        ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="findByCode" resultMap="RightResult" useCache="false">
+        SELECT * FROM T_RIGHT WHERE RIGHT_CODE=#{rightCode}
+    </select>
+
+    <insert id="create" parameterType="org.hengsir.icma.entity.Right">
+        INSERT INTO T_RIGHT(RIGHT_CODE,
+        <if test="null != rightDesc and '' != rightDesc">
+            RIGHT_DESC,
+        </if>
+        <if test="null != createTime and '' != createTime">
+            CREATE_TIME,
+        </if>
+        <if test="null != updateTime and '' != updateTime">
+            UPDATE_TIME,
+        </if>
+        RIGHT_NAME,
+        <if test="null != menuId and '' != menuId">
+            MENU_ID,
+        </if>
+        <if test="null != isMenuRight and '' != isMenuRight">
+            IS_MENU_RIGHT,
+        </if>
+        <if test="null != parentMenuId and '' != parentMenuId">
+            PARENT_MENU_ID,
+        </if>
+        PARENT_RIGHT_ID) VALUES(
+        #{rightCode},
+        <if test="null != rightDesc and '' != rightDesc">
+            #{rightDesc},
+        </if>
+        <if test="null != createTime and '' != createTime">
+            #{createTime, jdbcType=TIMESTAMP},
+        </if>
+        <if test="null != updateTime and '' != updateTime">
+            #{updateTime, jdbcType=TIMESTAMP},
+        </if>
+        #{rightName},
+        <if test="null != menuId and '' != menuId">
+            #{menuId},
+        </if>
+        <if test="null != isMenuRight and '' != isMenuRight">
+            #{isMenuRight},
+        </if>
+        <if test="null != parentMenuId and '' != parentMenuId">
+            #{parentMenuId},
+        </if>
+        #{parentRightId})
+    </insert>
+
+    <update id="update" parameterType="org.hengsir.icma.entity.Right">
+        UPDATE T_RIGHT
+        <set>
+            <if test="null != rightCode">
+                RIGHT_CODE = #{rightCode},
+            </if>
+            <if test="null != rightName">
+                RIGHT_NAME = #{rightName},
+            </if>
+            <if test="null != rightDesc">
+                RIGHT_DESC = #{rightDesc},
+            </if>
+            <if test="null != updateTime">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="null != menuId">
+                MENU_ID = #{menuId},
+            </if>
+            <if test="null != parentRightId">
+                PARENT_RIGHT_ID = #{parentRightId},
+            </if>
+            <if test="null != parentMenuId">
+                PARENT_MENU_ID = #{parentMenuId}
+            </if>
+        </set>
+        WHERE RIGHT_ID = #{rightId}
+    </update>
+
+    <!--菜单中的修改权限-->
+    <update id="updateRightByMenuId" parameterType="org.hengsir.icma.entity.Right">
+        UPDATE T_RIGHT
+        <set>
+            <if test="null != rightCode">
+                RIGHT_CODE = #{rightCode},
+            </if>
+            <if test="null != rightName">
+                RIGHT_NAME = #{rightName},
+            </if>
+            <if test="null != rightDesc">
+                RIGHT_DESC = #{rightDesc},
+            </if>
+            <if test="null != parentRightId">
+                PARENT_RIGHT_ID = #{parentRightId},
+            </if>
+            <if test="null != parentMenuId">
+                PARENT_MENU_ID = #{parentMenuId},
+            </if>
+            <if test="null != updateTime">
+                UPDATE_TIME = #{updateTime}
+            </if>
+        </set>
+        WHERE MENU_ID = #{menuId}
+    </update>
+    <!--菜单中的修改权限-->
+
+    <!--菜单中的删除权限-->
+    <delete id="deleteRightByMenuId" parameterType="java.lang.String">
+                DELETE FROM T_RIGHT WHERE MENU_ID = #{menuId} OR PARENT_MENU_ID = #{menuId}
+
+    </delete>
+
+    <delete id="deleteRight" parameterType="java.lang.Integer">
+        DELETE FROM T_RIGHT WHERE RIGHT_ID = #{rightId}
+    </delete>
+    <!--菜单中的删除权限-->
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM T_RIGHT WHERE (RIGHT_ID = #{rightId} OR PARENT_RIGHT_ID = #{rightId})
+    </delete>
+
+
+</mapper>

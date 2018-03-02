@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+     
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>查询</a>
+	      	</li>
+	      	<li class="btn-group">
+                <shiro:hasPermission name="right_add">
+                <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+	     </ul>
+
+        <shiro:hasPermission name="right_search">
+	     <form th:action="@{search}" method="post" id="RightFrom">
+	           <!-- 搜索内容start -->
+             <div class="row">
+                    <div class="col-md-3">
+                     <div class="form-group">
+                         <label >权限编码（%）</label>
+                         <div class="input-icon right">
+                             <i class="icon-edit"></i>
+                             <input type="text" class="form-control" id="rightCode" name="rightCode" th:value="${rightVo.rightCode}" placeholder="请输入你要搜索的权限编码" />
+                         </div>
+                     </div>
+                    </div>
+                 <div class="col-md-3">
+                     <div class="form-group">
+                         <label >权限名称（%）</label>
+                         <div class="input-icon right">
+                             <i class="icon-edit"></i>
+                             <input type="text" class="form-control" id="rightName" name="rightName" th:value="${rightVo.rightName}" placeholder="请输入你要搜索的权限名称" />
+                         </div>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="form-group">
+                     <label >所属菜单</label>
+                     <select class="select2_category form-control select2me" name="parentMenuId" id="parentMenuId" data-placeholder="Choose a menu" tabindex="1">
+                         <option value="">请选择</option>
+                         <option th:each="leftMenu,leftMenuStat : ${leftMenus}" th:value="${leftMenu.id}" th:text="${leftMenu.name}+'('+${leftMenu.sysName}+')'" th:selected="('-'+${rightVo.parentMenuId} == '-'+${leftMenu.id})"></option>
+                     </select>
+                 </div>
+                 </div>
+                   <div class="col-md-4">
+                       <div class="form-group">
+                           <label>创建日期</label>
+                           <div class="input-group">
+                               <input type="text" class="form-control" th:value="${rightVo.createTimeBegin}" name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                               <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                               <span class="input-group-addon">至</span>
+                               <input type="text" class="form-control" th:value="${rightVo.createTimeEnd}" name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                               <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="createTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                           </div>
+                       </div>
+                    </div>
+
+			   </div>
+
+				<div class="row form-group">
+	               <div class="col-md-5">
+                   </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+	               <div class="col-md-1">
+                       <button type="submit" onclick="cleanQuery()"
+                               class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+
+	               </div>
+	               <div class="col-md-5">
+
+                   </div>
+	           </div>
+
+             <div class="portlet-body">
+                 <div class="table-scrollable">
+                     <table class="table table-striped table-bordered table-hover">
+                          <thead>
+                            <tr>
+                              <th>权限编码</th>
+                              <th>权限名称</th>
+                              <th>权限描述</th>
+                              <th>所属菜单</th>
+                              <th>系统</th>
+                              <th>创建时间</th>
+                              <th>修改时间</th>
+                                <shiro:hasAnyPermissions name="right_update,right_delete">
+                              <th style="width:90px">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                           </thead>
+                           <tbody>
+                                 <tr th:each="right : ${list}">
+                                 <td th:text="${right.rightCode}"></td>
+                                  <td th:text="${right.rightName}"></td>
+                                  <td th:text="${right.rightDesc}"></td>
+                                  <td th:text="${right.menuName}"></td>
+                                  <td th:text="${right.sysName}"></td>
+                                  <td th:text="${#calendars.format(right.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                  <td th:text="${#calendars.format(right.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                  <shiro:hasAnyPermissions  name="right_update,right_delete">
+                                    <td>
+                                        <shiro:hasPermission name="right_update">
+                                       <a  th:if="${right.isMenuRight} == 0" th:href="@{toUpdate(rightId=${right.rightId})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="right_delete">
+                                       <a  th:if="${right.isMenuRight} == 0" data-toggle="modal" href="#static" class='btn red btn-xs' th:onclick="'javascript:deleteRight(\''+${right.rightId}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                  </shiro:hasAnyPermissions>
+                               </tr>
+                           </tbody>
+                     </table>
+                 </div>
+             </div>
+             <div th:utext="${pageHtml}" class="row page_info" data-search="RightFrom"></div>
+          </form>
+        </shiro:hasPermission>
+	</div>
+</div>	
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#parentMenuId").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        })
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/rights/right-list.js}" charset="utf-8"></script>
+</body>
+</html>

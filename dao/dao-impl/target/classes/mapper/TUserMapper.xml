@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.TUserMapper">
+    <resultMap id="UserResult" type="org.hengsir.icma.entity.User">
+        <result property="userId" column="USER_ID" />
+        <result property="userName" column="USER_NAME" />
+        <result property="userAccount" column="USER_ACCOUNT" />
+        <result property="userPassword" column="USER_PASSWORD" />
+        <result property="personId" column="PERSON_ID" />
+        <result property="groupId" column="GROUP_ID" />
+        <result property="createTime" column="CREATE_TIME" />
+        <result property="updateTime" column="UPDATE_TIME" />
+        <result property="userStatus" column="USER_STATUS" />
+        <result property="userSex" column="USER_SEX" />
+        <result property="userIdCard" column="USER_IDCARD"/>
+    </resultMap>
+
+    <resultMap id="UserResult" type="org.hengsir.icma.entity.UserOrg">
+        <result property="userId" column="USER_ID" />
+        <result property="userName" column="USER_NAME" />
+        <result property="userAccount" column="USER_ACCOUNT" />
+        <result property="userPassword" column="USER_PASSWORD" />
+        <result property="personId" column="PERSON_ID" />
+        <result property="groupId" column="GROUP_ID" />
+        <result property="createTime" column="CREATE_TIME" />
+        <result property="updateTime" column="UPDATE_TIME" />
+        <result property="userStatus" column="USER_STATUS" />
+        <result property="userSex" column="USER_SEX" />
+        <result property="userIdCard" column="USER_IDCARD"/>
+        <result property="userOrgName" column="CLASS_NAME"/>
+    </resultMap>
+
+
+    <select id="findAllUser" resultMap="UserResult" useCache="false">
+        SELECT * FROM T_USER ORDER BY CREATE_TIME DESC
+    </select>
+    
+    <select id="findByUser"  resultMap="UserOrgResult" useCache="false" >
+        SELECT A.*,B.GROUP_NAME AS CLASS_NAME  FROM T_USER A LEFT JOIN T_GROUP B
+        ON A.GROUP_ID = B.GROUP_ID
+        <where>
+            <if test="null != groupId and '' != groupId">
+                AND A.GROUP_ID = #{groupId}
+            </if>
+            <if test="null != userName and '' != userName">
+                AND A.USER_NAME LIKE CONCAT(CONCAT('%', #{userName}),'%')
+            </if>
+            <if test="null != userAccount and '' != userAccount">
+                AND A.USER_ACCOUNT LIKE CONCAT(CONCAT('%', #{userAccount}),'%')
+            </if>
+            <if test="null != userSex and '' != userSex">
+                AND A.USER_SEX = #{userSex}
+            </if>
+            <if test="null != userStatus and '' != userStatus">
+                AND A.USER_STATUS = #{userStatus}
+            </if>
+        </where>
+        ORDER BY A.CREATE_TIME DESC,A.USER_ID DESC
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="UserResult" useCache="false">
+        SELECT * FROM T_USER WHERE
+       USER_ID = #{userId}
+    </select>
+
+    <select id="findByUserAccount" parameterType="java.lang.String" resultMap="UserResult" useCache="false">
+        SELECT * FROM T_USER WHERE
+        USER_ACCOUNT = #{userAccount}
+    </select>
+
+    <insert id="create" parameterType="org.hengsir.icma.entity.User">
+        INSERT INTO T_USER(USER_NAME,USER_ACCOUNT,USER_PASSWORD,
+
+        <if test="null != personId and '' != personId">
+            PERSON_ID,
+        </if>
+        <if test="null != userStatus and '' != userStatus">
+            USER_STATUS,
+        </if>
+        <if test="null != groupID and '' != groupID">
+            GROUP_ID,
+        </if>
+        <if test="null != createTime and '' != createTime">
+            CREATE_TIME,
+        </if>
+        <if test="null != updateTime and '' != updateTime">
+            UPDATE_TIME,
+        </if>
+        USER_SEX) VALUES(#{userName},
+        #{userAccount},#{userPassword},
+        <if test="null != personId and '' != personId">
+            #{personId},
+        </if>
+        <if test="null != userStatus and '' != userStatus">
+            #{userStatus},
+        </if>
+
+        <if test="null != groupID and '' != groupID">
+            #{groupID},
+        </if>
+        <if test="null != createTime and '' != createTime">
+            #{createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="null != updateTime and '' != updateTime">
+            #{updateTime,jdbcType=TIMESTAMP},
+        </if>
+       #{userSex})
+    </insert>
+
+    <update id="update" parameterType="org.hengsir.icma.entity.User">
+        UPDATE T_USER
+        <set>
+            <if test="null != userName">
+                USER_NAME = #{userName},
+            </if>
+            <if test="null != userAccount">
+                USER_ACCOUNT = #{userAccount},
+            </if>
+            <if test="null != userPassword">
+                USER_PASSWORD = #{userPassword},
+            </if>
+            <if test="null != personId and '' != personId">
+                PERSON_ID = #{personId},
+            </if>
+            <if test="null != userStatus">
+                USER_STATUS = #{userStatus},
+            </if>
+            <if test="null != userSex">
+                USER_SEX = #{userSex},
+            </if>
+            <if test="null != groupId">
+                GROUP_ID = #{groupId},
+            </if>
+            UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+        </set>
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM T_USER WHERE USER_ID = #{userId}
+    </delete>
+
+</mapper>

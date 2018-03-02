@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="midAccept_add">
+                <a href="mid-accept-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="midAccept_search">
+        <form th:action="@{mid-accept-search}" method="post" id="midAccept">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>商户代码</label>
+                        <select class="form-control select2me" data-placeholder="Select..." tabindex="1" onchange="changeInstId(this.options[this.options.selectedIndex].value)" id="mid" name="mid">
+                            <option value="">请选择商户代码</option>
+                            <option th:each="mchInfo: ${mchInfoList}" th:value="${mchInfo.mid}" th:text="${mchInfo.mid}+'-'+${mchInfo.midName}" th:selected="('_'+${mchInfo.mid}=='_'+${midAccept.mid})"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>发卡机构代码</label>
+                        <select class="form-control select2me" data-placeholder="Select..." tabindex="1" onchange="changeInstId(this.options[this.options.selectedIndex].value)" id="issuId" name="issuId">
+                            <option value="">请选择发卡机构代码</option>
+                            <option th:each="instMinst: ${instList}" th:value="${instMinst.instId}" th:text="${instMinst.instId}+'-'+${instMinst.instName}"
+                                    th:selected="('_'+${instMinst.instId}=='_'+${midAccept.issuId})"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="search()"
+                            class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="cleanQuery()"
+                            class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width: 15%">商户代码</th>
+                            <th style="width: 15%">商户名称</th>
+                            <th style="width: 15%">发卡机构代码</th>
+                            <th style="width: 15%">发卡机构名称</th>
+                            <th style="width: 10%">生效标志</th>
+                            <th style="width: 25%">备注</th>
+                            <shiro:hasAnyPermissions name="midAccept_update,midAccept_delete">
+                            <th>操作</th>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="midAccept : ${list}" class="list-display">
+                            <td th:text="${midAccept.mid}"></td>
+                            <td th:text="${midAccept.midName}"></td>
+                            <td th:text="${midAccept.issuId}"></td>
+                            <td th:text="${midAccept.issuName}"></td>
+                            <td th:text="${midAccept.flag}==1?' 激活':'未激活'"></td>
+                            <td th:text="${midAccept.memo}"></td>
+                            <shiro:hasAnyPermissions name="midAccept_update,midAccept_delete">
+                            <td>
+                                <shiro:hasPermission name="midAccept_update">
+                                <a class='btn blue btn-xs' th:href="@{mid-accept-update-page(issuId=${midAccept.issuId},mid=${midAccept.mid})}">修改</a>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="midAccept_delete">
+                                <a class='btn red btn-xs' th:onclick="'javascript:midAcceptDel(\''+${midAccept.issuId}+'\',\''+${midAccept.mid}+'\')'">删除</a>
+                                </shiro:hasPermission>
+                            </td>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="midAccept"></div>
+        </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#mid").select2({
+            formatNoMatches: function (term) {
+                return "没找到数据";
+            }
+        })
+        $("#issuId").select2({
+            formatNoMatches: function (term) {
+                return "没找到数据";
+            }
+        })
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/accept/mid-accept.js}"></script>
+</body>
+</html>

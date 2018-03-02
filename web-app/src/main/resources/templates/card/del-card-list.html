@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+        </ul>
+        <shiro:hasPermission name="delCard_search">
+            <form th:action="@{del-card-search}" method="get" id="delCard">
+                <input type="hidden" class="form-control" id="pageNum" name="pageNum" th:value="${pageNum}"/>
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>微信卡ID</th>
+                                <th>卡券名称</th>
+                                <th>商户名称</th>
+                                <th>卡券使用提醒</th>
+                                <th>卡券使用说明</th>
+                                <shiro:hasPermission name="delCard_delete">
+                                    <th style="width:50px;">操作</th>
+                                </shiro:hasPermission>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cardInfoVo : ${list}" class="list-display">
+                                <td th:text="${cardInfoVo.cardId}"></td>
+                                <td th:text="${cardInfoVo.card.memberCard.baseInfo.title}"></td>
+                                <td th:text="${cardInfoVo.card.memberCard.baseInfo.brandName}"></td>
+                                <td th:text="${cardInfoVo.card.memberCard.baseInfo.notice}"></td>
+                                <td th:text="${cardInfoVo.card.memberCard.baseInfo.description}"></td>
+                                <shiro:hasPermission name="delCard_delete">
+                                    <td><a class="btn green btn-xs" th:onclick="'javascript:deleteCard(\''+${cardInfoVo.cardId}+'\')'">删除</a></td>
+                                </shiro:hasPermission>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+            <input type="hidden" class="form-control" id="pageSize" name="pageSize" th:value="${pageSize}"/>
+            <ul class="pager">
+                <li id="previous" class="previous"><a href="#" onclick="getPreviousData()">&larr; 前一页</a></li>
+                <li id="next" class="next"><a href="#" onclick="getNextData()">下一页 &rarr;</a></li>
+            </ul>
+
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/wx-del-card.js}"></script>
+</body>
+</html>

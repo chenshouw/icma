@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="channelBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" role="form" th:action="@{update}" th:object="${minst}" method="post" id="updateForm">
+            <div class="form-group" >
+                <label class="col-sm-4 control-label">渠道编号<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="instId" id="instId" th:field="*{instId}"  onkeyup="WidthCheck(this,60);" readonly />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >渠道名称<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="instName" id="instName" th:field="*{instName}" onkeyup="WidthCheck(this,100);"  />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">所属地区
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="areaCode" name="areaCode" class="form-control" th:field="*{areaCode}" onkeyup="WidthCheck(this,4);" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">联系人 &nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="linkMan" name="linkMan" class="form-control" onkeyup="WidthCheck(this,40);" th:field="*{linkMan}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">电话 &nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="phone" name="phone" class="form-control" onkeyup="WidthCheck(this,14);" th:field="*{phone}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">账户名 &nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="accName" name="accName" class="form-control" onkeyup="WidthCheck(this,60);" th:field="*{accName}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">状态&nbsp;&nbsp;
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-6">
+                    <select name="status" id="status" class="form-control" data-type="select" data-category="INST_STATUS" th:data-value="*{status}">
+                        <th:value></th:value>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">本地标志&nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <select name="localFlag" id="localFlag" class="form-control" data-type="select" data-category="INST_LOCAL_FLAG" th:data-value="*{localFlag}">
+                        <th:value></th:value>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default btn-info btn-search">取  消</button>
+                    <button  style="margin-left:40px;"  type="button" class="btn blue   btn-info btn-search" id="btnUpdate">修  改</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div id="updateAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>修改完成</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/insts/channel-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</body>
+</html>

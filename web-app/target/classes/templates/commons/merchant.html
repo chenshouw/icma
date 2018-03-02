@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="merchant">
+    <!-- 商户管理 -->
+    <div class="modal fade" name="merchantTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document" style="width:1100px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">商户管理</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- 搜索内容start -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="mchInfo_mid">商户号（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input type="text" class="form-control" id="mchInfo_mid" name="mchInfo_mid" maxlength="50" placeholder="请输入商户号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="mchInfo_midName">商户名称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input type="text" class="form-control" id="mchInfo_midName" name="mchInfo_midName" maxlength="30" placeholder="请输入商户名称">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="mchInfo_areaCode">地区代码</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input type="text" class="form-control" id="mchInfo_areaCode" name="mchInfo_areaCode" maxlength="30" placeholder="请输入地区代码">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="mchInfo_mchGrp">商户分组号</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input type="text" class="form-control" id="mchInfo_mchGrp" name="mchInfo_mchGrp" maxlength="30" placeholder="请输入商户分组号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>修改时间</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" readonly name="mchInfo_modiDateBegin" id="mchInfo_modiDateBegin" maxlength="19" placeholder="请选择开始时间">
+                                    <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="mchInfo_modiDateBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                                    <span class="input-group-addon">至</span>
+                                    <input type="text" class="form-control" readonly name="mchInfo_modiDateEnd" id="mchInfo_modiDateEnd" maxlength="19" placeholder="请选择结束时间">
+                                    <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="mchInfo_modiDateEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2">
+                            <button type="button" id="mchInfoBtn" class="btn blue btn-block" onclick="merchantSearch()">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                    <div class="portlet-body" style="height: 450px;overflow-y:auto;overflow-x:auto">
+                        <div class="table-scrollable">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>商户号</th>
+                                    <th>商户名称</th>
+                                    <th>地区代码</th>
+                                    <th>商户分组号</th>
+                                    <th>最后修改时间</th>
+                                    <th>开户行账号</th>
+                                    <th>签约时间</th>
+                                    <th>机构编号</th>
+                                    <th>开通标志</th>
+                                    <th>操作员</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbMchInfo">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;margin-bottom: 8px;">
+                    <button type="button" class="btn default" data-dismiss="modal" onclick="closeAndCheckCard();">取消</button>
+                    <button style="margin-left:40px;" type="button" class="btn blue   btn-info btn-search" id="merchantSave">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

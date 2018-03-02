@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+        </ul>
+
+        <!--<shiro:hasPermission name="receiptVoucher:search">-->
+            <form action="" id="createCardInfoForm" method="post" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color:red;">*</span>发卡机构</label>
+                    <div class="col-sm-6">
+                        <select name="issuId" id="issuId" class="form-control">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color:red;">*</span>起始卡号</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="cardNoStart" name="cardNoStart"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color:red;">*</span>卡数量</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">结束卡号</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="cardNoEnd" name="cardNoEnd"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">备注</label>
+                    <div class="col-sm-6">
+                        <textarea class="form-control" name="memo" id="memo" maxlength="200"></textarea>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="button" id="btnSave"
+                                class="btn blue btn-block btn-sm">确定<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>起始卡号</th>
+                                <th>卡数量</th>
+                                <th>卡面额</th>
+                                <th>交易返回码</th>
+                                <th>返回码解析</th>
+                                <th>交易日期</th>
+                                <th>交易时间</th>
+                                <th>备注</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cardInfo : ${list}">
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                                <td th:text=""></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="createCardInfoForm"></div>
+            </form>
+        <!--</shiro:hasPermission>-->
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("select").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card-manage/cancel-cardinfo-list.js}" charset="utf-8">
+</script>
+
+</body>
+</html>

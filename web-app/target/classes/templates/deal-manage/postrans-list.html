@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sl="http://www.w3.org/1999/xhtml" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <!--<title th:text="${pageTitle}"></title>-->
+    <!--<head th:include="/commons/head::header"/>-->
+    <!--<link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>-->
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link rel="stylesheet" th:href="@{/css/select/bootstrap-select.min.css}">
+    <style>
+
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed" id="listBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <!--<li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>POS交易查询</a>
+            </li>-->
+            <li class="btn-group">
+                <shiro:hasPermission name="posTrans_export">
+                    <a href='javascript:void(0);' id="export" class='btn blue '><span>导出</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <form th:action="@{search}" method="post" id="posTransForm">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="transId">交易流水号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="transId" name="transId" th:value="${posTransVo.transId}" maxlength="50" placeholder="请输入交易流水号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sysOrderId">系统订单号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="sysOrderId" name="sysOrderId" th:value="${posTransVo.sysOrderId}" maxlength="50" placeholder="请输入系统订单号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" id="div2">
+                    <input type="hidden" id="txnIdString" name="txnIdString" th:value="${posTransVo.txnIdString}">
+                    <div class="form-group">
+                        <label>交易类型</label>
+                        <div class="input-icon">
+                            <select id="txnId1" name="txnId1" class="selectpicker show-tick form-control" multiple data-live-search="false" tabindex="1" onchange="changeTxnId()"  th:value="${posTransVo.txnIdString}">
+                                <option th:each="txnIds : ${txnId}" th:value="${txnIds.txnId}" th:text="${txnIds.txnName}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>受理机构</label>
+                        <div class="input-icon">
+                            <select name="acqId" id="acqId" class="form-control select2me" data-type="select" th:data-value="${posTransVo.acqId}">
+                                <option value="">请选择</option>
+                                <option th:each="minst : ${minstAcq}" th:value="${minst.instId}" th:text="${minst.instId}+'-'+${minst.instName}" th:selected="(${'_'+minst.instId=='_'+posTransVo.acqId})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>发卡机构</label>
+                        <div class="input-icon">
+                            <select name="issuId" id="issuId" class="form-control select2me" data-type="select" th:data-value="${posTransVo.subIssu}">
+                                <option value="">请选择</option>
+                                <option th:each="minst : ${minstIssu}" th:value="${minst.instId}" th:text="${minst.instId}+'-'+${minst.instName}" th:selected="(${'_'+minst.instId=='_'+posTransVo.issuId})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>发卡子机构</label>
+                        <div class="input-icon">
+                            <select name="subIssu" id="subIssu" class="form-control select2me" data-type="select" th:data-value="${posTransVo.subIssu}">
+                                <option value="">请选择</option>
+                                <option th:each="minst : ${minstSubIssu}" th:value="${minst.instId}" th:text="${minst.instId}+'-'+${minst.instName}" th:selected="(${'_'+minst.instId=='_'+posTransVo.subIssu})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="pan">卡号(%)</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="pan" name="pan" th:value="${posTransVo.pan}" maxlength="50" placeholder="请输入卡号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>发起网点ID</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="orgCode" name="orgCode" th:value="${posTransVo.orgCode}" maxlength="20" placeholder="请输入发起网点">
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="col-sm-3">-->
+                    <!--<div class="form-group">-->
+                        <!--<label>客户号</label>-->
+                        <!--<div class="input-icon right">-->
+                            <!--<i class="icon-edit"></i>-->
+                            <!--<input type="text" class="form-control" id="sysUserId" name="sysUserId" th:value="${posTransVo.sysUserId}" maxlength="100" placeholder="请输入客户号">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>交易日期</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" th:value="${posTransVo.txnDateBegin}" readonly name="txnDateBegin" id="txnDateBegin" maxlength="19" placeholder="请选择开始时间">
+                            <span class="input-group-btn">
+                                 <button class="btn default date-reset" id="txnDateBeginClear" type="button"><i class="icon-remove"></i></button>
+                           </span>
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" th:value="${posTransVo.txnDateEnd}" readonly name="txnDateEnd" id="txnDateEnd" maxlength="19" placeholder="请选择结束时间">
+                            <span class="input-group-btn">
+                                  <button class="btn default date-reset" id="txnDateEndClear" type="button"><i class="icon-remove"></i></button>
+                           </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>结算日期</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" th:value="${posTransVo.settleDateBegin}" readonly name="settleDateBegin" id="settleDateBegin" maxlength="19" placeholder="请选择开始时间">
+                            <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="settleDateBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" th:value="${posTransVo.settleDateEnd}" readonly name="settleDateEnd" id="settleDateEnd" maxlength="19" placeholder="请选择结束时间">
+                            <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="settleDateEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>操作员</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="teller" name="teller" th:value="${posTransVo.teller}" maxlength="50" placeholder="请输入操作员">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>产品类型</label>
+                        <div class="input-icon">
+                            <select class="form-control select2me" data-placeholder="Select..." id="parProductType" name="parProductType" tabindex="1">
+                                <option value="">请选择</option>
+                                <option th:each="parType : ${parProductTypes}" th:value="${parType.parProductType}" th:text="${parType.parProductType}+'-'+${parType.productGroupName}" th:selected="('_'+${parType.parProductType}=='_'+${posTransVo.parProductType})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>产品子类型</label>
+                        <div class="input-icon">
+                            <select class="form-control select2me" data-placeholder="Select..." id="productType" name="productType" tabindex="1">
+                                <option value="">请选择</option>
+                                <option th:each="pType : ${productTypes}" th:value="${pType.productType}" th:text="${pType.productType}+'-'+${pType.productName}" th:selected="('_'+${pType.productType}=='_'+${posTransVo.productType})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>渠道</label>
+                        <div class="input-icon">
+                            <select class="form-control select2me" data-placeholder="Select..." id="channels" name="channels" tabindex="1">
+                                <option value="">请选择</option>
+                                <option th:each="mChannel : ${mChannels}" th:value="${mChannel.channels}" th:text="${mChannel.channels}+'-'+${mChannel.name}" th:selected="('_'+${mChannel.channels}=='_'+${posTransVo.channels})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>结算状态</label>
+                        <div class="input-icon">
+                            <input type="hidden" id="settStatus" name="settStatus" th:value="${posTransVo.settStatus}"/>
+                            <select id="settStatus1" name="settStatus1" class="form-control select2me" data-type="select" data-category="DEAL_TRANS_SETTSTATUS" th:data-value="${posTransVo.settStatus}" onchange="settStatusChange();"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>门店编码</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="shopId" name="shopId" th:value="${posTransVo.shopId}" maxlength="50" placeholder="请输入门店编码">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>客户手机号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="phone" name="phone" th:value="${posTransVo.phone}" maxlength="50" placeholder="请输入客户手机号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>客户名称</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="empName" name="empName" th:value="${posTransVo.empName}" maxlength="50" placeholder="请输入客户名称">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="search()"
+                            class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="cleanQuery()"
+                            class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr  id="table_header">
+                            <th>交易流水号</th>
+                            <th>系统订单号</th>
+                            <th>交易类型</th>
+                            <th>受理机构ID</th>
+                            <th>受理机构</th>
+                            <th>发卡机构ID</th>
+                            <th>发卡机构</th>
+                            <th>发卡子机构ID</th>
+                            <th>发卡子机构</th>
+                            <th>卡号</th>
+                            <th>账号</th>
+                            <th>换卡原因</th>
+                            <th>交易金额</th>
+                            <th>优惠金额</th>
+                            <th>开卡续卡支付金额</th>
+                            <th>积分</th>
+                            <th>有效期</th>
+                            <th>购卡充值交易金额</th>
+                            <th>余额</th>
+                            <th>总余额含冻结</th>
+                            <th>批次号</th>
+                            <th>终端流水号</th>
+                            <th>渠道终端流水号</th>
+                            <th>撤销终端流水号</th>
+                            <th>交易日期</th>
+                            <th>交易上送时间</th>
+                            <th>结算日期</th>
+                            <th>发售部门代码</th>
+                            <th>发售部门</th>
+                            <th>发起网点ID</th>
+                            <th>发起网点</th>
+                            <th>商户号</th>
+                            <th>子商户号</th>
+                            <th>商户类型码</th>
+                            <th>商户名称</th>
+                            <th>终端号</th>
+                            <th>操作员</th>
+                            <th>授权人</th>
+                            <th>介质</th>
+                            <th>产品类型</th>
+                            <th>产品子类型</th>
+                            <th>渠道ID</th>
+                            <th>渠道</th>
+                            <th>账户类型</th>
+                            <th>授权号</th>
+                            <th>交易状态</th>
+                            <th>结算状态</th>
+                            <th>交易备注</th>
+                            <th>扩展终端号</th>
+                            <th>门店编码</th>
+                            <th>门店名称</th>
+                            <th>原始交易时间</th>
+                            <th>客户手机号</th>
+                            <th>客户名称</th>
+                            <th>客户号</th>
+                            <th>商品名称</th>
+                            <th>商品单价</th>
+                            <th>商品数量</th>
+                            <shiro:hasAnyPermissions name="posTransDetail_search, posTrans_dealAcount">
+                                <th style="width: 100px;">操作</th>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="posTrans:${posTrans}" >
+                            <td th:text="${posTrans.transId}"></td><!--交易流水-->
+                            <td th:text="${posTrans.sysOrderId}"></td><!--系统订单-->
+
+                            <td th:if="${posTrans.txnIdInfo} != null" th:text="${posTrans.txnIdInfo.txnName}"></td><!--交易类型-->
+                            <td th:text="${posTrans.acqId}"></td>
+                            <td th:if="${posTrans.acqAccept} != null" th:text="${posTrans.acqAccept.instName}"></td><!--受理机构-->
+                            <td th:if="${posTrans.acqAccept} == null"></td>
+                            <td th:text="${posTrans.issuId}"></td>
+                            <td th:if="${posTrans.minst} != null" th:text="${posTrans.minst.instName}"></td><!--发卡机构-->
+                            <td th:if="${posTrans.minst} == null"></td>
+                            <td th:text="${posTrans.subIssu}"></td>
+                            <td th:if="${posTrans.subIssuMinst} != null" th:text="${posTrans.subIssuMinst.instName}"></td><!--发卡子机构-->
+                            <td th:if="${posTrans.subIssuMinst} == null"></td>
+                            <td th:text="${posTrans.pan}"></td>
+                            <td th:text="${posTrans.account}"></td>
+                            <td>
+                                <span sl:type="CHG_REASON " sl:text="${posTrans?.chgReason?:''}"></span>
+                            </td>
+                            <td th:text="${#numbers.formatCurrency(posTrans?.txnAmt?:0.0)}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTrans?.txnAmt2?:0.0)}"></td>
+
+                            <td th:text="${#numbers.formatCurrency(posTrans?.txnFee?:0.0)}"></td>
+
+                            <td th:text="${posTrans.score}"></td>
+
+
+                            <td th:text="${posTrans.expDate}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTrans?.payMnr?:0.0)}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTrans?.bal?:0.0)}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTrans?.balAll?:0.0)}"></td>
+                            <td th:text="${posTrans.batchNo}"></td>
+                            <td th:text="${posTrans.systrace}"></td>
+                            <td th:text="${posTrans.chSystrace}"></td>
+                            <td th:text="${posTrans.orgSystrace}"></td>
+                            <td th:text="${#calendars.format(posTrans.txnDate,'yyyy-MM-dd')}"></td>
+                            <td th:text="${#calendars.format(posTrans.uploadDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${#calendars.format(posTrans.getSettleDate(posTrans.settleDate),'yyyy-MM-dd')}"></td>
+                            <td th:text="${posTrans.issuOrgCode}"></td>
+                            <td th:text="${posTrans.issuOrgName}"></td><!--发售部门-->
+
+                            <td th:text="${posTrans.orgCode}"></td><!--发起网点ID-->
+                            <td th:text="${posTrans.transOrgName}"></td><!--发起网点-->
+                            <td th:text="${posTrans.mid}"></td>
+                            <td th:text="${posTrans.subMid}"></td>
+                            <td th:text="${posTrans.mcc}"></td>
+                            <td th:text="${posTrans.mchName}"></td>
+                            <td th:text="${posTrans.tid}"></td>
+                            <td th:text="${posTrans.teller}"></td>
+                            <td th:text="${posTrans.author}"></td>
+
+                            <td th:text="${posTrans.mediaTypeName}"></td>
+
+                            <!--<td th:if="${posTrans.product} != null" th:text="${posTrans.product.productName}"></td>
+                            <td th:if="${posTrans.product} == null"></td>-->
+                            <!--<td  th:text="${posTrans.productName}"></td>before-->
+                            <td th:if="${posTrans.product.parProType} != null" th:text="${posTrans.product.parProType.productGroupName}"></td>
+                            <td th:if="${posTrans.product.parProType} == null"></td>
+
+                            <td th:if="${posTrans.product} != null" th:text="${posTrans.product.productName}"></td>
+                            <td th:if="${posTrans.product} == null"></td>
+                            <td th:text="${posTrans?.channels?:''}"></td>
+                            <td th:text="${posTrans?.channelsName?:''}"></td>
+
+                            <!--<td th:text="${posTrans.productName}"></td>-->
+                            <!--<td th:text="${posTrans.accType}"></td>-->
+
+                            <td th:text="${posTrans.accName}"></td>
+                            <td th:text="${posTrans.authNo}"></td>
+
+                            <td>
+                                <span sl:type="DEAL_TRANS_TRANSTATUS" sl:text="${posTrans.tranStatus}"></span>
+                            </td>
+
+                            <td>
+                                <span sl:type="DEAL_TRANS_SETTSTATUS" sl:text="${posTrans.settStatus}"></span>
+                            </td>
+                            <td th:text="${posTrans.memo}"></td>
+                            <td th:text="${posTrans.atid}"></td>
+                            <td th:text="${posTrans.shopId}"></td>
+                            <td th:text="${posTrans.shopName}"></td>
+                            <td th:text="${posTrans.orgDate}"></td>
+                            <td th:text="${posTrans.phone}"></td>
+                            <td th:text="${posTrans.empName}"></td>
+                            <td th:text="${posTrans.sysUserId}"></td>
+
+                            <td th:text="${posTrans.ordSpxxName}"></td>
+                            <th style="width: 20%;" th:text="${#numbers.formatCurrency(posTrans.ordSpxxPrice)}"></th>
+                            <td th:text="${posTrans.ordSpxxNum}"></td>
+
+                            <shiro:hasAnyPermissions name="posTransDetail_search, posTrans_dealAcount">
+                                <td th:width="320px ">
+                                    <shiro:hasPermission name="posTransDetail_search">
+                                        <a th:href="@{details(transId=${posTrans.transId})}" class='btn green btn-xs'>查询明细</a>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="posTrans_dealAcount">
+                                        <span th:if="${posTrans.txnId} == 10">
+                                            <span th:if="${posTrans.tranStatus} == 1">
+                                                <a th:if="${posTrans.tranStatus1} != 6" th:href="@{dealAccount(transId=${posTrans.transId})}" class='btn blue btn-xs'>调账</a>
+                                            </span>
+                                        </span>
+                                    </shiro:hasPermission>
+                                </td>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+
+                        <tr>
+                            <td>合计</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td th:text="${#numbers.formatCurrency(posTransVo_Sum?.txnAmtSum?:0.0)}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTransVo_Sum?.txnAmt2Sum?:0.0)}"></td>
+
+                            <td th:text="${#numbers.formatCurrency(posTransVo_Sum?.txnFeeSum?:0.0)}"></td>
+                            <td></td>
+                            <td></td>
+                            <td th:text="${#numbers.formatCurrency(posTransVo_Sum?.payMnrSum?:0.0)}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTransVo_Sum?.balSum?:0.0)}"></td>
+                            <td th:text="${#numbers.formatCurrency(posTransVo_Sum?.balAllSum?:0.0)}"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td th:text="${posTransVo_Sum?.ordSpxxNumSum?:''}"></td>
+                            <td></td>
+                        </tr>
+
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="posTransForm"></div>
+        </form>
+    </div>
+</div>
+
+<div id="merchantTwo">
+    <div th:replace="/commons/merchant::merchant"></div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script type="text/javascript" th:src="@{/js/commons/popup/merchant.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/deal-manage/postrans-list.js}" charset="utf-8" ></script>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#subIssu").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+        $("#txnId").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+
+
+
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script th:src="@{/js/commons/bootstrap-select.min.js}"></script>
+
+</body>
+</html>

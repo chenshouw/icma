@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i><a href='javascript:void(0);'>详细</a></li>
+            <li class="btn-group">
+                <a href="#" class='btn blue ' onclick="history.go(-1)" style="margin-right:5px"><span>返回</span></a>
+                <shiro:hasPermission name="parProductTypeDetail_add">
+                    <a href="" class='btn blue '
+                       th:href="@{toadd-parProductTypeDetail(parProductType=${parProductType.parProductType})}"><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>产品名称：</label>
+                    <label th:text="${parProductType.productGroupName}"></label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>状态：</label>
+                    <label th:text="${ItemUtil.getName(parProductType.status,'STATUS')}"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th style="width: 20%">产品类型</th>
+                        <th style="width: 20%">产品属性参数</th>
+                        <th style="width: 20%">产品属性名称</th>
+                        <th style="width: 20%">产品属性值</th>
+                        <th style="width: 20%">操作员</th>
+                        <th style="width: 20%">修改日期</th>
+                        <shiro:hasAnyPermissions name="parProductTypeDetail_update,parProductTypeDetail_delete">
+                            <th>操作</th>
+                        </shiro:hasAnyPermissions>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="parProductAddAttr : ${parProductAddAttrs}">
+                        <td th:text="${parProductAddAttr.parProductType}"></td>
+                        <td th:text="${parProductAddAttr.productAttrArgs}"></td>
+                        <td th:text="${parProductAddAttr.productAttrName}"></td>
+                        <td th:text="${ItemUtil.getName(parProductAddAttr.productAttrValue,'PRODUCT_ATTR_VALUE')}"></td>
+                        <td th:text="${parProductAddAttr.teller}"></td>
+                        <td th:text="${#calendars.format(parProductAddAttr.modifyTime,'yyyy-MM-dd')}"></td>
+                        <shiro:hasAnyPermissions name="parProductTypeDetail_update,parProductTypeDetail_delete">
+                            <td>
+                                <shiro:hasPermission name="parProductTypeDetail_update">
+                                    <a class='btn blue btn-xs'
+                                       th:href="@{toupdate-product-group-detail(parProductType=${parProductAddAttr.parProductType},productAttrArgs=${parProductAddAttr.productAttrArgs})}">修改</a>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="parProductTypeDetail_delete">
+                                    <a class='btn red btn-xs'
+                                       th:onclick="'javascript:deleteParProductTypeDetail(\''+${parProductAddAttr.parProductType}+'\',\''+${parProductAddAttr.productAttrArgs}+'\');'">删除</a>
+                                </shiro:hasPermission>
+                            </td>
+                        </shiro:hasAnyPermissions>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+
+</script>
+<script type="text/javascript" th:src="@{/js/media/product-type-group-detail-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

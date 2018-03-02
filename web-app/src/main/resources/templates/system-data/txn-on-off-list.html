@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/metronic/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="txnOnOffBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+        </ul>
+
+        <form id="txn-on-off-form" class="form-horizontal" method="post" action="/system-data/txn-on-off/search">
+            <div class="form-group" th:each="txnOnOff,txnOnOffStat: ${list}">
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].id'" th:value="${txnOnOff.id}"/>
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].name'" th:value="${txnOnOff.name}"/>
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].post'" th:value="${txnOnOff.post}"/>
+                <input type="hidden" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].orderId'" th:value="${txnOnOff.orderId}"/>
+                <label class="col-sm-5 control-label" th:text="${txnOnOff.name}"></label>
+                <div class="col-sm-5">
+                    <div class="make-switch" data-on="success" data-off="danger" data-on-label="开" data-off-label="关">
+                        <input value="1" th:id="${txnOnOff.id}" th:name="'txnOnOffs['+${txnOnOffStat.index}+'].value'" type="checkbox" th:checked="${txnOnOff.value == 1}" class="toggle"/>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <shiro:hasPermission name="txn-on-off-save">
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-6">
+                        <button style="margin-left:50px;" type="submit" class="btn  default  btn-info btn-search">刷新</button>
+                        <button style="margin-left:50px;" type="button" class="btn blue btn-info btn-search" id="btnSave">提交</button>
+                    </div>
+                </div>
+            </shiro:hasPermission>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script th:src="@{/js/system-data/txn-on-off-list.js}" type="text/javascript"></script>
+<script th:src="@{/metronic/plugins/bootstrap-switch/static/js/bootstrap-switch.min.js}" type="text/javascript"></script>
+</body>
+</html>

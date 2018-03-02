@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>显示卡详情</a>
+            </li>
+            <li class="btn-group">
+                <a href="#" class="btn blue " onclick="history.go(-1)"><span>返回</span></a>
+            </li>
+        </ul>
+        <form class="form-horizontal">
+            <ul class="nav nav-tabs" id="inputTab">
+                <li class="active"><a href="#baseSetting">显示卡详情</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="baseSetting">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.userName}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">用户编号</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.userId}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">员工姓名</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.empName}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">大客户号</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.custNo}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">发卡机构</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.instName}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">账号</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.account}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">开卡日期</label>
+                            <div class="col-sm-3">
+                                <label th:text="${#calendars.format(productInfo.getOpenDate(productInfo.openDate),'yyyy-MM-dd')}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">卡号</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.productId}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">使用有效期</label>
+                            <div class="col-sm-3">
+                                <label th:text="${#calendars.format(productInfo.getExpDate(productInfo.expDate),'yyyy-MM-dd')}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">期初余额</label>
+                            <div class="col-sm-3">
+                                <label th:text="￥+${productInfo.proAcc.lastBal}+元" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label">产品子类型</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productType?.productName}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">当前余额</label>
+                            <div class="col-sm-3">
+                                <label th:text="￥+${productInfo.proAcc.currBal}+元" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启动资金日期</label>
+                            <div class="col-sm-3">
+                                <label th:text="${#calendars.format(productInfo.proAcc.getOpenDate(productInfo.proAcc.openDate),'yyyy-MM-dd')}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">冻结金额</label>
+                            <div class="col-sm-3">
+                                <label th:text="￥+${productInfo.proAcc.lockedAmt}+元" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">资金有效期</label>
+                            <div class="col-sm-3">
+                                <label th:text="${#calendars.format(productInfo.proAcc.getExpDate(productInfo.proAcc.expDate),'yyyy-MM-dd')}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">透支额度</label>
+                            <div class="col-sm-3">
+                                <label th:text="￥+${productInfo.proAcc.overdrawAmt}+元" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">帐户验证码</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.proAcc.acv}" class="control-label" ></label>
+                            </div>
+                            <label class="col-sm-2 control-label">帐户状态</label>
+                            <div class="col-sm-3">
+                                <label th:text="${ItemUtil.getName(productInfo.proAcc.status,'ACCSTATUS')}"  class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-3">
+                                <label th:text="${productInfo.phone}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

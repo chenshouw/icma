@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.PersonMapper">
+    <resultMap id="PersonResult" type="org.hengsir.icma.entity.Person">
+        <result property="personId" column="PERSON_ID" />
+        <result property="personName" column="PERSON_NAME" />
+        <result property="groupId" column="GROUP_ID" />
+    </resultMap>
+
+
+    <select id="findAll" resultMap="PersonResult" useCache="false">
+        SELECT * FROM T_PERSON
+         <where>
+             <if test="null != personId and '' != personId">
+                 AND PERSON_ID = #{personId}
+             </if>
+             <if test="null != personName and '' != personName">
+                AND PERSON_NAME = #{personName}
+             </if>
+             <if test="null != groupId and '' != groupId">
+                AND GROUP_ID = #{groupId}
+             </if>
+         </where>
+         ORDER BY GROUP_ID DESC
+    </select>
+    
+
+    <insert id="create" parameterType="org.hengsir.icma.entity.Person">
+        INSERT INTO T_PERSON(PERSON_ID,GROUP_ID,PERSON_NAME)
+        VALUES(#{personId},
+        #{groupId},#{personName})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM T_PERSON WHERE PERSON_ID = #{personId}
+    </delete>
+
+</mapper>

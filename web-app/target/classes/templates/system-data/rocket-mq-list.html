@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+        </ul>
+        <shiro:hasPermission name="system-manage-model_rocket-mq-search">
+            <form action="/system-data/rocket-mq/search" id="rocketMqForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="topic">主题</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="topic" name="topic"
+                                        th:value="${mqMessageVo.topic}" placeholder="请输入主题">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="tags">子主题</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="tags" name="tags"
+                                        th:value="${mqMessageVo.tags}" placeholder="请输入子主题">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" class="form-control" data-type="select" data-category="MESSAGE_STATUS"
+                                        th:data-value="${mqMessageVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="keys">KEYS</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="keys" name="keys"
+                                        th:value="${mqMessageVo.keys}" placeholder="请输入KEYS">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>创建日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${mqMessageVo.createTimeBegin}"
+                                        name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始日期"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${mqMessageVo.createTimeEnd}"
+                                        name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束日期"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>消息ID</th>
+                                <th>KEYS</th>
+                                <th>主题</th>
+                                <th>子主题</th>
+                                <th>创建时间</th>
+                                <th>更新时间</th>
+                                <th>状态</th>
+                                <th>已消费数</th>
+                                <shiro:hasPermission name="system-manage-model_rocket-mq-detail">
+                                    <th style="width: 50px;">操作</th>
+                                </shiro:hasPermission>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="mq : ${list}" th:class="${mq.status}==3 ? 'info':(${mq.status}==4 ?'danger':(${mq.status}==1?'info':'warning'))">
+                                <td th:text="${mq.msgId}"></td>
+                                <td th:text="${mq.keys}"></td>
+                                <td th:text="${mq.topic}"></td>
+                                <td th:text="${mq.tags}"></td>
+                                <td th:text="${#calendars.format(mq.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${#calendars.format(mq.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td sl:type="MESSAGE_STATUS" sl:text="${mq.status}"></td>
+                                <td th:text="${mq.consumerNum}"></td>
+                                <shiro:hasPermission name="system-manage-model_rocket-mq-detail">
+                                    <td>
+                                        <!--<a th:href="@{detail(id=${mq.id})}" class='btn green btn-xs'>消费详细</a>-->
+                                        <button type="button" class="btn green btn-xs" data-toggle="modal" data-target="#mqMessageDetailModal" th:onclick="'javascript:searchDetailData(\''+${mq.id}+'\')'">
+                                            消费详细
+                                        </button>
+                                    </td>
+                                </shiro:hasPermission>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="rocketMqForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<!--适用渠道模态框-->
+<div class="modal fade" id="mqMessageDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <h4 class="modal-title" id="myModalLabel">消费详情</h4>
+            </div>
+            <div class="modal-body" style="min-height: 400px;max-height:650px;overflow-y:auto;overflow-x:auto">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>消息ID：</label>
+                            <label id="message_msgId"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>KEYS：</label>
+                            <label id="message_keys"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>主题：</label>
+                            <label id="message_topic"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>子主题：</label>
+                            <label id="message_tags"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>创建时间：</label>
+                            <label id="message_createTime"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>更新时间：</label>
+                            <label id="message_updateTime"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>状态：</label>
+                            <label id="message_status"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>消费者数量：</label>
+                            <label id="message_consumer_num"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>消息内容：</label>
+                            <label id="message_message" style="word-break:break-all;"></label>
+                        </div>
+                    </div>
+                </div>
+                <table id="detail_table" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/rocket-mq-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+</body>
+
+</html>

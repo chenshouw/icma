@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="channelBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form id="addForm" class="form-horizontal" role="form" th:action="@{add}"  method="post">
+
+            <div class="form-group" >
+                <label class="col-sm-4 control-label">渠道编号<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="instId" id="instId" value="" onkeyup="WidthCheck(this,60);" placeholder="请输入渠道编号" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >渠道名称<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="instName" id="instName" value="" onkeyup="WidthCheck(this,100);" placeholder="请输入渠道名称" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">所属地区
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="areaCode" name="areaCode" class="form-control" onkeyup="WidthCheck(this,4);" placeholder="请输入所属地区"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">联系人 &nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="linkMan" name="linkMan" class="form-control" onkeyup="WidthCheck(this,40);" placeholder="请输入联系人"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">电话 &nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="phone" name="phone" class="form-control" onkeyup="WidthCheck(this,14);" placeholder="请输入电话"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">账户名 &nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <input type="text" id="accName" name="accName" class="form-control" onkeyup="WidthCheck(this,60);" placeholder="请输入账户名"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">状态&nbsp;&nbsp;
+                    <span class="required">*</span>
+                </label>
+                <div class="col-md-6">
+                    <select name="status" id="status" class="form-control" data-type="select" data-category="INST_STATUS">
+                        <th:value></th:value>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">本地标志&nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <select name="localFlag" id="localFlag" class="form-control" data-type="select" data-category="INST_LOCAL_FLAG">
+                        <th:value></th:value>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-5 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button  style="margin-left:60px;"  type="button" class="btn blue   btn-info btn-search"  id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/insts/channel-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</body>
+</html>

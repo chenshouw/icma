@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed" id="listBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="staff-welfare_downLoad">
+                    <a href="#" onclick="javascript:down()" class='btn blue ' style="margin-right: 10px;" id="downBtn"><span>模板下载</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="staff-welfare_add">
+                    <!--<a href="to-add" class='btn blue ' style="margin-right: 10px;"><span>发放</span></a>-->
+                    <a href="#" class='btn blue ' th:onclick="'javascript:grant()'"><span>发放</span></a>
+                </shiro:hasPermission>
+
+            </li>
+        </ul>
+        <shiro:hasPermission name="welfare_staff-welfare">
+            <form action="/welfare/staff-welfare/search" id="staffWelfareForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="createBy">发放员</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="createBy" name="createBy" th:value="${staffWelfareVo.createBy}" maxlength="50" placeholder="请输入操作员">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>发放月份</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control input-sm" th:value="${staffWelfareVo.txnTimeBegin}" name="txnTimeBegin" id="txnTimeBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="txnTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control input-sm" th:value="${staffWelfareVo.txnTimeEnd}" name="txnTimeEnd" id="txnTimeEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="txnTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>批次号</th>
+                                <th>发放月份</th>
+                                <th>总人数</th>
+                                <th>新卡人数</th>
+                                <th>总金额（元）</th>
+                                <th>文件</th>
+                                <th>发放员</th>
+                                <th>发放时间</th>
+                                <shiro:hasPermission name="staff-welfare_detail">
+                                    <th width="60px">操作</th>
+                                </shiro:hasPermission>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="staffWelfare : ${list}">
+                                <td th:text="${staffWelfare.batchNo}"></td>
+                                <td th:text="${#calendars.format(staffWelfare.txnTime,'yyyy-MM')}"></td>
+                                <td th:text="${staffWelfare.totle}"></td>
+                                <td th:text="${staffWelfare.newNum}"></td>
+                                <td th:text="${#numbers.formatCurrency(staffWelfare.txnAmt)}"></td>
+                                <td><a href="javascript:void(0);" th:text="${staffWelfare.fileName}" th:onclick="'javascript:downWelfareFile(\''+${staffWelfare.fileName}+'\',\''+${staffWelfare.fileAddr}+'\')'"></a></td>
+                                <td th:text="${staffWelfare.createBy}"></td>
+                                <td th:text="${#calendars.format(staffWelfare.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasPermission name="staff-welfare_detail">
+                                    <td>
+                                        <a th:if="${staffWelfare.status==0}" class='btn green btn-xs' title="受理中" th:disabled="true">受理中</a>
+                                        <a th:if="${staffWelfare.status==1}" class='btn green btn-xs' title="详情" th:onclick="'javascript:findDetail(\''+${staffWelfare.batchNo}+'\')'">详情</a>
+                                    </td>
+                                </shiro:hasPermission>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="staffWelfareForm"></div>
+            </form>
+
+            <form id="detailForm" method="post" action="/welfare/staff-welfare/to-cardDetail">
+                <input type="hidden" id="batchNos" name="batchNo">
+                <!--<input type="hidden" id="id" name="id">-->
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<script type="text/javascript" th:src="@{/js/welfare/staff-welfare-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.ja.js}" charset="utf-8"></script>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

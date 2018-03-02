@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>查询</a>
+	      	</li>
+	      	<li class="btn-group">
+                <shiro:hasPermission name="tidGroup_add">
+                <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+	     </ul>
+        <shiro:hasPermission name="tidGroup_search">
+	     <form th:action="@{search}" method="POST" id="tidGroupFrom">
+	           <!-- 搜索内容start -->
+             <div class="row">
+                   <div class="col-md-3">
+                       <div class="form-group">
+                           <label >终端权限名称（%）</label>
+                           <div class="input-icon right">
+                               <i class="icon-edit"></i>
+                               <input type="text" class="form-control" id="tidGroupName" name="tidGroupName" th:value="${tidGroupVo.tidGroupName}" placeholder="请输入你要搜索的终端权限名称" />
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="col-md-3">
+                       <div class="form-group">
+                            <label >终端权限状态</label>
+                            <div class="input-icon">
+                                 <select name="tidGroupStatus" id="tidGroupStatus" class="form-control" data-type="select" data-category="TID_GROUP_STATUS" th:data-value="${tidGroupVo.tidGroupStatus}"></select>
+                             </div>
+                       </div>
+                   </div>
+
+                 <!--<div class="col-md-3">
+                     <div class="form-group">
+                         <label >所属商户</label>
+                         <select class="select2_category form-control select2me" name="merchantId" id="merchantId" data-type="select" data-placeholder="Choose a org" tabindex="1" th:data-value="${tidGroupVo.merchantId}">
+                             <option value="">请选择</option>
+                             <option th:each="MchInfo : ${mchInfo}" th:value="${MchInfo.mid}"
+                                     th:text="${MchInfo.midName}"  ></option>
+                         </select>
+                     </div>
+                 </div>-->
+
+                 <div class="col-md-3">
+                     <div class="form-group">
+                         <label>所属商户</label>
+                         <div class="input-group">
+                             <input type="text" id="merchantName" name="merchantName" class="form-control"
+                                    placeholder="请选择商户" th:value="${tidGroupVo.merchantName}" th:data-value="${tidGroupVo.merchantName}" readonly>
+
+                             <input type="hidden" id="merchantId" name="merchantId" th:data-value="${tidGroupVo.merchantId}" th:value="${tidGroupVo.merchantId}" class="form-control" readonly>
+                             <span class="input-group-btn" style="vertical-align:baseline">
+                        <button type="button" class="btn btn-default" onclick="clearMchInfoTable();">
+                             <i class="icon-remove"></i>
+                            </button>
+                                    <button type="button" class="btn blue btn-default" data-toggle="modal" data-target="#mchInfoModal" onclick="initMchInfoTable();">
+                             选择 <i class="icon-plus"></i>
+                            </button>
+					    </span>
+                         </div>
+                     </div>
+                 </div>
+
+
+                 <div class="col-md-3">
+                     <div class="form-group">
+                         <label >所属应用系统</label>
+                         <select class="select2_category form-control select2me" name="sysId" id="sysId" data-type="select" data-placeholder="Choose a org" tabindex="1" th:data-value="${tidGroupVo.sysId}">
+                             <option value="">请选择</option>
+                             <option th:each="SysApp : ${sysApp}" th:value="${SysApp.id}"
+                                     th:text="${SysApp.name}" th:selected="(${tidGroupVo.sysId} == ${SysApp.id})" ></option>
+                         </select>
+                     </div>
+                 </div>
+
+                <div class="col-md-6">
+                     <div class="form-group">
+                         <label>创建日期</label>
+                         <div class="input-group">
+                             <input type="text" class="form-control" th:value="${tidGroupVo.createTimeBegin}" name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                             <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                             <span class="input-group-addon">至</span>
+                             <input type="text" class="form-control" th:value="${tidGroupVo.createTimeEnd}" name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                             <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                            </span>
+                         </div>
+                     </div>
+                </div>
+             </div>
+
+             <div class="row form-group">
+                 <div class="col-md-5"></div>
+                 <div class="col-md-1">
+                     <button type="submit" onclick="search()"
+                             class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                 </div>
+                 <div class="col-md-1">
+                     <button type="submit" onclick="cleanQuery()"
+                             class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                 </div>
+                 <div class="col-md-5"></div>
+             </div>
+
+             <div class="portlet-body">
+                 <div class="table-scrollable">
+                     <table class="table table-striped table-bordered table-hover" >
+                          <thead>
+                            <tr>
+                              <th>终端权限名称</th>
+                              <th>终端权限编号</th>
+                              <th>终端权限描述</th>
+                              <th>终端权限状态</th>
+                              <th>商户简称</th>
+                              <th>子商户简称</th>
+                              <th>所属应用系统</th>
+                              <th>创建人员</th>
+                              <th>创建时间</th>
+                              <th>修改时间</th>
+                                <shiro:hasAnyPermissions name="tidGroup_update,tidGroup_delete,tidGroup_allotTids,tidGroup_lookTids">
+                                    <th style="width:205px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                           </thead>
+                          <tbody>
+                                 <tr th:each="tidGroup : ${list}">
+                                 <td th:text="${tidGroup.tidGroupName}"></td>
+                                  <td th:text="${tidGroup.tidGroupCode}"></td>
+                                 <td  th:text="${tidGroup.tidGroupDesc}"></td>
+                                  <td th:text="${ItemUtil.getName(tidGroup.tidGroupStatus,'TID_GROUP_STATUS')}"></td>
+                                  <td th:text="${tidGroup.merchantName}"></td>
+                                  <td th:text="${tidGroup.subMidName}"></td>
+                                  <td th:text="${tidGroup.sysName}"></td>
+                                  <td th:text="${tidGroup.tidGroupOperator}"></td>
+                                  <td th:text="${#calendars.format(tidGroup.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                  <td th:text="${#calendars.format(tidGroup.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                     <shiro:hasAnyPermissions name="tidGroup_update,tidGroup_delete,tidGroup_allotRights,tidGroup_lookRights">
+                                         <td>
+                                             <shiro:hasPermission name="tidGroup_update">
+                                                 <a class='btn blue btn-xs '  th:href="@{toUpdate(id=${tidGroup.tidGroupId})}">修改</a>
+                                             </shiro:hasPermission>
+
+                                             <shiro:hasPermission name="tidGroup_delete">
+                                                 <a class='btn red btn-xs'   th:onclick="'javascript:deleteTidGroup(\''+${tidGroup.tidGroupId}+'\')'">删除</a>
+                                             </shiro:hasPermission>
+
+                                             <shiro:hasPermission name="tidGroup_allotTids">
+                                                 <a class="btn default btn-xs" data-toggle="modal" data-target="#myModal" th:onclick="'javascript:initTidTables(\''+${tidGroup.tidGroupId}+'\',\''+${tidGroup.merchantId}+'\',\''+${tidGroup.subMid}+'\')'">分配终端</a>
+                                             </shiro:hasPermission>
+
+                                             <shiro:hasPermission name="tidGroup_lookTids">
+                                                 <a class="btn default btn-xs" data-toggle="modal" data-target="#view-modal" th:onclick="'javascript:viewTidTables(\''+${tidGroup.tidGroupId}+'\')'">查看终端</a>
+                                             </shiro:hasPermission>
+                                         </td>
+                                     </shiro:hasAnyPermissions>
+                               </tr>
+                          </tbody>
+                     </table>
+                 </div>
+             </div>
+             <div th:utext="${pageHtml}" class="row page_info" data-search="tidGroupFrom"></div>
+          </form>
+        </shiro:hasPermission>
+	</div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 800px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myModalLabel">分配终端</h4>
+            </div>
+            <th th:hidden="true"><input type="hidden" id="hiddenTidGroupId"/></th>
+            <th th:hidden="true"><input type="hidden" id="hiddenMerchantId"/></th>
+            <th th:hidden="true"><input type="hidden" id="hiddenSubMid"/></th>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="productFrom">
+                    <div class="row">
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>终端编码：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="tid" type="text" class="form-control" placeholder="输入终端号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>终端名称(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="tidName" type="text" class="form-control" placeholder="输入终端名称">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2">
+                            <button id="searchProduct" onclick="initTidTables2()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="tid_tables"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-myModal" onclick="selectTid();">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<div id="view-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style="width: 800px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">查看终端</h4>
+            </div>
+            <table  class="table table-bordered" id="viewTidTable">
+            </table>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-6">
+                        <button style="margin-left:50px;" type="button" data-dismiss="modal" class="btn default" click="close();">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mchInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="mchInfoModalLabel">商户信息</h4>
+            </div>
+            <div class="modal-body" style="height: auto;max-height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="mchInfoShowFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户号</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midSearch" type="text" class="form-control" placeholder="请输入商户号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户简称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midShortNameSearch" type="text" class="form-control" placeholder="请输入商户简称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户名称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midNameSearch" type="text" class="form-control" placeholder="请输入商户名称">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="form-inline">
+                            <button onclick="refreshAlertMchData()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                            <button onclick="cleanMchInfoQuery()" type="button"
+                                    class="btn btn-primary">重置
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="mchInfoTable" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="selectMchInfo();">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/rights/tidGroup-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/rights/tidGroup.js}" charset="utf-8"></script>
+
+</body>
+</html>

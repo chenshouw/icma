@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i><a href='javascript:void(0);'>详细</a></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="sell-card-manage_batch-open-card-export">
+                    <a href="javascript:void(0);" class='btn blue ' id="export" style="margin-right:5px"><span>导出</span></a>
+                </shiro:hasPermission>
+                <a href="javascript:void(0);" class='btn blue ' id="goBack"><span>返回</span></a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-md-3">
+            <div class="form-group">
+                <label>产品子类型：</label>
+                <input type="hidden" id="id" name="id" th:value="${batchOpenCard.id}">
+                <label th:text="${batchOpenCard.productName}"></label>
+            </div>
+        </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>客户号：</label>
+                    <label th:text="${batchOpenCard.custNo}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>客户名称：</label>
+                    <label th:text="${batchOpenCard.cliName}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>卡面金额：</label>
+                    <label th:text="${#numbers.formatCurrency(batchOpenCard.txnAmt)}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>开卡数量：</label>
+                    <label th:text="${batchOpenCard.panNum}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>账户类型：</label>
+                    <label th:text="${batchOpenCard.accName}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>订单号：</label>
+                    <label th:text="${batchOpenCard.orderId}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>系统订单号：</label>
+                    <label th:text="${batchOpenCard.sysOrderId}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>状态：</label>
+                    <label sl:type="BATCH_OPEN_CARD_STATUS" sl:text="${batchOpenCard.status}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>开卡人：</label>
+                    <label th:text="${batchOpenCard.createBy}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>开卡时间：</label>
+                    <label th:text="${#calendars.format(batchOpenCard.createTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>更新时间：</label>
+                    <label th:text="${#calendars.format(batchOpenCard.updateTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>流水号</th>
+                        <th>卡号</th>
+                        <th>状态</th>
+                        <th>序号</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="oci : ${ocis}">
+                        <td th:text="${oci.transId}"></td>
+                        <td th:text="${oci.productId}"></td>
+                        <td sl:type="OPEN_CARD_INFO_STATUS" sl:text="${oci.status}"></td>
+                        <td th:text="${oci.numId}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+
+</script>
+<script type="text/javascript" th:src="@{/js/sell-card/batch-open-card-detail-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

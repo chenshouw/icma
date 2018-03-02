@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>批次卡详情</a>
+            </li>
+
+            <li class="btn-group">
+                <a href="#" id="backPage" class='btn blue '><span>返回</span></a>
+            </li>
+        </ul>
+        <form th:action="@{wx-batch-detail-search}" method="get" id="detailInfo">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>批次号</label>
+                        <input  type="text" class="form-control" name="batchNo" id="batchNo" th:value="${wxCardInfoBatch.batchNo}" readonly/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>微信卡ID</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" name="cardId" id="cardId" placeholder="请输入微信卡ID" th:value="${wxCardInfoBatch.cardId}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select name="status" class="form-control" data-type="select" data-category="CARD_BATCH_STATUS" th:data-value="${wxCardInfoBatch.status}"></select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn blue btn-block">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>微信卡ID</th>
+                    <th>状态</th>
+                    <th>微信状态</th>
+                    <th>初始库存</th>
+                    <th>已使用数量</th>
+                    <th>创建时间</th>
+                    <th>更新时间</th>
+                    <th>审核失败原因</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="batchInfo: ${list}">
+                    <td th:text="${batchInfo.cardId}"></td>
+                    <td th:text="${ItemUtil.getName(batchInfo.status,'CARD_BATCH_STATUS')}"></td>
+                    <td th:id="${batchInfo.id}"><a class='blue' th:onclick="'javascript:getWxStatus(\''+${batchInfo.id}+'\')'">查看</a></td>
+                    <td th:text="${batchInfo.initInventory}"></td>
+                    <td th:text="${batchInfo.usedQuantity}"></td>
+                    <td th:text="${#calendars.format(batchInfo.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#calendars.format(batchInfo.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${batchInfo.refuseReason}"></td>
+                    <td>
+                        <a th:if="${batchInfo.status} != -1" class='btn blue ' th:onclick="'javascript:updateCardInfo(\''+${batchInfo.id}+'\')'">微信更新</a>
+                        <a th:if="${batchInfo.status} == -1" class='btn blue ' th:onclick="'javascript:deleteCardInfo(\''+${batchInfo.id}+'\')'">微信删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="detailInfo"></div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/wx-batch-detail.js}"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="activeUrl_add">
+                <a href="active-url-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="activeUrl_search">
+        <form th:action="@{active-url-search}" method="get" id="activeUrl">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>活动名称</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" name="activeName" id="activeName" placeholder="请输入活动名称"
+                                    th:value="${wxActiveUrlVo.activeName}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>是否删除</label>
+                        <select name="isDelete" class="form-control" data-type="select"
+                                data-category="IS_DELETE" data-first="false"
+                                th:data-value="${wxActiveUrlVo.isDelete}"></select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>创建日期</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="createTimeBegin" id="createTimeBegin"
+                                    maxlength="19" placeholder="请选择开始时间" readonly
+                                    th:value="${wxActiveUrlVo.createTimeBegin}"/>
+                            <span class="input-group-btn">
+                                 <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                         class="icon-remove"></i></button>
+                            </span>
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" name="createTimeEnd" id="createTimeEnd"
+                                    maxlength="19" placeholder="请选择结束时间" readonly
+                                    th:value="${wxActiveUrlVo.createTimeEnd}"/>
+                            <span class="input-group-btn">
+                                 <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                         class="icon-remove"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn blue btn-block">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="cleanQuery()" class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>活动名称</th>
+                            <th>激活会员卡URL</th>
+                            <th>余额详情URL</th>
+                            <th>顶部居中按钮URL</th>
+                            <th>顶部居中按钮名称</th>
+                            <th>按钮下方提示语</th>
+                            <th>入口一名称</th>
+                            <th>入口一URL</th>
+                            <shiro:hasAnyPermissions name="activeUrl_update,activeUrl_remove,activeUrl_detail">
+                                <th>操作</th>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </thead>
+                        <tbody>
+                               <tr th:each="activeUrl : ${list}" class="list-display">
+                                   <td th:text="${activeUrl.activeName}"></td>
+                                   <td th:text="${activeUrl.activateUrl}"></td>
+                                   <td th:text="${activeUrl.balanceUrl}"></td>
+                                   <td th:text="${activeUrl.centerUrl}"></td>
+                                   <td th:text="${activeUrl.centerUrlName}"></td>
+                                   <td th:text="${activeUrl.centerUrlSubTitle}"></td>
+                                   <td th:text="${activeUrl.customUrlName}"></td>
+                                   <td th:text="${activeUrl.customUrl}"></td>
+                                   <shiro:hasAnyPermissions
+                                           name="activeUrl_update,activeUrl_remove,activeUrl_detail">
+                                       <td>
+                                           <shiro:hasPermission name="activeUrl_update">
+                                               <a th:if="${activeUrl.isDelete==0}" class='btn blue btn-xs' th:href="@{active-url-update-page(id=${activeUrl.id})}">修改</a>
+                                           </shiro:hasPermission>
+                                           <shiro:hasPermission name="activeUrl_remove">
+                                               <a th:if="${activeUrl.isDelete==0}" class='btn red btn-xs' th:onclick="'javascript:activeUrlDel(\''+${activeUrl.id}+'\')'">删除</a>
+                                           </shiro:hasPermission>
+                                           <shiro:hasPermission name="activeUrl_detail">
+                                               <a class='btn green btn-xs' th:href="@{active-url-detail-page(id=${activeUrl.id})}">详情</a>
+                                           </shiro:hasPermission>
+                                   </td>
+                               </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="wxCardInfo"></div>
+        </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/wx-active-url.js}"></script>
+</body>
+</html>

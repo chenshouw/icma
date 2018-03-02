@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="system-manage-model_system-config-add">
+                    <a onclick="javascript:toAdd();" class='btn blue ' style="margin-right: 10px;"><span>新增</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="system-manage-model_system-config-export">
+                    <a href="javascript:void(0);" class='btn blue ' id="export"><span>导出</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="system-manage-model_system-config-search">
+            <form action="/system-data/system-config/search" id="rocketMqForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="name" name="name"
+                                        th:value="${systemConfig.name}" placeholder="请输入你要搜索的名称" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="code">编码（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="code" name="code"
+                                        th:value="${systemConfig.code}" placeholder="请输入你要搜索的编码" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="value">值（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="value" name="value"
+                                        th:value="${systemConfig.value}" placeholder="请输入你要搜索的值" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="createBy">创建人/更新人（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="createBy" name="createBy"
+                                        th:value="${systemConfig.createBy}" placeholder="请输入你要搜索的创建人/更新人" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>编码</th>
+                                <th>值</th>
+                                <th>创建人</th>
+                                <th>创建时间</th>
+                                <th>更新人</th>
+                                <th>更新时间</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sc : ${list}">
+                                <td th:text="${sc.name}"></td>
+                                <td th:text="${sc.code}"></td>
+                                <td th:text="${sc.value}"></td>
+                                <td th:text="${sc.createBy}"></td>
+                                <td th:text="${#calendars.format(sc.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${sc.updateBy}"></td>
+                                <td th:text="${#calendars.format(sc.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${sc.memo}"></td>
+                                <shiro:hasAnyPermissions name="system-manage-model_system-config-update,system-manage-model_system-config-delete">
+                                    <td>
+                                        <shiro:hasPermission name="system-manage-model_system-config-update">
+                                            <a th:onclick="'javascript:toUpdate(\''+${sc.id}+'\');'" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="system-manage-model_system-config-delete">
+                                            <a data-toggle="modal" class='btn red btn-xs' th:onclick="'javascript:deleteSc(\''+${sc.id}+'\');'" style="margin-left: 5px;">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="rocketMqForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/system-config-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

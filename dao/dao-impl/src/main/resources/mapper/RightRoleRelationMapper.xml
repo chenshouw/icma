@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.RightRoleRelationMapper">
+    <resultMap id="RightRoleRelationResult" type="org.hengsir.icma.entity.RightRoleRelation">
+        <result property="id" column="ID" />
+        <result property="roleId" column="ROLE_ID" />
+        <result property="rightId" column="RIGHT_ID" />
+    </resultMap>
+
+    <select id="findByRightRoleRelation" parameterType="java.lang.Integer" resultMap="RightRoleRelationResult" useCache="false">
+        SELECT * FROM T_ROLE_RIGHT_RELATION
+        <where>
+            <if test="null != roleId and '' != roleId">
+                ROLE_ID  = #{roleId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="create"  parameterType="org.hengsir.icma.entity.RightRoleRelation">
+        INSERT INTO T_ROLE_RIGHT_RELATION
+        ( ROLE_ID, RIGHT_ID)
+        VALUES (
+        #{roleId},
+        #{rightId})
+    </insert>
+
+    <delete id="remove" parameterType="java.lang.Integer" >
+        DELETE FROM T_ROLE_RIGHT_RELATION
+        <where>
+            <if test="null != roleId and '' != roleId">
+                ROLE_ID  = #{roleId}
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteByRightId" parameterType="java.lang.Integer" >
+        DELETE FROM T_ROLE_RIGHT_RELATION WHERE RIGHT_ID = #{rightId}
+    </delete>
+
+</mapper>

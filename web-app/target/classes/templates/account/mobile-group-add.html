@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link th:href="@{/metronic/plugins/jquery-multi-select/css/multi-select.css}" rel="stylesheet" type="text/css"/>
+    <!-- END PAGE LEVEL STYLES -->
+
+</head>
+<body class="page-header-fixed" id="addBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+        <form id="addForm" class="form-horizontal" role="form" th:action="@{add}" method="post">
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    名称<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="name" id="name" value="" placeholder="请输入姓名" maxlength="50"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    描述
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="description" id="description" value="" placeholder="请输入描述" maxlength="500"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    所属机构
+                </label>
+                <div class="col-sm-6">
+                    <input type="hidden" id="instId" name="instId" th:value="${inst.instId}">
+                    <input type="text" class="form-control" th:value="${inst.instName}" readonly maxlength="500"/>
+                </div>
+            </div>
+
+            <div class="form-group last">
+                <label class="col-sm-4 control-label">
+                    成员&nbsp;&nbsp;
+                </label>
+                <div class="col-md-6">
+                    <button type="button" class="btn green   btn-info btn-search" id="addAll">全部选择</button>
+                    <button type="button" class="btn green   btn-info btn-search" id="noAddAll">全部取消</button>
+                    <select name="country" class="multi-select" multiple="" id="my_multi_select3">
+                        <option th:each="mobile : ${mobilePhoneList}" th:text="${mobile.name} +'(' + ${mobile.phoneNum} + ')'" th:value="${mobile.id}"></option>
+                    </select>
+                </div>
+                <input type="text" value="" style="display: none" id="member" name="member"/>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script type="application/javascript">
+    jQuery(document).ready(function () {
+        App.init();
+        FormComponents.init();
+    })
+
+</script>
+</body>
+
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/jquery-multi-select/js/jquery.multi-select.js}"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/jquery-multi-select/js/jquery.quicksearch.js}"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/account/mobile-group-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+
+</html>

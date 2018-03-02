@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sl="http://www.w3.org/1999/xhtml"
+      xmlns:shiro="">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>发放详情</a></li>
+
+            <li class="btn-group">
+                <shiro:hasPermission name="staff-welfare_export">
+                    <a href="javascript:void(0);" class='btn blue ' id="export" style="margin-right: 10px;"><span>导出</span></a>
+                </shiro:hasPermission>
+                <a href="/welfare/staff-welfare/search" class='btn blue' onclick=""><span>返回</span></a>
+            </li>
+        </ul>
+
+        <shiro:hasAnyPermissions name="staff-welfare_detail">
+            <form action="" id="welfareCardDetailForm" method="post">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>批次号：</label>
+                            <input type="hidden" th:value="${staffWelfare.batchNo}" id="batchNo" name="batchNo">
+                            <label th:text="${staffWelfare.batchNo}"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>描述：</label>
+                            <input type="hidden" th:value="${#calendars.format(staffWelfare.txnTime,'yyyy-MM')}+'员工福利'" id="memo" name="memo">
+                            <label th:text="${#calendars.format(staffWelfare.txnTime,'yyyy-MM')}+'  员工福利'"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>操作员：</label>
+                            <label th:text="${staffWelfare.createBy}"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th>卡号</th>
+                        <th>交易金额（元）</th>
+                        <th>类型</th>
+                        <th>状态</th>
+                        <th>短信状态</th>
+                        <th width="140px">记录时间</th>
+                        <shiro:hasAnyPermissions name="welfare_reSendMsg,welfare_reRecharge,welfare_reSend-rechargeMess">
+                            <th width="140px">操作</th>
+                        </shiro:hasAnyPermissions>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cardPresentDetail : ${list}">
+                        <td th:text="${cardPresentDetail.name}"></td>
+                        <td th:text="${cardPresentDetail.phone}"></td>
+                        <td th:text="${cardPresentDetail.cardNo}"></td>
+                        <td th:text="${#numbers.formatCurrency(cardPresentDetail.price)}"></td>
+                        <td sl:type="DELL_TYPE" sl:text="${cardPresentDetail.type}"></td>
+                        <td th:if="${cardPresentDetail.type}==1" th:text="${ItemUtil.getName(cardPresentDetail.rechargeStatus,'RECHARGE_STATUS')}"></td>
+                        <td th:if="${cardPresentDetail.type}==2"  th:text="${ItemUtil.getName(cardPresentDetail.receiveStatus,'CARD_PRESENT_STATUS')}"></td>
+                        <td sl:type="SEND_MSG_STATUS" sl:text="${cardPresentDetail.sendStatus}"></td>
+                        <td th:text="${#calendars.format(cardPresentDetail.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <shiro:hasAnyPermissions name="welfare_reSendMsg,welfare_reRecharge,welfare_reSend-rechargeMess">
+                            <td>
+                                <shiro:hasPermission name="welfare_reSendMsg">
+                                    <a th:if="${cardPresentDetail.type}==2 and ${cardPresentDetail.receiveStatus}==0" class="btn green btn-xs" href="#" th:onclick="'javascript:reSendCardPresent(\''+${cardPresentDetail.phone}+'\')'">重发短信</a>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="welfare_reRecharge">
+                                    <a th:if="${cardPresentDetail.type}==1 and ${cardPresentDetail.rechargeStatus}==0" class="btn red btn-xs" href="#" th:onclick="'javascript:reRecharge(\''+${cardPresentDetail.cardNo}+'\')'">重新充值</a>
+                                    <a th:if="${cardPresentDetail.type}==2 and ${cardPresentDetail.receiveStatus}==4" class="btn red btn-xs" href="#" th:onclick="'javascript:reGrantWelfare(\''+${cardPresentDetail.phone}+'\')'">重试</a>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="welfare_reSend-rechargeMess">
+                                    <a th:if="${cardPresentDetail.type}==1 and ${cardPresentDetail.rechargeStatus}==1" class="btn green btn-xs" href="#" th:onclick="'javascript:reSendRecharge(\''+${cardPresentDetail.cardNo}+'\')'">重发短信</a>
+                                </shiro:hasPermission>
+                            </td>
+                        </shiro:hasAnyPermissions>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/welfare/card-welfare-detail.js}" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link th:href="@{/metronic/plugins/jquery-multi-select/css/multi-select.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查看</a>
+            </li>
+
+            <li class="btn-group">
+                <a href="javascript:window.history.go(-1)" class='btn blue '><span>返回</span></a>
+            </li>
+        </ul>
+        <form id="viewForm"  class="form-horizontal" role="form" th:action="@{view}"  method="post">
+            <!--<ul class="nav nav-tabs nav-justified">-->
+            <!--<li class="active"><a href="#act1">基础信息</a></li>-->
+            <!--<li><a href="#act2">适用渠道</a></li>-->
+            <!--<li><a href="#act3">适用机构</a></li>-->
+            <!--<li><a href="#product">适用产品</a></li>-->
+            <!--<li><a href="#faceValue">适用面值</a></li>-->
+            <!--<li><a href="#config">活动配置</a></li>-->
+            <!--<li><a href="#rules">活动规则</a></li>-->
+            <!--</ul>-->
+            <!--基础信息-->
+            <div class="tab-content">
+                <div id="activity">
+                    <span class="label label-success" id="act1">基础信息</span>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            活动主题
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="hidden" class="form-control" name="id" id="id" th:value="${activity.id}" style="border: none" readonly/>
+                            <label t name="title" id="title" th:text="${activity.title}" class="control-label" ></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            活动类型
+                        </label>
+                        <div class="col-sm-6">
+                            <label name="type" id="type"  th:text="${ItemUtil.getName(activity.type,'ACT_TYPE')}" class="control-label" ></label>
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            活动开始时间
+                        </label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <label   th:text="${#calendars.format(activity.startTime,'yyyy-MM-dd HH:mm:ss')}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            活动结束时间
+                        </label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <label th:text="${#calendars.format(activity.endTime,'yyyy-MM-dd HH:mm:ss')}" class="control-label" ></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            推广链接
+                        </label>
+                        <div class="col-sm-6">
+                            <label  name="generalizeUrl" id="generalizeUrl" th:text="${activity.generalizeUrl}" class="control-label" ></label>
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            备注
+                        </label>
+                        <div class="col-sm-6">
+                            <label name="remark" id="remark" th:text="${activity.remark}" class="control-label" ></label>
+                        </div>
+                    </div>
+                </div>
+                <div id="instChannel">
+                    <span class="label label-success" id="act2">适用渠道</span>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            适用渠道
+                        </label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input row= "2" id="channelNames" name="channelNames" class="form-control" th:value="${actApplyChannelNameArr}"  readonly/>
+                                <span class="input-group-btn">
+                                    <button type="button"  class="btn green" data-toggle="modal" data-target="#channelModal" onclick="viewChannelTable();">
+                                     详情 <i class="icon-plus"></i>
+                                    </button>
+					            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="inst">
+                    <span class="label label-success" id="act3">适用机构</span>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            适用机构
+                        </label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input type="text" id="instNames" name="instNames" class="form-control" th:value="${instNameArr}"  readonly>
+                                <input type="hidden" id="instIds" name="instIds" th:value="${instIdArr}">
+                                <span class="input-group-btn">
+                                    <button type="button"  class="btn green" data-toggle="modal" data-target="#instModal" onclick="initInstTable();">
+                                     详情 <i class="icon-plus"></i>
+                                    </button>
+					            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="product">
+                    <span class="label label-success">适用产品</span>
+                    <div class="form-group" >
+                        <label class="col-sm-4 control-label">
+                            产品信息
+                        </label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input type="text" id="productNames" name="productNames" class="form-control" th:value="${actProductNameArr}" readonly>
+                                <input type="hidden" id="productTypes" name="productTypes">
+                                <span class="input-group-btn">
+                                    <button type="button"  class="btn green" data-toggle="modal" data-target="#productModal" onclick="viewProductTable();">
+                                     详情 <i class="icon-plus"></i>
+                                    </button>
+					            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 暂时不使用面值管理 -->
+                <!--<div id="faceValue" style="display: none">
+                    <div class="form-group last">
+                        <label class="col-sm-4 control-label">
+                            适用面值
+                        </label>
+                        <div class="col-md-6">
+                            <input type="text" id="faceValues" name="faceValues" class="form-control" th:value="${faceValue}" readonly>
+                        </div>
+
+                    </div>
+                </div>-->
+                <div id="config">
+                    <span class="label label-success">活动配置</span>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动配置</label>
+                        <div class="col-md-8">
+                            <div class="portlet-body">
+                                <table class="table table-striped table-hover table-bordered" id="restrict_editable">
+                                    <thead>
+                                    <tr>
+                                        <th>周期限定</th>
+                                        <th>周期</th>
+                                        <th>个人参与活动次数</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="res : ${activity.restrict}">
+                                        <td th:text="${res.periodLimit}"></td>
+                                        <td th:text="${ItemUtil.getName(res.period,'RESTRICT_PERIOD')}"></td>
+                                        <td th:text="${res.restrictTimes}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="rules">
+                        <span class="label label-success">活动规则</span>
+                        <div class="form-group" id="instalment"  style="display: none">
+                            <label class="col-sm-4 control-label">分期规则</label>
+                            <div class="col-md-8">
+                                <div class="portlet-body">
+                                    <table class="table table-striped table-hover table-bordered" id="instalment_editable">
+                                        <thead>
+                                        <tr>
+                                            <th>分期数</th>
+                                            <th>定期还款日</th>
+                                            <th>类型</th>
+                                            <th>还款间隔月</th>
+                                            <th>首期是否立即到账</th>
+                                            <th>简要说明</th>
+                                            <th>详细说明</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="actRule : ${actInstalments}">
+                                            <td th:text="${actRule.instalmentRule.periods}"></td>
+                                            <td th:text="${actRule.instalmentRule.regularFixDate}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.instalmentRule.type,'INSTALMENT_TYPE')}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.instalmentRule.regularFixMonth,'REGULAR_FIX_MONTH')}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.instalmentRule.isImmediateArrival,'IS_IMMEDIATE_ARRIVAL')}"></td>
+                                            <td th:text="${actRule.simpleComment}"></td>
+                                            <td th:text="${actRule.detailComment}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">折扣活动</label>
+                            <div class="col-md-8">
+                                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                                <!-- <div class="portlet box blue">-->
+                                <div class="portlet-body">
+                                    <table class="table table-striped table-hover table-bordered" id="discount_editable">
+                                        <thead>
+                                        <tr>
+                                            <th>折扣比例(%)</th>
+                                            <th>折扣类型</th>
+                                            <th>最小支付金额</th>
+                                            <th>最大支付金额</th>
+                                            <th>权重</th>
+                                            <th>简要说明</th>
+                                            <th>详细说明</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="actRule : ${actDisCounts}">
+                                            <td th:text="${actRule.discountRule.discount}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.discountRule.type,'DISCOUNT_STATUS')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(actRule.discountRule.minPaymentAmt, 1, 'NONE', 2, 'POINT')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(actRule.discountRule.maxPaymentAmt, 1, 'NONE', 2, 'POINT')}"></td>
+                                            <td th:text="${actRule.priority}"></td>
+                                            <td th:text="${actRule.simpleComment}"></td>
+                                            <td th:text="${actRule.detailComment}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用渠道模态框-->
+<div class="modal fade" id="channelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myModalLabel">适用渠道</h4>
+            </div>
+            <div class="modal-body" style="height: 500px;overflow-y:auto;overflow-x:auto">
+                <table id="channel_table"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用商户模态框-->
+<div class="modal fade" id="mchModal" tabindex="-1" role="dialog" aria-labelledby="myMchModalLabel">
+    <div class="modal-dialog" role="document" style="width:500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myMchModalLabel">适用商户</h4>
+            </div>
+            <div class="modal-body" style="height: 500px;overflow-y:auto;overflow-x:auto">
+                <div id="mchTree"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用产品信息模态框-->
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="myProductModalLabel">
+    <div class="modal-dialog" role="document" style="width:500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myProductModalLabel">适用产品</h4>
+            </div>
+            <div class="modal-body" style="height: 500px;overflow-y:auto;overflow-x:auto">
+                <table id="product_table"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用机构模态框-->
+<div class="modal fade" id="instModal" tabindex="-1" role="dialog" aria-labelledby="myInstModalLabel">
+    <div class="modal-dialog" role="document" style="width:500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myInstModalLabel">适用机构</h4>
+            </div>
+            <div class="modal-body" style="height: 500px;overflow-y:auto;overflow-x:auto">
+                <div id="instTree"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/marketing/mk-activity-view.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/util/selectItem.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/marketing/mk-activity-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/jquery-multi-select/js/jquery.multi-select.js}"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/jquery-multi-select/js/jquery.quicksearch.js}"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link rel="stylesheet" th:href="@{/css/select/bootstrap-select.min.css}">
+
+</head>
+<body class="page-header-fixed" id="addBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>详情</a>
+            </li>
+            <li class="btn-group">
+                <a href="#" class="btn blue " onclick="history.go(-1)"><span>返回</span></a>
+            </li>
+        </ul>
+        <form id="updateForm" class="form-horizontal" role="form">
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    规则号
+                </label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" readonly name="ruleId" id="ruleId" th:value="${lpGood.ruleId}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    发卡机构<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-4">
+                    <select id="issuId" name="issuId" class="form-control" th:disabled="true">
+                        <option value="">请选择发卡机构</option>
+                        <option th:each="minst: ${orgs}" th:value="${minst.instId}" th:selected="${lpGood.issuId == minst.instId}" th:text="${minst.instId} + '-'+ ${minst.instName}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    卡判别方式<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-4 input-group">
+                    <div class="radio-list">
+                        <label>
+                            <div class="input-group">
+                                <span  style="white-space:nowrap;width: 30%"><input th:disabled="true" th:checked="${lpGood.cidType == null || lpGood.cidType == 1}" data-id="1" style="width: 30%" type="radio" name="cidType" id="cidType1" value="1"> 按产品子类型</span>
+                                <span style="width: 70%" class="input-group-btn">
+                            <select th:readonly="true" class="form-control input-large" name="cid" id="cid1" th:value="${lpGood.cid}" th:disabled="true" >
+                                <option value="">请选择产品子类型</option>
+                                <option th:each="productType: ${productTypeVos}" th:selected="${lpGood.cidType != 1}?false:${lpGood.cid == productType.productType}" th:value="${productType.productType}" th:text="${productType.productType} + '-'+ ${productType.productName}"></option>
+                            </select>
+                    </select>
+                        </span>
+                            </div>
+                        </label>
+                        <label>
+                            <div class="input-group">
+                                <span  style="white-space:nowrap;width: 30%"><input th:disabled="true" th:checked="${lpGood.cidType == 2}" data-id="2" style="width: 30%" type="radio" name="cidType" id="cidType2" value="2" > 按客户号</span>
+                                <span style="width: 70%" class="input-group-btn">
+                            <!--<input th:readonly="true" type="text" class="form-control input-large" name="cid" id="cid2"  th:disabled="${lpGood.cidType != 2}" th:value="${lpGood.cidType != 2}?'':${lpGood.cid}" >-->
+                                    <select type="text" class="form-control input-large" name="cid" id="cid2" th:disabled="true" >
+                                        <option value="">请选择客户号</option>
+                                        <option th:each="mcustInfo: ${mcustInfos}" th:value="${mcustInfo.custNo}" th:selected="${lpGood.cidType != 2}?false:${lpGood.cid == mcustInfo.custNo}" th:text="${mcustInfo.custNo}+'-'+${mcustInfo.cliName}"></option>
+                                    </select>
+                        </span>
+                            </div>
+                        </label>
+                        <label>
+                            <div class="input-group">
+                                <span  style="white-space:nowrap;width: 30%"><input th:disabled="true" th:checked="${lpGood.cidType == 3}" data-id="3" style="width: 30%" type="radio" name="cidType" id="cidType3" value="3" > 按账号</span>
+                                <span style="width: 70%" class="input-group-btn">
+                            <!--<select th:readonly="true" type="text" class="form-control input-large" name="cid" id="cid3" th:value="${lpGood.cid}" th:disabled="true" >
+                                <option value="">请选择账号类型</option>
+                                <option th:each="acc: ${accTypeList}" th:value="${acc.accType}" th:selected="${lpGood.cidType != 3}?false:${lpGood.cid == acc.accType}" th:text="${acc.accName}"></option>
+                            </select>-->
+                                    <input th:readonly="true" type="text" class="form-control input-large" maxlength="20" name="cid" id="cid3" th:value="${lpGood.cidType != 3}?'':${lpGood.cid}" th:disabled="${lpGood.cidType != 3}" >
+                        </span>
+                            </div>
+                        </label>
+                        <label>
+                            <div class="input-group">
+                                <span  style="white-space:nowrap;width: 30%"><input th:disabled="true" th:checked="${lpGood.cidType == 4}" data-id="4" style="width: 30%" type="radio" name="cidType" id="cidType4" value="4" > 按卡号</span>
+                                <span style="width: 70%" class="input-group-btn">
+                            <input th:readonly="true" type="text" class="form-control input-large" name="cid" id="cid4"  th:disabled="${lpGood.cidType != 4}" th:value="${lpGood.cidType != 4}?'':${lpGood.cid}" >
+                        </span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    禁止消费商品
+                </label>
+                <div class="col-sm-4">
+                    <select th:disabled="true" id="gDeny" name="gDeny" class="form-control selectpicker show-tick form-control select2me" multiple data-live-search="false" tabindex="1" th:placeholder="请选择禁止消费商品">
+                        <option th:each="msplist: ${msplistList}" th:value="${msplist.gId}" th:selected="${lpGood.gDeny==null||lpGood.gDeny==''}?false:${#arrays.contains(#strings.setSplit(lpGood.gDeny,','),msplist.gId)}" th:text="${msplist.gId} + '-'+ ${msplist.gName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    仅允许消费商品
+                </label>
+                <div class="col-sm-4">
+                    <select th:disabled="true" id="gAllow" name="gAllow" class=" selectpicker show-tick form-control select2me" multiple data-live-search="false" tabindex="1" th:placeholder="请选择仅允许消费商品"  >
+                        <option th:each="msplist: ${msplistList}" th:value="${msplist.gId}" th:selected="${lpGood.gAllow==null||lpGood.gAllow==''}?false:${#arrays.contains(#strings.setSplit(lpGood.gAllow,','),msplist.gId)}" th:text="${msplist.gId} + '-'+ ${msplist.gName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    数量限制<font color="#FF0000">(-1表示不限制)*</font>
+                </label>
+                <div class="col-sm-4">
+                    <input th:readonly="true" type="text" class="form-control" name="qtyHwm" id="qtyHwm" th:value="${lpGood.qtyHwm==null}?-1:${lpGood.qtyHwm}"  placeholder="请输入数量限制"/>
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-4 control-label">
+                    开通标志<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-4">
+                    <select th:disabled="true" name="status" id="status" class="form-control" data-type="select" data-category="CHANNELS_STATUS" th:data-value="${lpGood.status==null?'1':lpGood.status}"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    规则描述
+                </label>
+                <div class="col-sm-4">
+                    <textarea th:readonly="true" style="width:100%;height:150px;" type="text" class="form-control" name="ruleDesc" id="ruleDesc" th:text="${lpGood.ruleDesc}"  placeholder="请输入规则描述"></textarea>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script th:src="@{/js/commons/bootstrap-select.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/lockconsumption/lpGood-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

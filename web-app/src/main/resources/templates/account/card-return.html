@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="addBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>退卡</a>
+            </li>
+        </ul>
+        <shiro:hasPermission name="card-return_returnCard">
+        <form id="addForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                   卡号<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="productId" name="productId" maxlength="50" placeholder="请输入卡号">
+                </div>
+            </div>
+
+        </form>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-6">
+                <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnSave">提交</button>
+                <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" onclick="cleanCardQuery()" id="btnCancel">重置</button>
+            </div>
+        </div>
+        </shiro:hasPermission>
+    </div>
+
+</div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#channels").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+        $("#acqId").select2({
+            formatNoMatches: function (term) {
+                return "未找到数据";
+            }
+        });
+
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/account/card-return.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

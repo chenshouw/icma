@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.UserRelRoleMapper">
+    <resultMap id="UserRelRoleResult" type="org.hengsir.icma.entity.UserRelRole">
+        <result property="id" column="ID" />
+        <result property="userId" column="USER_ID" />
+        <result property="roleId" column="ROLE_ID" />
+    </resultMap>
+
+    <select id="findByUserId" parameterType="java.lang.Integer" resultMap="UserRelRoleResult" useCache="false">
+        SELECT * FROM T_USER_ROLE_RELATION WHERE
+          USER_ID = #{userId}
+        ORDER BY UPDATE_TIME DESC
+    </select>
+
+    <select id="findByRoleId" parameterType="java.lang.Integer" resultMap="UserRelRoleResult" useCache="false">
+        SELECT * FROM T_USER_ROLE_RELATION WHERE
+          ROLE_ID = #{roleId}
+        ORDER BY UPDATE_TIME DESC
+    </select>
+
+    <insert id="create" parameterType="org.hengsir.icma.entity.UserRelRole">
+        INSERT INTO T_USER_ROLE_RELATION(USER_ID,ROLE_ID) VALUES(
+        #{userId},#{roleId})
+    </insert>
+
+    <update id="update" parameterType="org.hengsir.icma.entity.UserRelRole">
+        UPDATE T_USER_ROLE_RELATION
+        <set>
+            <if test="null != userId and '' != userId">
+                USER_ID = #{userId},
+            </if>
+            <if test="null != roleId and '' != roleId">
+                ROLE_ID = #{roleId},
+            </if>
+        </set>
+        WHERE ID = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM T_USER_ROLE_RELATION WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteByUserId" parameterType="java.lang.Integer">
+        DELETE FROM T_USER_ROLE_RELATION WHERE USER_ID = #{userId}
+    </delete>
+
+</mapper>

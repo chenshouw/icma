@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        div .radio {
+            padding-top: 0 !important;
+        }
+    </style>
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" method="post" id="appSettingForm">
+            <input type="hidden" id="id" th:value="${wxAppSetting.id}">
+            <input type="hidden" id="tempDomain" th:value="${wxAppSetting.wxCallbackDomain}">
+            <div class="form-group">
+                <label for="appId" class="col-sm-4 control-label"><font color="#FF0000">*</font>appID</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="appId" id="appId" th:value="${wxAppSetting.appId}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="token" class="col-sm-4 control-label"><font color="#FF0000">*</font>token</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="token" id="token" th:value="${wxAppSetting.token}" placeholder="请输入token"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="appSecret" class="col-sm-4 control-label"><font color="#FF0000">*</font>appSecret</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="appSecret" id="appSecret" th:value="${wxAppSetting.appSecret}" placeholder="请输入appSecret"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="aesKey" class="col-sm-4 control-label"><font color="#FF0000">*</font>aesKey</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="aesKey" id="aesKey" th:value="${wxAppSetting.aesKey}" placeholder="请输入aesKey"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="redirectUrl" class="col-sm-4 control-label"><font color="#FF0000">*</font>重定向Url</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="redirectUrl" id="redirectUrl" th:value="${wxAppSetting.redirectUrl}" placeholder="请输入重定向Url"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="brandName" class="col-sm-4 control-label"><font color="#FF0000">*</font>商户名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="brandName" id="brandName" th:value="${wxAppSetting.brandName}" placeholder="请输入商户名称"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="servicePhone" class="col-sm-4 control-label"><font color="#FF0000">*</font>客服电话</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="servicePhone" id="servicePhone" th:value="${wxAppSetting.servicePhone}" placeholder="请输入客服电话"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"><font color="#FF0000">*</font>协议开头</label>
+                <div class="col-sm-4">
+                    <label class="checkbox-inline"><input type="radio" name="protocol" value="http" th:checked="(${wxAppSetting.protocol}=='http')">http</label>
+                    <label class="checkbox-inline"><input type="radio" name="protocol" value="https" th:checked="(${wxAppSetting.protocol}=='https')">https</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="wxCallbackDomain" class="col-sm-4 control-label"><font color="#FF0000">*</font>微信认证回调域名</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="wxCallbackDomain" id="wxCallbackDomain" th:value="${wxAppSetting.wxCallbackDomain}" placeholder="例如:www.abc.com"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="status" class="col-sm-4 control-label">状态</label>
+                <div class="col-sm-4">
+                    <select name="status" id="status" class="form-control" data-type="select" data-category="APP_SETTING_STATUS" th:data-value="${wxAppSetting.status}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/card/app-setting.js}"></script>
+</body>
+</html>

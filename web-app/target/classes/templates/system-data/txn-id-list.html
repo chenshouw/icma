@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="txnId_add">
+                    <a href="txn-id-add-page" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="txnId_search">
+            <form th:action="@{txn-id-search}" method="post" id="txnIdInfo">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>交易码ID</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="number" class="form-control" name="txnId" id="txnId" placeholder="请输入交易码ID(只能输入数字)"
+                                       th:value="${txnIdInfo.txnId}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>交易码名称</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="txnName" id="txnName"
+                                       placeholder="请输入交易码名称" th:value="${txnIdInfo.txnName}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>CR_FLAG</label>
+                            <select name="crFlag" id="crFlag" class="form-control" data-type="select"
+                                    data-category="TXN_ID_CR_FLAG" th:data-value="${txnIdInfo.crFlag}"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>INS_TRANS</label>
+                            <select name="insTrans" id="insTrans" class="form-control" data-type="select"
+                                    data-category="TXN_ID_INS_TRANS" th:data-value="${txnIdInfo.insTrans}"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>DO_ORDERS</label>
+                            <select name="doOrders" id="doOrders" class="form-control" data-type="select"
+                                    data-category="TXN_ID_DO_ORDERS" th:data-value="${txnIdInfo.doOrders}"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>SETT_FLAG</label>
+                            <select name="settFlag" id="settFlag" class="form-control" data-type="select"
+                                    data-category="TXN_ID_SETT_FLAG" th:data-value="${txnIdInfo.settFlag}"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>是否参加分润</label>
+                            <select name="profFlag" id="profFlag" class="form-control" data-type="select"
+                                    data-category="TXN_ID_PROF_FLAG" th:data-value="${txnIdInfo.profFlag}"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>是否引发冲正</label>
+                            <select name="revFlag" id="revFlag" class="form-control" data-type="select"
+                                    data-category="TXN_ID_REV_FLAG" th:data-value="${txnIdInfo.revFlag}"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>交易码类型</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="txnType" id="txnType"
+                                       placeholder="请输入交易码类型" th:value="${txnIdInfo.txnType}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>流程库</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="procDll" id="procDll" placeholder="请输入流程库"
+                                       th:value="${txnIdInfo.procDll}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>流程方法</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="procMeth" id="procMeth"
+                                       placeholder="请输入流程方法" th:value="${txnIdInfo.procMeth}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>模块库</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" name="modDll" id="modDll" placeholder="请输入模块库"
+                                       th:value="${txnIdInfo.modDll}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>交易码ID</th>
+                                <th>交易码名称</th>
+                                <th>CR_FLAG</th>
+                                <th>INS_TRANS</th>
+                                <th>DO_ORDERS</th>
+                                <th>SETT_FLAG</th>
+                                <th>是否参加分润</th>
+                                <th>是否引发冲正</th>
+                                <th>交易码类型</th>
+                                <th>流程库</th>
+                                <th>流程方法</th>
+                                <th>模块库</th>
+                                <shiro:hasAnyPermissions name="txnId_update,txnId_delete">
+                                    <th style="width: 90px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="txnIdInfo : ${list}" class="list-display">
+                                <td th:text="${txnIdInfo.txnId}"></td>
+                                <td th:text="${txnIdInfo.txnName}"></td>
+                                <td th:text="${ItemUtil.getName(txnIdInfo.crFlag,'TXN_ID_CR_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(txnIdInfo.insTrans,'TXN_ID_INS_TRANS')}"></td>
+                                <td th:text="${ItemUtil.getName(txnIdInfo.doOrders,'TXN_ID_DO_ORDERS')}"></td>
+                                <td th:text="${ItemUtil.getName(txnIdInfo.settFlag,'TXN_ID_SETT_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(txnIdInfo.profFlag,'TXN_ID_PROF_FLAG')}"></td>
+                                <td th:text="${ItemUtil.getName(txnIdInfo.revFlag,'TXN_ID_REV_FLAG')}"></td>
+                                <td th:text="${txnIdInfo.txnType}"></td>
+                                <td th:text="${txnIdInfo.procDll}"></td>
+                                <td th:text="${txnIdInfo.procMeth}"></td>
+                                <td th:text="${txnIdInfo.modDll}"></td>
+                                <shiro:hasAnyPermissions name="txnId_update,txnId_delete">
+                                    <td>
+                                        <shiro:hasPermission name="txnId_update">
+                                            <a class='btn blue btn-xs'
+                                               th:href="@{txn-id-update-page(txnId=${txnIdInfo.txnId})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="txnId_delete">
+                                            <a class='btn red btn-xs' th:onclick="'javascript:txnIdDel(\''+${txnIdInfo.txnId}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="txnIdInfo"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/txn-id.js}"></script>
+</body>
+</html>

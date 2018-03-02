@@ -1,0 +1,165 @@
+/**
+ * 主页圆盘电子时钟CSS文件
+ * @author lijiguang 2017年11月7日
+ */
+body, div, p {
+    font-family: 'Microsoft Yahei';
+    font-size: 14px;
+}
+
+.box {
+    width: 420px;
+    height: 420px;
+    border: 10px solid #c7c7c7;
+    margin: 40px auto;
+    box-shadow: 0px 0px 20px 3px #444 inset;
+    position: relative;
+    -webkit-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    border-radius: 50% !important;
+}
+
+/*原点*/
+.origin {
+    width: 20px;
+    height: 20px;
+    -webkit-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    border-radius: 50% !important;
+    background: #d2bcbc;
+    top: 190px;
+    left: 190px;
+    position: absolute;
+}
+
+/*文字*/
+.show_text {
+    color: #7d2828;
+    top: 100px;
+    left: 180px;
+    position: absolute;
+    display: none;
+}
+
+/* 指针 */
+.clock_line {
+    position: absolute;
+    z-index: 20;
+}
+
+.hour_line {
+    width: 100px;
+    height: 4px;
+    top: 198px;
+    left: 200px;
+    background-color: #7e6b6b;
+    border-radius: 50% !important;
+    transform-origin: 0 50%;
+    box-shadow: 1px -3px 8px 3px #aaa;
+}
+
+.minute_line {
+    width: 130px;
+    height: 2px;
+    top: 199px;
+    left: 190px;
+    background-color: #5b6711;
+    transform-origin: 7.692% 50%;
+    /*border-radius: 50% !important;*/
+    box-shadow: 1px -3px 8px 1px #aaa;
+}
+
+.second_line {
+    width: 170px;
+    height: 1px;
+    top: 199px;
+    left: 180px;
+    background-color: #f60;
+    transform-origin: 11.765% 50%;
+    box-shadow: 1px -3px 7px 1px #bbb;
+}
+
+.dot_box {
+    width: inherit;
+    height: inherit;
+}
+
+/*时钟数*/
+.dot {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 22px;
+    position: absolute;
+}
+
+.clock-scale {
+    width: 195px;
+    height: 2px;
+    transform-origin: 0% 50%;
+    z-index: 7;
+    position: absolute;
+    top: 199px;
+    left: 200px;
+}
+
+.scale-show {
+    width: 12px;
+    height: 2px;
+    background-color: #555;
+    float: left;
+}
+
+.scale-show-bang {
+    width: 12px;
+    height: 3px;
+    background-color: #0afcdb;
+    float: left;
+}
+
+.scale-hidden {
+    width: 183px;
+    height: 2px;
+    float: left;
+}
+
+/*日期*/
+.date_info {
+    width: 160px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    position: absolute;
+    top: 230px;
+    left: 120px;
+    z-index: 11;
+    color: #555;
+    font-weight: bold;
+}
+
+.time_info {
+    width: 110px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    position: absolute;
+    top: 270px;
+    left: 150px;
+    z-index: 11;
+    color: #555;
+    background: #253e3e;
+}
+
+.time {
+    width: 35px;
+    height: 35px;
+    float: left;
+    color: #fff;
+    font-size: 22px;
+}
+
+#minute_time {
+    border-left: 1px solid #fff;
+    border-right: 1px solid #fff;
+}

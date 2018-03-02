@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="activity_add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            <!--<a href="#" class='btn white '></a>-->
+            <!--&lt;!&ndash;<shiro:hasPermission name="activity:refreshCache">&ndash;&gt;-->
+                    <!--<button onclick="javascript:refreshCache();" class='btn blue ' id="refreshCacheBtn"><span>刷新缓存</span></button>-->
+            <!--&lt;!&ndash;</shiro:hasPermission>&ndash;&gt;-->
+            </li>
+        </ul>
+
+        <form th:action="@{search}" method="post" id="mkActivityFrom">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label >活动主题（%）</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="title" name="title" th:value="${activityVo.title}" placeholder="请输入你要搜索的活动主题" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label >活动状态</label>
+                        <div class="input-icon">
+                            <select name="status" id="status" class="form-control" data-type="select" data-category="ACT_STATUS" th:data-value="${activityVo.status}"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>活动开始日期</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" th:value="${activityVo.startTimeBegin}" name="startTimeBegin" id="startTimeBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                            <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="startTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" th:value="${activityVo.startTimeEnd}" name="startTimeEnd" id="startTimeEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                            <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="startTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>活动结束日期</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" th:value="${activityVo.endTimeBegin}" name="endTimeBegin" id="endTimeBegin" maxlength="19" placeholder="请选择开始时间" readonly/>
+                            <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="endTimeBeginClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" th:value="${activityVo.endTimeEnd}" name="endTimeEnd" id="endTimeEnd" maxlength="19" placeholder="请选择结束时间" readonly/>
+                            <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="endTimeEndClear" type="button"><i class="icon-remove"></i></button>
+                               </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- 搜索内容 end -->
+
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="search()"
+                            class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="cleanQuery()"
+                            class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width: 180px">活动主题</th>
+                            <th style="width: 150px">活动开始时间</th>
+                            <th style="width: 150px">活动结束时间</th>
+                            <th style="width: 180px">推广链接</th>
+                            <th style="width: 80px">活动状态</th>
+                            <th style="width: 180px">备注</th>
+                            <th style="width: 150px">创建时间</th>
+                            <th style="width: 150px">更新时间</th>
+                            <shiro:hasAnyPermissions name="activity_update,activity_delete,activity_view,activity_publish,activity_undercarriage">
+                                <th style="width: 240px;">操作</th>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="activity : ${list}">
+                            <td th:text="${activity.title}"></td>
+                            <td th:text="${#calendars.format(activity.startTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${#calendars.format(activity.endTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${activity.generalizeUrl}"></td>
+                            <td th:text="${ItemUtil.getName(activity.status,'ACT_STATUS')}"></td>
+                            <td th:text="${activity.remark}"></td>
+                            <td th:text="${#calendars.format(activity.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${#calendars.format(activity.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <shiro:hasAnyPermissions name="activity_update,activity_delete,activity_view,activity_publish,activity_undercarriage">
+                                <td>
+                                    <shiro:hasPermission name="activity_update">
+                                        <a  th:if="${activity.status} == 0" th:href="@{toUpdate(id=${activity.id})}" class='btn blue btn-xs'>修改</a>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="activity_publish">
+                                        <a  th:if="${activity.status} == 0" th:onclick="'javascript:publishAct(\''+${activity.id}+'\');'" class='btn blue btn-xs'>发布</a>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="activity_view">
+                                        <a  th:href="@{to-view(id=${activity.id})}" class='btn green btn-xs'>查看</a>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="activity_delete">
+                                        <a th:if="${activity.status} == 0" data-toggle="modal" class='btn red btn-xs' th:onclick="'javascript:deleteMk(\''+${activity.id}+'\');'" style="margin-left: 5px;">删除</a>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="activity_undercarriage">
+                                        <a  th:if="${activity.status} != 4" th:onclick="'javascript:downAct(\''+${activity.id}+'\');'" class='btn red btn-xs'>下架</a>
+                                    </shiro:hasPermission>
+
+                                </td>
+                            </shiro:hasAnyPermissions>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div th:utext="${pageHtml}" class="row page_info" data-search="mkActivityFrom"></div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#status").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/marketing/mk-activity-list.js}" charset="utf-8"></script>
+</body>
+</html>

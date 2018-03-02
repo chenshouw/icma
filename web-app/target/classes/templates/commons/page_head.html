@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<div th:fragment="pageHead">
+    <div id="mask" style="
+        width: 100%;height: 100%;
+        position: absolute;display:none;
+        background-image: url('/images/loading.gif');
+        background-repeat: no-repeat;z-index: 99999;
+        background-position-x: 50%;background-position-y: 50%;"></div>
+    <div class="header navbar navbar-inverse navbar-fixed-top">
+        <div class="header-inner" shiro:user="">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/metronic/img/logo.png}" alt="logo" class="img-responsive"/>
+            </a>
+
+            <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <img th:src="@{/metronic/img/menu-toggler.png}" alt=""/>
+            </a>
+
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                            data-close-others="true">
+                        <img alt="" th:src="@{/metronic/img/avatar1_small.jpg}"/>
+                        <shiro:principal/>
+                        <i class="icon-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li style="display: none;">
+                            <a href="extra_profile.html"><i class="icon-user"></i> 我的档案</a>
+                        </li>
+                        <li style="display: none;">
+                            <a href="page_calendar.html"><i class="icon-calendar"></i> 日程安排</a>
+                        </li>
+                        <li style="display: none;">
+                            <a href="inbox.html"><i class="icon-envelope"></i> My Inbox <span class="badge badge-danger">3</span></a>
+                        </li>
+                        <li style="display: none;">
+                            <a href="#"><i class="icon-tasks"></i> My Tasks <span class="badge badge-success">7</span></a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="javascript:;" id="trigger_fullscreen" ><i class="icon-move"></i> 全屏</a>
+                        </li>
+                        <li style="display: none;">
+                            <a href="extra_lock.html"><i class="icon-lock"></i> 锁屏</a>
+                        </li>
+                        <li>
+                            <a href="/user/update-password/tosms_verification"><i class="icon-key"></i> 修改密码</a>
+                        </li>
+                        <li>
+                            <a href="/manage/logout"><i class="icon-key"></i> 注销</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

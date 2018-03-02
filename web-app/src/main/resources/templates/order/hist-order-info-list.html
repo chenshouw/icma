@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/fileinput/fileinput.css}"/>
+</head>
+
+<body class="page-header-fixed" id="orderBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="hist_order-search">
+                    <button id="export" class='btn blue' style="margin-left: 10px;"><span>导出</span></button>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="hist_order-search">
+            <form th:action="@{search}" method="post" id="orderForm">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>交易类型</label>
+                            <div class="input-icon">
+                                <select name="txnId" id="txnId" class="form-control" data-type="select"
+                                        data-category="TXN_ID" th:data-value="${orderInfoVo.txnId}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>渠道订单号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="sysOrderId" name="sysOrderId"
+                                       th:value="${orderInfoVo.sysOrderId}"
+                                       placeholder="请输入渠道订单号"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>订单号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="orderId" name="orderId"
+                                       th:value="${orderInfoVo.orderId}"
+                                       placeholder="请输入订单号"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>商户</label>
+                            <div class="input-group">
+                                <input type="text" id="midShortName" name="midShortName" class="form-control"
+                                       placeholder="请选择商户" th:value="${orderInfoVo.midShortName}" th:data-value="${orderInfoVo.midShortName}" readonly>
+                                <input type="hidden" id="mid"  name="mid" th:value="${orderInfoVo.mid}" th:data-value="${orderInfoVo.mid}" class="form-control" readonly>
+                                <span class="input-group-btn" style="vertical-align:baseline">
+                        <button type="button" class="btn btn-default" onclick="clearMchInfoTable();">
+                             <i class="icon-remove"></i>
+                            </button>
+                                    <button type="button" class="btn blue btn-default" data-toggle="modal" data-target="#mchInfoModal" onclick="initMchInfoTable();">
+                             选择 <i class="icon-plus"></i>
+                            </button>
+					    </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>子商户</label>
+                            <div class="input-group">
+                                <input type="text" id="subMidShortName" name="subMidShortName" class="form-control"
+                                       placeholder="请选择子商户" th:value="${orderInfoVo.subMidShortName}" th:data-value="${orderInfoVo.subMidShortName}" readonly>
+                                <input type="hidden" id="subMid" name="subMid" th:value="${orderInfoVo.subMid}" th:data-value="${orderInfoVo.subMid}" class="form-control" readonly>
+                                <span class="input-group-btn" style="vertical-align:baseline">
+                        <button type="button" class="btn btn-default" onclick="clearSubMchInfo();">
+                             <i class="icon-remove"></i>
+                            </button>
+                                    <button type="button" class="btn blue btn-default" data-toggle="modal" onclick="initTable();">
+                             选择 <i class="icon-plus"></i>
+                            </button>
+					    </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>终端</label>
+                            <div class="input-group">
+                                <input type="text" id="tidShortName" name="tidShortName" class="form-control"
+                                       placeholder="请选择终端" th:data-value="${orderInfoVo.tidShortName}" th:value="${orderInfoVo.tidShortName}" readonly>
+                                <input type="hidden" id="tid" name="tid" th:value="${orderInfoVo.tid}" th:data-value="${orderInfoVo.tid}" class="form-control" readonly>
+                                <span class="input-group-btn" style="vertical-align:baseline">
+                        <button type="button" class="btn btn-default" onclick="clearTidInfo();">
+                             <i class="icon-remove"></i>
+                            </button>
+                                    <button type="button" class="btn blue btn-default" data-toggle="modal" onclick="initTidTable();">
+                             选择 <i class="icon-plus"></i>
+                            </button>
+					    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>交易状态</label>
+                            <div class="input-icon">
+                                <select name="txnStatus" id="txnStatus" class="form-control" data-type="select"
+                                        data-category="TRANS_STATUS"
+                                        th:data-value="${orderInfoVo.txnStatus}"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>渠道</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="channels" name="channels"
+                                       th:value="${orderInfoVo.channels}"
+                                       placeholder="请输入渠道"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>流水号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="trace" name="trace"
+                                       th:value="${orderInfoVo.trace}"
+                                       placeholder="请输入流水号"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>订单状态</label>
+                            <div class="input-icon">
+                                <select name="orderStatus" id="orderStatus" class="form-control" data-type="select"
+                                        data-category="ORDER_STATUS"
+                                        th:data-value="${orderInfoVo.orderStatus}"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>结算状态</label>
+                            <div class="input-icon">
+                                <select name="settleStatus" id="settleStatus" class="form-control"
+                                        data-type="select"
+                                        data-category="SETTLE_STATUS"
+                                        th:data-value="${orderInfoVo.settleStatus}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>商品名称(%)</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="goods" name="goods"
+                                       th:value="${orderInfoVo.goods}"
+                                       placeholder="请输入商品名称"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>下单时间</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       th:value="${orderInfoVo.createTimeBegin}"
+                                       name="createTimeBegin" id="createTimeBegin" maxlength="19"
+                                       placeholder="请选择开始日期"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control"
+                                       th:value="${orderInfoVo.createTimeEnd}"
+                                       name="createTimeEnd" id="createTimeEnd" maxlength="19"
+                                       placeholder="请选择结束日期"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>结算时间</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       th:value="${orderInfoVo.settleTimeBegin}"
+                                       name="settleTimeBegin" id="settleTimeBegin" maxlength="19"
+                                       placeholder="请选择开始日期"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="settleTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control"
+                                       th:value="${orderInfoVo.settleTimeEnd}"
+                                       name="settleTimeEnd" id="settleTimeEnd" maxlength="19"
+                                       placeholder="请选择结束日期"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="settleTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>交易时间</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       th:value="${orderInfoVo.txnTimeBegin}"
+                                       name="txnTimeBegin" id="txnTimeBegin" maxlength="19"
+                                       placeholder="请选择开始日期"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="txnTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control"
+                                       th:value="${orderInfoVo.txnTimeEnd}"
+                                       name="txnTimeEnd" id="txnTimeEnd" maxlength="19"
+                                       placeholder="请选择结束日期"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="txnTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>交易类型</th>
+                                <th>渠道订单号</th>
+                                <th>订单号</th>
+                                <th>流水号</th>
+                                <th>商品名称</th>
+                                <th>单价</th>
+                                <th>数量</th>
+                                <th>订单总额</th>
+                                <th>实付金额</th>
+                                <th>优惠金额</th>
+                                <th>费用</th>
+                                <th>下单时间</th>
+                                <th>下单员</th>
+                                <th>订单状态</th>
+                                <th>交易返回码</th>
+                                <th>交易返回详情</th>
+                                <th>系统参考号</th>
+                                <th>货币类型</th>
+                                <th>交易码</th>
+                                <th>商户号</th>
+                                <th>商户简称</th>
+                                <th>子商户</th>
+                                <th>子商户简称</th>
+                                <th>终端号</th>
+                                <th>终端简称</th>
+                                <th>结算状态</th>
+                                <th>结算时间</th>
+                                <th>交易状态</th>
+                                <th>交易时间</th>
+                                <th>渠道</th>
+                                <th>支付码类型</th>
+                                <th>支付方式</th>
+                                <th>批次号</th>
+                                <th>备注</th>
+                                <shiro:hasAnyPermissions name="hist_order-view">
+                                    <th style="width: 90px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order : ${list}">
+                                <td sl:type="TXN_ID" sl:text="${order.txnId}"></td>
+                                <td th:text="${order.sysOrderId}"></td>
+                                <td th:text="${order.orderId}"></td>
+                                <td th:text="${order.trace}"></td>
+                                <td th:text="${order.goods}"></td>
+                                <td th:text="${#numbers.formatCurrency((order?.price?:0.0)/100.0)}"></td>
+                                <td th:text="${order.num}"></td>
+                                <td th:text="${#numbers.formatCurrency((order?.orderAmt?:0.0)/100.0)}"></td>
+                                <td th:text="${#numbers.formatCurrency((order?.payAmt?:0.0)/100.0)}"></td>
+                                <td th:text="${#numbers.formatCurrency((order?.yhAmt?:0.0)/100.0)}"></td>
+                                <td th:text="${#numbers.formatCurrency((order?.feeAmt?:0.0)/100.0)}"></td>
+                                <td th:text="${#calendars.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${order.teller}"></td>
+                                <td sl:type="ORDER_STATUS" sl:text="${order.orderStatus}"></td>
+                                <td th:text="${order.rc}"></td>
+                                <td th:text="${order.rcDetail}"></td>
+                                <td th:text="${order.rrn}"></td>
+                                <td sl:type="CCY_TYPE" sl:text="${order.currency}"></td>
+                                <td th:text="${order.txnCode}"></td>
+                                <td th:text="${order.mid}"></td>
+                                <td th:text="${order.midShortName}"></td>
+                                <td th:text="${order.subMid}"></td>
+                                <td th:text="${order.subMidShortName}"></td>
+                                <td th:text="${order.tid}"></td>
+                                <td th:text="${order.tidShortName}"></td>
+                                <td sl:type="SETTLE_STATUS" sl:text="${order.settleStatus}"></td>
+                                <td th:text="${#calendars.format(order.settleTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td sl:type="TRANS_STATUS" sl:text="${order.txnStatus}"></td>
+                                <td th:text="${#calendars.format(order.txnTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${order.channels}"></td>
+                                <td sl:type="CODE_TYPE" sl:text="${order.codeType}"></td>
+                                <td sl:type="PAY_TYPE" sl:text="${order.payType}"></td>
+                                <td th:text="${order.batchNo}"></td>
+                                <td th:text="${order.memo}"></td>
+
+
+                                <shiro:hasAnyPermissions name="hist_order-view">
+                                    <td>
+                                        <shiro:hasPermission name="hist_order-view">
+                                            <a class='btn green btn-xs ' th:href="@{view(orderId=${order.orderId})}">详情</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="orderForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mchInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="mchInfoModalLabel">商户信息</h4>
+            </div>
+            <div class="modal-body" style="height: auto;max-height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="mchInfoShowFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户号</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midSearch" type="text" class="form-control" placeholder="请输入商户号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户简称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midShortNameSearch" type="text" class="form-control" placeholder="请输入商户简称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>商户名称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="midNameSearch" type="text" class="form-control" placeholder="请输入商户名称">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="form-inline">
+                            <button onclick="refreshAlertMchData()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                            <button onclick="cleanMchInfoQuery()" type="button"
+                                    class="btn btn-primary">重置
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="mchInfoTable" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="selectMchInfo();">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myModalLabel">子商户信息</h4>
+            </div>
+            <div class="modal-body" style="height: auto;max-height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="subMchInfoShowFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>子商户号</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="subMidSearch" type="text" class="form-control" placeholder="请输入子商户号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>子商户简称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="subMidShortNameSearch" type="text" class="form-control" placeholder="请输入子商户简称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>子商户名称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="subMidNameSearch" type="text" class="form-control" placeholder="请输入子商户名称">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="form-inline">
+                            <button onclick="refreshAlertSubMchData()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                            <button onclick="cleanSubMchInfoQuery()" type="button"
+                                    class="btn btn-primary">重置
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="item_info_table" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="selectItem();">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tidModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="tidModalLabel">终端信息</h4>
+            </div>
+            <div class="modal-body" style="height: auto;max-height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="tidInfoShowFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>终端号</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="tidSearch" type="text" class="form-control" placeholder="请输入终端号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>终端简称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="tidShortNameSearch" type="text" class="form-control" placeholder="请输入终端简称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>终端名称（%）</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="tidNameSearch" type="text" class="form-control" placeholder="请输入终端名称">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-5"></div>
+                        <div class="form-inline">
+                            <button onclick="refreshAlertTidData()" type="button"
+                                    class="btn btn-primary">查询
+                            </button>
+                            <button onclick="cleanTidInfoQuery()" type="button"
+                                    class="btn btn-primary">重置
+                            </button>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                </form>
+                <table id="tid-info-table" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="selectTid();">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/order/hist-order-info-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/character-check.js}" charset="utf-8"></script>
+
+</body>
+</html>

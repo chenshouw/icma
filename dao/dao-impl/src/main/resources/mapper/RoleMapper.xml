@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.RoleMapper">
+    <resultMap id="RoleResult" type="org.hengsir.icma.entity.Role" >
+        <result property="roleId" column="ROLE_ID" />
+        <result property="roleName" column="ROLE_NAME" />
+        <result property="roleDesc" column="ROLE_DESC" />
+        <result property="roleStatus" column="ROLE_STATUS" />
+        <result property="roleOperator" column="ROLE_OPERATOR" />
+        <result property="createTime" column="CREATE_TIME" />
+        <result property="updateTime" column="UPDATE_TIME" />
+        <result property="roleCode" column="ROLE_CODE" />
+    </resultMap>
+
+    <select id="findAll" resultMap="RoleResult" useCache="false">
+        SELECT * FROM T_ROLE ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="findByUserId" resultMap="RoleResult" useCache="false">
+        SELECT A.* FROM T_ROLE A,T_USER_ROLE_RELATION B WHERE A.ROLE_ID=B.ROLE_ID AND USER_ID= #{userId} AND A.ROLE_STATUS='1'
+    </select>
+
+    <select id="findRoleCount"  resultType="java.lang.Integer" useCache="false">
+        SELECT  count(1) FROM T_ROLE
+        <where>
+            <if test="null != roleName and '' != roleName">
+                AND ROLE_NAME LIKE CONCAT(CONCAT('%', #{roleName}),'%')
+            </if>
+            <if test="null != roleCode and '' != roleCode">
+                AND ROLE_CODE = #{roleCode}
+            </if>
+            <if test="null != roleStatus and '' != roleStatus">
+                AND ROLE_STATUS = #{roleStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByRole"  resultMap="RoleResult" useCache="false" >
+        SELECT * FROM T_ROLE
+        <where>
+            <if test="null != roleName and '' != roleName">
+                AND ROLE_NAME LIKE CONCAT(CONCAT('%', #{roleName}),'%')
+            </if>
+            <if test="null != roleCode and '' != roleCode">
+                AND ROLE_CODE = #{roleCode}
+            </if>
+            <if test="null != roleStatus and '' != roleStatus">
+                AND ROLE_STATUS = #{roleStatus}
+            </if>
+        </where>
+        ORDER BY CREATE_TIME DESC,ROLE_ID ASC
+    </select>
+
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="RoleResult" useCache="false">
+        SELECT * FROM T_ROLE
+        <where>
+            <if test="null != roleId and '' != roleId">
+                ROLE_ID  = #{roleId}
+            </if>
+        </where>
+        ORDER BY ROLE_NAME
+    </select>
+
+    <insert id="create"  parameterType="org.hengsir.icma.entity.Role">
+        INSERT INTO T_ROLE
+        ( ROLE_NAME, ROLE_DESC, ROLE_STATUS, ROLE_OPERATOR,ROLE_CODE,CREATE_TIME,UPDATE_TIME)
+        VALUES (
+        #{roleName},
+        #{roleDesc},
+        #{roleStatus},
+        #{roleOperator},
+        #{roleCode},
+        now(),
+        now())
+    </insert>
+
+
+    <delete id="remove" parameterType="java.lang.Integer" >
+        DELETE FROM T_ROLE
+        <where>
+            <if test="null != roleId and ''!= roleId">
+                AND  ROLE_ID = #{roleId}
+            </if>
+        </where>
+    </delete>
+
+    <update id="update" parameterType="org.hengsir.icma.entity.Role">
+        UPDATE T_ROLE
+        <set>
+            <if test="''!= roleName and null != roleName">
+                ROLE_NAME = #{roleName},
+            </if>
+            <if test="''!= roleDesc and null != roleDesc">
+                ROLE_DESC = #{roleDesc},
+            </if>
+            <if test="''!= roleStatus and null != roleStatus">
+                ROLE_STATUS = #{roleStatus},
+            </if>
+            UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            <if test="''!= roleCode and null != roleCode">
+                ROLE_CODE = #{roleCode}
+            </if>
+        </set>
+        WHERE
+        ROLE_ID = #{roleId}
+    </update>
+
+    <select id="findByCode" parameterType="java.lang.String" resultMap="RoleResult" useCache="false">
+        SELECT * FROM T_ROLE WHERE ROLE_CODE  = #{roleCode}
+    </select>
+</mapper>

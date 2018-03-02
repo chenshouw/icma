@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+
+                <shiro:hasPermission name="shopGrpDef_add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+
+                <shiro:hasPermission name="shopGrpDef_upload">
+                    <a href="#" class='btn white '></a>
+                    <button onclick="clearFile();" class='btn blue ' type="button" data-toggle="modal"
+                            data-target="#batchImportModal"><span>批量导入</span></button>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="shopGrpDef_search">
+            <form th:action="@{search}" method="post" id="MchGroupFrom">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>门店分组代码（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="shopGrp" name="shopGrp"
+                                       th:value="${shopGrpDefVo.shopGrp}" placeholder="请输入你要搜索的门店分组代码"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>门店分组名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="grpName" name="grpName"
+                                       th:value="${shopGrpDefVo.grpName}" placeholder="请输入你要搜索的门店分组名称"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>门店代码（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="shopId" name="shopId"
+                                       th:value="${shopGrpDefVo.shopId}" placeholder="请输入你要搜索的门店代码"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>门店名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                    <input type="text" class="form-control" id="cName" name="cName"
+                                           th:value="${shopGrpDefVo.cName}" placeholder="请输入你要搜索的门店名称"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- 搜索内容 end -->
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>门店分组</th>
+                                <th>门店分组名称</th>
+                                <th>门店编号</th>
+                                <th>门店名称</th>
+                                <th>操作员</th>
+                                <th>修改日期</th>
+                                <shiro:hasAnyPermissions name="shopGrpDef_update,shopGrpDef_delete">
+                                    <th>操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="shopGDVo : ${list}">
+                                <td th:text="${shopGDVo.shopGrp}"></td>
+                                <td th:text="${shopGDVo.grpName}"></td>
+                                <td th:text="${shopGDVo.shopId}"></td>
+                                <td th:text="${shopGDVo.cName}"></td>
+                                <td th:text="${shopGDVo.teller}"></td>
+                                <td th:text="${#calendars.format(shopGDVo.modiDate,'yyyy-MM-dd')}"></td>
+                                <shiro:hasAnyPermissions name="mchGroup_update,mchGroup_delete">
+                                    <td>
+                                        <shiro:hasPermission name="mchGroup_update">
+                                            <a th:href="@{toUpdate(shopGrp=${shopGDVo.shopGrp},shopId=${shopGDVo.shopId})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchGroup_delete">
+                                            <a data-toggle="modal" class='btn red btn-xs'
+                                               th:onclick="'javascript:deleteShopGrpDef(\''+${shopGDVo.shopGrp}+'\',\''+${shopGDVo.shopId}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div th:utext="${pageHtml}" class="row page_info" data-search="MchGroupFrom"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<!--导入数据操作层-->
+<div id="batchImportModal" class="modal fade" role="dialog"
+     aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="myModalLabel">批量导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a id="downId" onclick="down()">
+                        <span style="font-size:larger;font-weight:200;color:red">门店分组批量导入-模板.xlsx</span>
+                    </a>
+                </div>
+                <div class="form-group" id="passwordDiv">
+                    <label>选择门店分组数据文件(<span style="color: red;">请先在右上角下载模板填导入内容</span>)</label>
+                    <input class="form-control" type="file" id="batchFile">
+                </div>
+                <div><span color="red" id="content"></span></div>
+                <div class="progress progress-striped active" style="display: none">
+                    <div id="progressBar" class="progress-bar progress-bar-info"
+                         role="progressbar" aria-valuemin="0" aria-valuenow="0"
+                         aria-valuemax="100" style="width: 0%">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="batchImportBtn" type="submit" name="submit" class="btn btn-success" value="上传"/>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/mch/shop-grp-def-list.js}" charset="utf-8"></script>
+</body>
+</html>

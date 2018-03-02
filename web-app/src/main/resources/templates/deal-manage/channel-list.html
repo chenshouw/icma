@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" xmlns:sl="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="channel:add">
+                    <a href="toadd" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+
+            <form action="/trans/deal-manage/channel/search" id="minstForm" method="post">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="instName">渠道名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="instName" name="instName"
+                                        th:value="${minst?.instName}?: _" placeholder="请输入渠道名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>渠道编号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="instId" name="instId"
+                                        th:value="${minst?.instId} ?: _" placeholder="请输入渠道编号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" id="status" class="form-control select2me" data-type="select"
+                                        data-category="INST_STATUS" onchange="" th:data-value="${minst?.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>渠道编号</th>
+                                <th>渠道名称</th>
+                                <th>所属地区码</th>
+                                <th>渠道等级</th>
+                                <th>联系人</th>
+                                <th>电话</th>
+                                <th>帐户名</th>
+                                <th>状态</th>
+                                <th>本地标志</th>
+                                <shiro:hasAnyPermissions name="channel:update,channel:delete">
+                                    <th>操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr th:each="minst : ${list}">
+                                <td th:text="${minst.instId}" ></td>
+                                <td th:text="${minst.instName}" ></td>
+                                <td th:text="${minst.areaCode}" ></td>
+                                <td th:text="${minst.instLevel}" ></td>
+                                <td th:text="${minst.linkMan}" ></td>
+                                <td th:text="${minst.phone}" ></td>
+                                <td th:text="${minst.accName}" ></td>
+                                <td sl:type="INST_STATUS" sl:text="${minst.status}"></td>
+                                <td sl:type="INST_LOCAL_FLAG" sl:text="${minst.localFlag}"></td>
+                                <shiro:hasAnyPermissions name="channel:update,channel:delete">
+                                    <td>
+                                        <shiro:hasPermission name="channel:update">
+                                            <a th:href="@{toUpdate(channelId=${minst.instId})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="channel:delete">
+                                            <a data-toggle="modal" class='btn red btn-xs'
+                                               th:onclick="'javascript:deleteChannelId(\''+${minst.instId}+'\');'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="minstForm"></div>
+            </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/insts/channel-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

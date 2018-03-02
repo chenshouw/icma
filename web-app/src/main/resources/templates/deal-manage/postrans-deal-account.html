@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="dealAccountFormBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>调账</a>
+	      	</li>
+	     </ul>
+	     <form id="addForm" class="form-horizontal" role="form" method="post">
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     交易类型
+                 </label>
+                 <div class="col-sm-6">
+                     <input style="display: none" type="text" name="transId" id="transId" th:value="${transId}" />
+                     <input style="display: none" type="text" name="txnId" id="txnId" th:value="${txnIdInfo?.txnId}" />
+                     <input type="text" class="form-control" th:value="${txnIdInfo?.txnName}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     受理机构
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="acqId" id="acqId" th:value="${acqInst?.instName}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账户类型
+                 </label>
+                 <div class="col-sm-6">
+                     <input style="display: none" type="text" name="accType" id="accType" th:value="${accType?.accType}" />
+                     <input type="text" class="form-control" th:value="${accType?.accName}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     网点信息
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="orgCode" id="orgCode" th:value="${orgInst?.instName}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     系统订单号
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="orderId" id="orderId" th:value="${orderId}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     流水号
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="systrace" id="systrace" th:value="${systrace}" readonly/>
+                 </div>
+             </div>
+
+             <div class="form-group">
+                 <label class="col-sm-4 control-label">
+                     渠道类型<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="channels" id="channels" th:value="${channel?.name}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     产品id
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="pan" id="pan" th:value="${productId}" readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     交易金额
+                 </label>
+                 <div class="col-sm-6">
+                     <div class="input-group">
+                         <input type="text" style="display: none" name="oldtxnAmt" id="oldtxnAmt" th:value="${txnAmt}" />
+                         <input type="text" class="form-control" name="txnAmt" id="txnAmt" th:value="${txnAmt}" />
+                         <span class="input-group-btn">
+                            <button type="button"  class="btn blue btn-default" data-toggle="modal" id="choose">
+                             可调账的最大金额
+                            </button>
+                     </span>
+                     </div>
+
+                 </div>
+             </div>
+              <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                   <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                   <button  style="margin-left:30px;"  type="button" class="btn blue   btn-info btn-search"  id="btnSave">提交</button>
+                </div>
+              </div>
+        </form>
+	</div>
+</div>
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/deal-manage/postrans-deal-account.js}" charset="utf-8"></script><script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

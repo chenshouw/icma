@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="domainInfo:add">
+                    <a href="toadd" class='btn blue'><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="domainInfo:search">
+            <form th:action="@{search}" method="get" id="domainInfo">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>协议</label>
+                            <select id="protocol" name="protocol" class="form-control" data-type="select">
+                                <option value="" selected>请选择协议</option>
+                                <option value="http://" th:selected="(${domainInfo.protocol}=='http://')">http://
+                                </option>
+                                <option value="https://" th:selected="(${domainInfo.protocol}=='https://')">https://
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>域名/IP</label>
+                            <input type="text" name="domain" id="domain" class="form-control" placeholder="域名/IP"
+                                   th:value="${domainInfo.domain}"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <select name="status" id="status" class="form-control" data-type="select"
+                                    data-category="DOMAIN_INFO_STATUS" th:data-value="${domainInfo.status}"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn blue btn-block">查询<i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>协议</th>
+                                <th>域名/IP</th>
+                                <th>状态</th>
+                                <th>备注</th>
+                                <th>创建人</th>
+                                <th>创建时间</th>
+                                <th>更新人</th>
+                                <th>更新时间</th>
+                                <shiro:hasAnyPermissions name="domainInfo:update,domainInfo:delete">
+                                    <th style="width: 180px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="domainInfo : ${list}">
+                                <td th:text="${domainInfo.protocol}"></td>
+                                <td th:text="${domainInfo.domain}"></td>
+                                <td th:text="${ItemUtil.getName(domainInfo.status,'DOMAIN_INFO_STATUS')}"></td>
+                                <td th:text="${domainInfo.memo}"></td>
+                                <td th:text="${domainInfo.createBy}"></td>
+                                <td th:text="${#calendars.format(domainInfo.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${domainInfo.updateBy}"></td>
+                                <td th:text="${#calendars.format(domainInfo.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasAnyPermissions name="domainInfo:update,domainInfo:delete">
+                                    <td>
+                                        <shiro:hasPermission name="domainInfo:update">
+                                            <a class='btn blue ' th:href="@{toupdate(id=${domainInfo.id})}">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="domainInfo:delete">
+                                            <a class='btn red '
+                                               th:onclick="'javascript:deleteMethod(\''+${domainInfo.id}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="domainInfo"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/domain-info.js}" charset="utf-8"></script>
+</body>
+</html>

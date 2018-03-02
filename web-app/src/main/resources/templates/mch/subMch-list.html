@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/jstree/style.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="mchSub_add">
+                    <a onclick="javascript:toAdd();" class='btn blue '><span>新增</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="mchSub_search">
+            <form th:action="@{search}" method="post" id="subMchFrom">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>子商户编号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="subMid" name="subMid"
+                                        th:value="${subMchInfoVo.subMid}" placeholder="请输入你要搜索的子商户编号"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>子商户名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="subMidName" name="subMidName"
+                                        th:value="${subMchInfoVo.subMidName}" placeholder="请输入你要搜索的子商户名称"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>子商户状态</label>
+                            <div class="input-icon">
+                                <select name="status" id="status" class="form-control" data-type="select"
+                                        data-category="SUB_MCH_STATUS" th:data-value="${subMchInfoVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>商户号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="mid" name="mid"
+                                        th:value="${subMchInfoVo.mid}" placeholder="请输入你要搜索的商户号"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>操作日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${subMchInfoVo.modifyDateBegin}"
+                                        name="modifyDateBegin" id="modifyDateBegin" maxlength="19" placeholder="请选择开始日期"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${subMchInfoVo.modifyDateEnd}"
+                                        name="modifyDateEnd" id="modifyDateEnd" maxlength="19" placeholder="请选择结束日期"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>子商户号</th>
+                                <th>子商户名称</th>
+                                <th>子商户简称</th>
+                                <th>状态</th>
+                                <th th:each="txnOnOff: ${txnOnOffs}" th:text="${txnOnOff.name}"></th>
+                                <th>子商户地址</th>
+                                <th>商户号</th>
+                                <th>商户名称</th>
+                                <th>操作时间</th>
+                                <th>操作人</th>
+                                <th>备注</th>
+                                <shiro:hasAnyPermissions name="mchSub_update,mchSub_delete,mchSub_view">
+                                    <th style="width:90px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="subMchInfo : ${list}">
+                                <td th:text="${subMchInfo.subMid}"></td><!--子商户号-->
+                                <td th:text="${subMchInfo.subMidName}"></td><!--子商户名称-->
+                                <td th:text="${subMchInfo.subMidShortName}"></td><!--子商户简称-->
+                                <td sl:type="SUB_MCH_STATUS" sl:text="${subMchInfo.status}"></td><!--子商户状态-->
+                                <td th:each="txnOnOff: ${txnOnOffs}" sl:post="${txnOnOff.post}" sl:onoff="${subMchInfo.onOffCode}+','+${onOffResult}+','+${subMchInfo.mchInfo.onOffCode}"></td>
+                                <td th:text="${subMchInfo.subMchAddr}"></td><!--子商户地址-->
+                                <td th:text="${subMchInfo.mid}"></td><!--商户号-->
+                                <td th:text="${subMchInfo.mchInfo?.midName?: ''}"></td><!--商户名称-->
+                                <td th:text="${#calendars.format(subMchInfo.modifyDate,'yyyy-MM-dd HH:mm:ss')}"></td><!--修改时间-->
+                                <td th:text="${subMchInfo.teller}"></td><!--操作人-->
+                                <td th:text="${subMchInfo.memo}"></td><!--备注-->
+                                <shiro:hasAnyPermissions name="mchSub_update,mchSub_delete,mchSub_view">
+                                    <td>
+                                        <shiro:hasPermission name="mchSub_update">
+                                            <a class='btn blue btn-xs '
+                                                    th:onclick="'javascript:toUpdateSubMchInfo(\''+${subMchInfo.subMid}+'\')'">修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchSub_delete">
+                                            <a class='btn red btn-xs '
+                                                    th:onclick="'javascript:deleteSubMchInfo(\''+${subMchInfo.subMid}+'\')'">删除</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mchSub_view">
+                                            <a class='btn green btn-xs '
+                                                    th:onclick="'javascript:viewSubMchInfo(\''+${subMchInfo.subMid}+'\')'">详情</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="subMchFrom"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/mch/subMch-list.js}" charset="utf-8"></script>
+</body>
+</html>

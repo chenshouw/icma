@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+</head>
+<body class="page-header-fixed" id="itemBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>修改</a></li>
+        </ul>
+        <form class="form-horizontal" role="form" id="itemForm" method="post">
+            <div class="form-group">
+                <label for="custNo" class="col-sm-4 control-label">客户号<span style="color:red;">*</span></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="custNo" id="custNo" th:value="${mcustInfo.custNo}" th:readonly="true" placeholder="请输入客户号">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cliName" class="col-sm-4 control-label">客户名称<span style="color:red;">*</span></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="cliName" id="cliName" th:value="${mcustInfo.cliName}" placeholder="请输入客户名称">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="issuId" class="col-sm-4 control-label">所属发卡机构<span style="color:red;">*</span></label>
+                <div class="col-sm-3">
+                    <select class="select2_category form-control select2me" name="issuId" id="issuId" data-placeholder="Choose a org" tabindex="1">
+                        <option value="">请选择</option>
+                        <option th:each="Minst : ${orgs}" th:value="${Minst.instId}" th:selected="${mcustInfo.issuId == Minst.instId}" th:text="${Minst.instId}+'-'+${Minst.instName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cliAddr" class="col-sm-4 control-label">客户地址</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="cliAddr" name="cliAddr" th:value="${mcustInfo.cliAddr}" placeholder="请输入客户地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cliCaller" class="col-sm-4 control-label">联系人</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="cliCaller" name="cliCaller" th:value="${mcustInfo.cliCaller}" placeholder="请输入联系人">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cliPhone1" class="col-sm-4 control-label">联系电话1</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="cliPhone1" name="cliPhone1" th:value="${mcustInfo.cliPhone1}" placeholder="请输入联系电话1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cliPhone2" class="col-sm-4 control-label">联系电话2</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="cliPhone2" name="cliPhone2" th:value="${mcustInfo.cliPhone2}" placeholder="请输入联系电话2">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="certNo" class="col-sm-4 control-label">身份证</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="certNo" name="certNo" th:value="${mcustInfo.certNo}" placeholder="请输入身份证">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="company" class="col-sm-4 control-label">单位名称</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="company" name="company" th:value="${mcustInfo.company}" placeholder="请输入单位名称">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="orgCode" class="col-sm-4 control-label">所属部门代码</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="orgCode" name="orgCode" th:value="${mcustInfo.orgCode}" placeholder="请输入所属部门代码">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="auditor" class="col-sm-4 control-label">授权人</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="auditor" name="auditor" th:value="${mcustInfo.auditor}" placeholder="请输入授权人">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ywyId" class="col-sm-4 control-label">业务员</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="ywyId" name="ywyId" th:value="${mcustInfo.ywyId}" placeholder="请输入业务员">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="sec" class="col-sm-4 control-label">所属片区</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="sec" name="sec" th:value="${mcustInfo.sec}" placeholder="请输入所属片区">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cliType" class="col-sm-4 control-label">客户类型</label>
+                <div class="col-sm-3">
+                    <select name="cliType" class="form-control" id="cliType" data-type="select" data-category="CUST_INFO_TYPE" th:data-value="${mcustInfo.cliType}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rptDlv" class="col-sm-4 control-label">报表汇总方式</label>
+                <div class="col-sm-3">
+                    <select name="rptDlv" class="form-control" id="rptDlv" data-type="select" data-category="CUST_INFO_RPTDLV" th:data-value="${mcustInfo.rptDlv}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="status" class="col-sm-4 control-label">状态<span style="color:red;">*</span></label>
+                <div class="col-sm-3">
+                    <select name="status" class="form-control" id="status" data-type="select" data-category="CHANNELS_STATUS" th:data-value="${(mcustInfo.status==null)?1:mcustInfo.status}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="memo" class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="memo" name="memo" th:value="${mcustInfo.memo}" placeholder="请输入备注">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-4">
+                    <button style="background-color: gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+                    <button style="margin-left: 30px; background-color: #0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/sell-card/mcust-info.js}" charset="utf-8"></script>
+</html>

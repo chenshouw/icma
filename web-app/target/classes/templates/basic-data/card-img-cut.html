@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+
+    <link th:href="@{/css/cropper/cropper.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/cropper/default.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/cropper/main.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/cropper/normalize.css}" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        td {
+            vertical-align: top;
+            padding-left: 10px;
+        }
+    </style>
+
+</head>
+<body onload="javascript:$('#cropperImg').cropper('setAspectRatio',NaN);">
+
+<input style="display:none;" id="getData" onclick="getData();" type="button" value="确定"/>
+<input id="isValidate" type="hidden" value="0"/>
+<input id="picName" type="hidden" value=""/>
+<input id="data" type="hidden" value=""/>
+<input id="message" type="hidden" value=""/>
+<table style="margin-top:20px;">
+    <tr style="height:200px;">
+        <td rowspan="3">
+            <div class="img-container" style="width:680px;height:600px;margin-left:0px;">
+                <img id="cropperImg" th:src="@{/images/wm.png}">
+            </div>
+        </td>
+        <td>
+            <div class="docs-preview clearfix">
+                <div class="img-preview preview-lg"></div>
+            </div>
+        </td>
+    </tr>
+    <tr style="height:20px;">
+        <td>
+            <div class="btn-group">
+                <label class="btn btn-primary btn-upload" style="border:0px;background-color:red;" for="inputImage" title="Upload image file">
+                    <input class="sr-only" id="inputImage" name="file" type="file" accept="image/*">
+                    <span class="docs-tooltip pull-left" data-toggle="tooltip" title="选择文件">
+                        <span class="icon icon-upload"></span>
+                    </span>
+                    <span class="pull-right">&nbsp;选择图片</span>
+                </label>
+            </div>
+        </td>
+    </tr>
+    <tr style="height:20px;">
+        <td>
+            <div class="btn-group">
+                <button class="btn btn-primary" data-method="setDragMode" data-option="move" type="button" title="移动">
+                    <span class="docs-tooltip" data-toggle="tooltip" title data-original-title="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+                      <span class="icon icon-move"></span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" data-method="setDragMode" data-option="crop" type="button" title="裁剪">
+                    <span class="docs-tooltip" data-toggle="tooltip" title data-original-title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+                      <span class="icon icon-crop"></span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" data-method="zoom" data-option="0.1" type="button" title="放大">
+                    <span class="docs-tooltip" data-toggle="tooltip" title data-original-title="$().cropper(&quot;zoom&quot;, 0.1)">
+                      <span class="icon icon-zoom-in"></span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" data-method="zoom" data-option="-0.1" type="button" title="缩小">
+                    <span class="docs-tooltip" data-toggle="tooltip" title data-original-title="$().cropper(&quot;zoom&quot;, -0.1)">
+                      <span class="icon icon-zoom-out"></span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" data-method="rotate" data-option="-45" type="button" title="向左旋转">
+                    <span class="docs-tooltip" data-toggle="tooltip" title data-original-title="$().cropper(&quot;rotate&quot;, -45)">
+                      <span class="icon icon-rotate-left"></span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" data-method="rotate" data-option="45" type="button" title="向右旋转">
+                    <span class="docs-tooltip" data-toggle="tooltip" title data-original-title="$().cropper(&quot;rotate&quot;, 45)">
+                      <span class="icon icon-rotate-right"></span>
+                    </span>
+                </button>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div th:replace="/commons/scripts::scripts"/>
+<script type="text/javascript" th:src="@{/js/cropper/cropper.js}"></script>
+<script type="text/javascript" th:src="@{/js/cropper/main.js}"></script>
+<script type="text/JavaScript">
+    var data;
+    function getData() {
+        var result = $('#cropperImg').cropper("getCroppedCanvas");
+        data = result.toDataURL('image/jpeg', 1);//获取剪裁的图片并且转为base64格式
+        if (data.length > 1024 * 1024) {
+            $("#isValidate").val(0);//设置校验不通过
+            $("#message").val("图片大小不能超过1M,请重新截取");//设置校验不通过
+        } else {
+            $("#data").val(data);//将剪裁后的base64代码保存的隐藏域中
+            $("#isValidate").val(1);//设置校验通过
+        }
+    }
+</script>
+
+</body>
+</html>

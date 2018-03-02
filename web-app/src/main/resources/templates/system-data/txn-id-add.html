@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="txnIdBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" method="post" id="txnIdForm">
+            <div class="form-group">
+                <label for="txnId" class="col-sm-4 control-label"><font color="#FF0000">*</font>交易码ID</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" name="txnId" id="txnId" value="" placeholder="请输入交易码ID"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="txnName" class="col-sm-4 control-label"><font color="#FF0000">*</font>交易码名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="txnName" id="txnName" value="" placeholder="请输入交易码名称"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="crFlag" class="col-sm-4 control-label"><font color="#FF0000">*</font>CR_FLAG</label>
+                <div class="col-sm-4">
+                    <select name="crFlag" id="crFlag" class="form-control" data-type="select" data-category="TXN_ID_CR_FLAG"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="insTrans" class="col-sm-4 control-label"><font color="#FF0000">*</font>INS_TRANS</label>
+                <div class="col-sm-4">
+                    <select name="insTrans" id="insTrans" class="form-control" data-type="select" data-category="TXN_ID_INS_TRANS"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="doOrders" class="col-sm-4 control-label"><font color="#FF0000">*</font>DO_ORDERS</label>
+                <div class="col-sm-4">
+                    <select name="doOrders" id="doOrders" class="form-control" data-type="select" data-category="TXN_ID_DO_ORDERS"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="settFlag" class="col-sm-4 control-label"><font color="#FF0000">*</font>SETT_FLAG</label>
+                <div class="col-sm-4">
+                    <select name="settFlag" id="settFlag" class="form-control" data-type="select" data-category="TXN_ID_SETT_FLAG"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="profFlag" class="col-sm-4 control-label"><font color="#FF0000">*</font>是否参加分润</label>
+                <div class="col-sm-4">
+                    <select name="profFlag" id="profFlag" class="form-control" data-type="select" data-category="TXN_ID_PROF_FLAG"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="revFlag" class="col-sm-4 control-label"><font color="#FF0000">*</font>是否引发冲正</label>
+                <div class="col-sm-4">
+                    <select name="revFlag" id="revFlag" class="form-control" data-type="select" data-category="TXN_ID_REV_FLAG"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="txnType" class="col-sm-4 control-label">交易码类型</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="txnType" id="txnType" value="" placeholder="请输入交易码类型"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="procDll" class="col-sm-4 control-label">流程库</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="procDll" id="procDll" value="" placeholder="请输入流程库"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="procMeth" class="col-sm-4 control-label">流程方法</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="procMeth" id="procMeth" value="" placeholder="请输入流程方法"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="modDll" class="col-sm-4 control-label">模块库</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="modDll" id="modDll" value="" placeholder="请输入模块库"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn btn-info btn-search" id="btnSave">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/system-data/txn-id.js}"></script>
+</body>
+</html>

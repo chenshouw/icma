@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+			 <li class="btn-group">
+				 <a href="#" class="btn blue " onclick="history.go(-1)"><span>返回</span></a>
+			 </li>
+	     </ul>
+	     <div th:align="center">
+			 <h2 style="color: red">页面出错了!!!</h2><br/>
+			 <h3>对不起,你所访问的页面暂时没有找到!</h3><br/>
+			 <a href="#" class="btn blue " onclick="history.go(-1)"><span>返回</span></a>
+		 </div>
+	</div>
+    <a href=""></a>
+</div>
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

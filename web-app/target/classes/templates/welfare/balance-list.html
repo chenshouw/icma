@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed" id="balanceBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="balance_export">
+                    <a href='javascript:void(0);' id="export" class='btn blue '><span>导出</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <form action="/welfare/balance/search" id="balanceBalForm" method="post">
+            <!-- 搜索内容start -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="empNo">员工编号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="empNo" name="empNo" th:value="${welfareCardVo.empNo}" maxlength="50" placeholder="请输入员工编号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="empName">姓名（%）</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="empName" name="empName" th:value="${welfareCardVo.empName}" maxlength="50" placeholder="请输入姓名">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="phone">手机号（%）</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="phone" name="phone" th:value="${welfareCardVo.phone}" maxlength="50" placeholder="请输入手机号">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="cardNo">卡号</label>
+                        <div class="input-icon right">
+                            <i class="icon-edit"></i>
+                            <input type="text" class="form-control" id="cardNo" name="cardNo" th:value="${welfareCardVo.cardNo}" maxlength="50" placeholder="请输入卡号">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>发卡机构</label>
+                        <div class="input-icon">
+                            <select name="issuId" id="issuId" class="form-control select2me" data-type="select" th:data-value="${welfareCardVo.issuId}">
+                                <option value="">请选择</option>
+                                <option th:each="minst : ${minstIssu}" th:value="${minst.instId}" th:text="${minst.instId}+'-'+${minst.instName}" th:selected="(${'_'+minst.instId=='_'+welfareCardVo.issuId})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>发卡子机构</label>
+                        <div class="input-icon">
+                            <select name="subIssu" id="subIssu" class="form-control select2me" data-type="select" th:data-value="${welfareCardVo.subIssu}">
+                                <option value="">请选择</option>
+                                <option th:each="minst : ${minstSub}" th:value="${minst.instId}" th:text="${minst.instId}+'-'+${minst.instName}" th:selected="(${'_'+minst.instId=='_'+welfareCardVo.subIssu})"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="search()"
+                            class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" onclick="cleanQuery()"
+                            class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>员工编号</th>
+                            <th>姓名</th>
+                            <th>手机号</th>
+                            <th>卡号</th>
+                            <th>客户号</th>
+                            <th>客户姓名</th>
+                            <th>发卡机构</th>
+                            <th>发卡子机构</th>
+                            <th>当前余额（元）</th>
+                            <th>冻结金额（元）</th>
+                            <th>透支额度（元）</th>
+                            <th>资金启动日期</th>
+                            <th>资金有效期</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="welfareCard : ${welfareCard}">
+                            <td th:text="${welfareCard.empNo}"></td>
+                            <td th:text="${welfareCard.empName}"></td>
+                            <td th:text="${welfareCard.phone}"></td>
+                            <td th:text="${welfareCard.cardNo}"></td>
+                            <td th:text="${welfareCard.custNo}"></td>
+                            <td th:text="${welfareCard.custName}"></td>
+                            <td th:text="${welfareCard.minstIssu?.instId} + '-' + ${welfareCard.minstIssu?.instName?: ''}"></td>
+                            <td th:text="${welfareCard.minstSub?.instId} + '-' + ${welfareCard.minstSub?.instName?: ''}"></td>
+                            <td th:if="${welfareCard.proAcc}!=null" th:text="${#numbers.formatCurrency(welfareCard.proAcc.currBal)}"></td>
+                            <td th:if="${welfareCard.proAcc}==null"></td>
+                            <td th:if="${welfareCard.proAcc}!=null" th:text="${#numbers.formatCurrency(welfareCard.proAcc.lockedAmt)}"></td>
+                            <td th:if="${welfareCard.proAcc}==null"></td>
+                            <td th:if="${welfareCard.proAcc}!=null" th:text="${#numbers.formatCurrency(welfareCard.proAcc.overdrawAmt)}"></td>
+                            <td th:if="${welfareCard.proAcc}==null"></td>
+                            <td th:if="${welfareCard.proAcc}!=null" th:text="${#calendars.format(welfareCard.proAcc.getOpenDate(welfareCard.proAcc.openDate),'yyyy-MM-dd')}"></td>
+                            <td th:if="${welfareCard.proAcc}==null"></td>
+                            <td th:if="${welfareCard.proAcc}!=null" th:text="${#calendars.format(welfareCard.proAcc.getExpDate(welfareCard.proAcc.expDate),'yyyy-MM-dd')}"></td>
+                            <td th:if="${welfareCard.proAcc}==null"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:utext="${pageHtml}" class="row page_info" data-search="balanceBalForm"></div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+
+<script type="text/javascript" th:src="@{/js/welfare/balance-record.js}" charset="utf-8"></script>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

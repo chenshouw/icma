@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="prodcutTypeBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>修改</a>
+	      	</li>
+	     </ul>
+	     <form class="form-horizontal" role="form" id="updateForm" th:method="post" th:object="${productType}">
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     产品子类型<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="productType" id="productType" th:field="*{productType}"  readonly/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     产品名称<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="productName" id="productName" th:field="*{productName}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     产品类型<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select id="parProductType" name="parProductType" class="select2_category form-control">
+                         <option value="">请选择</option>
+                         <option th:each="parProductType: ${parProductTypes}" th:value="${parProductType.parProductType}" th:text="${parProductType.productGroupName}" th:selected="('_'+${productType.parProductType} == '_'+${parProductType.parProductType})"></option>
+                     </select>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label">
+                     介质类型<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select class="select2_category form-control" name="mediaType" id="mediaType" data-placeholder="Choose a mediaType" tabindex="1" onchange="changeInventory();">
+                         <option value="">请选择</option>
+                         <option th:each="MediaType : ${mediaTypes}" th:value="${MediaType.mediaType}" th:text="${MediaType.name}" th:selected="('_'+${productType.mediaType} == '_'+${MediaType.mediaType})"></option>
+                     </select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     库存管理标志<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="hidden"  name="inventoryFlag" id="inventoryFlag" th:value="${productType.inventoryFlag}"/>
+                     <input type="text" class="form-control" name="inFlag" id="inFlag" th:value="${productType.inventoryFlag}" onKeyUp="changeValue();"/>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label">
+                     前缀设置<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select class="select2_category form-control" name="bin" id="bin" th:field="*{bin}"  data-placeholder="Choose a org" tabindex="1" onchange="changeInventory();">
+                         <option value="">请选择</option>
+                         <option th:each="ProductBins : ${productBins}" th:value="${ProductBins.productBin}" th:text="${ProductBins.productBin}"></option>
+                     </select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账户属性类别<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="accAttrCode" id="accAttrCode" class="form-control">
+                         <option value="">请选择</option>
+                         <option th:each="proAccManage : ${proAccManages}" th:value="${proAccManage.accAttrCode}" th:text="${proAccManage.accAttrCode}+'-'+${proAccManage.accAttrName}" th:selected="('_'+${productType.accAttrCode} == '_'+${proAccManage.accAttrCode})"></option>
+                     </select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     发行面额<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="parAmt" id="parAmt" class="form-control" data-type="select" data-category="PRODUCT_TYPE_PAR_AMT" th:data-value="*{parAmt}"></select>
+                 </div>
+             </div>
+
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     有效期月数<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="validMon" id="validMon" th:field="*{validMon}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     续期月数<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="renewMon" id="renewMon" th:field="*{renewMon}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     单笔消费上限<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="saleHwm" id="saleHwm" th:field="*{saleHwm}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     充值单笔上限<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="chargeHwm" id="chargeHwm"  th:field="*{chargeHwm}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     余额上限<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="balanceHwm" id="balanceHwm" th:field="*{balanceHwm}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     透支额度<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="overdraw" id="overdraw" th:field="*{overdraw}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     密码标志<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="pinFlag" id="pinFlag" class="form-control" data-type="select" data-category="PRODUCT_TYPE_FLAG" th:data-value="*{pinFlag}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     ID加密标志&nbsp;&nbsp;
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="idEncFlag" id="idEncFlag" class="form-control" data-type="select" data-category="PRODUCT_TYPE_FLAG" th:data-value="*{idEncFlag}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     最大延期次数<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" name="maxRenewCnt" id="maxRenewCnt" th:field="*{maxRenewCnt}"/>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     自动销毁标志<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="autoFlag" id="autoFlag" class="form-control" data-type="select" data-category="PRODUCT_TYPE_FLAG" th:data-value="*{autoFlag}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     余额打印标志<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="balPrn" id="balPrn" class="form-control" data-type="select" data-category="PRODUCT_TYPE_FLAG" th:data-value="*{balPrn}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账单标志<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="billFlag" id="billFlag" class="form-control" data-type="select" data-category="PRODUCT_TYPE_FLAG" th:data-value="*{billFlag}"></select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     状态&nbsp;&nbsp;
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="status" id="status" class="form-control" data-type="select" data-category="PRODUCT_TYPE_STATUS" th:data-value="*{status}"></select>
+                 </div>
+             </div>
+
+             <div class="form-group">
+                 <div class="col-sm-offset-4 col-sm-6">
+                     <button style="background-color:gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+                     <button  style="margin-left:30px;background-color:#0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                 </div>
+             </div>
+        </form>
+	</div>
+</div>
+
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#mediaType").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+        $("#bin").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/media/product-type-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

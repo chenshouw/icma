@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="mediaTypeBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+
+        <form class="form-horizontal" role="form" th:action="@{update}" th:object="${media}" method="post" id="updateFrom">
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >介质类型<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="mediaType" name="mediaType" th:field="*{mediaType}" readonly/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >载体类型<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select class="select2_category form-control" name="carrierType" th:field="*{carrierType}"  data-placeholder="Choose a menu" tabindex="1">
+                        <option value="">请选择</option>
+                        <option th:each="MediaCarriers : ${mediaCarriers}" th:value="${MediaCarriers.carrierType}" th:text="${MediaCarriers.name}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >循环充值标志<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="chargeFlag" id="chargeFlag" class="form-control" data-type="select" data-category="MEDIA_CHARGE_FLAG" th:data-value="*{chargeFlag}"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >循环核销标志<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="tradingFlag" id="tradingFlag" class="form-control" data-type="select" data-category="MEDIA_TRADING_FLAG" th:data-value="*{tradingFlag}"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >生命周期标志<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="lifeCycleFlag" id="lifeCycleFlag" class="form-control" data-type="select" data-category="MEDIA_LIFE_CYCLE_FLAG" th:data-value="*{lifeCycleFlag}" ></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >所有者性质<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="ownerFlag" id="ownerFlag" class="form-control" data-type="select" data-category="MEDIA_OWNER_FLAG" th:data-value="*{ownerFlag}"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >所有者变更许可标志<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="ownerChangeFlag" id="ownerChangeFlag" class="form-control" data-type="select" data-category="MEDIA_OWNER_CHANGE_FLAG" th:data-value="*{ownerChangeFlag}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >有无账务<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="withAcc" id="withAcc" class="form-control" data-type="select" data-category="MEDIA_WITH_ACC" th:data-value="*{withAcc}"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >生效标识<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="flag" id="flag" class="form-control" data-type="select" data-category="MEDIA_FLAG" th:data-value="*{flag}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >介质名称<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="介质名称" th:field="*{name}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" >备注</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="memo" name="memo" placeholder="备注" th:field="*{memo}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default btn-info btn-search">取  消</button>
+                    <button  style="margin-left:40px;"  type="button" class="btn blue   btn-info btn-search" id="btnUpdate">修  改</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div id="updateAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>修改完成</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/media/media-type.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/media/media-type-check.js}" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="histTransBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>详情</a>
+            </li>
+            <li class="btn-group">
+                <a onclick="javascript:history.go(-1)" class='btn blue '><span>返回</span></a>
+            </li>
+        </ul>
+        <form class="form-horizontal" th:object="${tran}">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>交易类型：</label>
+                    <label sl:type="TXN_ID" sl:text="*{txnId}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>渠道订单号：</label>
+                    <label th:text="*{sysOrderId}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>订单号：</label>
+                    <label th:text="*{orderId}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>流水号：</label>
+                    <label th:text="*{#numbers.formatInteger(trace,6)}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商品名称：</label>
+                    <label th:text="*{goods}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>单价：</label>
+                    <label th:text="*{#numbers.formatCurrency((price?:0.0)/100.0)}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>数量：</label>
+                    <label th:text="*{num}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>订单总额：</label>
+                    <label th:text="*{#numbers.formatCurrency((orderAmt?:0.0)/100.0)}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>实付金额：</label>
+                    <label th:text="*{#numbers.formatCurrency((payAmt?:0.0)/100.0)}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>优惠金额：</label>
+                    <label th:text="*{#numbers.formatCurrency((yhAmt?:0.0)/100.0)}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>费用：</label>
+                    <label th:text="*{#numbers.formatCurrency((feeAmt?:0.0)/100.0)}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>上送时间：</label>
+                    <label th:text="*{#calendars.format(uploadDate,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>交易返回码：</label>
+                    <label th:text="*{rc}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>交易返回详情：</label>
+                    <label th:text="*{rcDetail}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>系统参考号：</label>
+                    <label th:text="*{rrn}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>货币类型：</label>
+                    <label sl:type="CCY_TYPE" sl:text="*{currency}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>交易码：</label>
+                    <label th:text="*{txnCode}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户号：</label>
+                    <label th:text="*{mid}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户简称：</label>
+                    <label th:text="*{midShortName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>子商户号：</label>
+                    <label th:text="*{subMid}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>子商户简称：</label>
+                    <label th:text="*{subMidShortName}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>终端号：</label>
+                    <label th:text="*{tid}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>终端简称：</label>
+                    <label th:text="*{tidShortName}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>结算状态：</label>
+                    <label sl:type="SETTLE_STATUS" sl:text="*{settleStatus}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>结算时间：</label>
+                    <label th:text="*{#calendars.format(settleTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>交易状态：</label>
+                    <label sl:type="TRANS_STATUS" sl:text="*{tranStatus}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>交易时间：</label>
+                    <label th:text="*{#calendars.format(txnTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>渠道：</label>
+                    <label th:text="*{channels}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>支付码类型：</label>
+                    <label sl:type="CODE_TYPE" sl:text="*{codeType}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>支付方式：</label>
+                    <label sl:type="PAY_TYPE" sl:text="*{payType}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>批次号：</label>
+                    <label th:text="*{batchNo}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>备注：</label>
+                    <label th:text="*{memo}"></label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

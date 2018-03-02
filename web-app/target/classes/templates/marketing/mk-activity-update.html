@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>-->
+    <link th:href="@{/metronic/plugins/jquery-multi-select/css/multi-select.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="updateBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+        <form id="updateForm" class="form-horizontal" role="form" th:action="@{add}" method="post">
+            <!--基础信息-->
+            <div class="tab-content">
+                <div id="activity">
+                    <span class="label label-success" id="act1">基础信息</span>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动主题<span style="color:#FF0000;">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="hidden" class="form-control" name="id" id="id" th:value="${activity.id}"/>
+                            <input type="text" class="form-control" name="title" id="title" value="" placeholder="请输入活动主题" th:value="${activity.title}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动类型<span style="color:#FF0000;">*</span></label>
+                        <div class="col-sm-6">
+                            <select name="type" id="type" class="form-control select2me" data-type="select" data-category="ACT_TYPE" th:data-value="${activity?.type}"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动开始时间<span style="color:#FF0000;">*</span></label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="startTimeStr" id="startTimeStr"
+                                        th:value="${#calendars.format(activity.startTime,'yyyy-MM-dd HH:mm:ss')}"
+                                        maxlength="19" placeholder="请选择活动开始时间" readonly/>
+                                <span class="input-group-btn">
+                                    <button class="btn default date-reset" id="startTimeClear" type="button"><i class="icon-remove"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动结束时间<span style="color:#FF0000;">*</span></label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="endTimeStr" id="endTimeStr"
+                                        th:value="${#calendars.format(activity.endTime,'yyyy-MM-dd HH:mm:ss')}"
+                                        maxlength="19" placeholder="请选择活动结束时间" readonly/>
+                                <span class="input-group-btn">
+                                    <button class="btn default date-reset" id="endTimeClear" type="button"><i class="icon-remove"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">推广链接<span style="color:#FF0000;">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="generalizeUrl" id="generalizeUrl" th:value="${activity.generalizeUrl}" placeholder="请输入推广链接"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">备注</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="remark" id="remark" th:value="${activity.remark}" placeholder="请输入备注"/>
+                        </div>
+                    </div>
+                </div>
+                <div id="instChannel">
+                    <span class="label label-success" id="act2">适用渠道</span>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">适用渠道<span style="color:#FF0000;">*</span></label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input type="text" id="channelNames" name="channelNames" class="form-control" th:value="${actApplyChannelNameArr}" placeholder="请选择适用渠道" readonly>
+                                <input type="text" style="display: none" id="channelIds" name="channelIds" th:value="${actApplyChannelIdArr}">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn green" data-toggle="modal" data-target="#channelModal" onclick="initChannelTable();">
+                                        选择 <i class="icon-plus"></i>
+                                    </button>
+					            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="inst">
+                    <span class="label label-success" id="act3">适用机构</span>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">适用机构<span style="color:#FF0000;">*</span></label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input type="text" id="instNames" name="instNames" class="form-control" th:value="${instNameArr}" placeholder="请选择适用机构" readonly>
+                                <input type="hidden" id="instIds" name="instIds" th:value="${instIdArr}">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn green" data-toggle="modal" data-target="#instModal" onclick="initInstTable();">
+                                         选择 <i class="icon-plus"></i>
+                                    </button>
+					            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="product">
+                    <span class="label label-success">适用产品</span>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">产品信息<span style="color:#FF0000;">*</span></label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input type="text" id="productNames" name="productNames" class="form-control"
+                                        th:value="${actProductNameArr}" placeholder="请选择产品信息" readonly>
+                                <input type="hidden" id="productTypes" name="productTypes"
+                                        th:value="${actProductIdArr}">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn green" data-toggle="modal" data-target="#productModal" onclick="initProductTable();">
+                                         选择 <i class="icon-plus"></i>
+                                    </button>
+					            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 暂时不使用面值管理 -->
+                <!--<div id="faceValue">-->
+                    <!--<div class="form-group last">-->
+                        <!--<label class="col-sm-4 control-label">适用面值<span style="color:#FF0000;">*</span>-->
+                        <!--</label>-->
+                        <!--<div class="col-md-6">-->
+                            <!--<button type="button" class="btn green   btn-info btn-search" id="addAll">全部选择</button>-->
+                            <!--<button type="button" class="btn green   btn-info btn-search" id="noAddAll">全部取消</button>-->
+                            <!--<select name="faceValueAct" class="multi-select" multiple="" id="faceValue_multi_select">-->
+                                <!--&lt;!&ndash;选中的成员&ndash;&gt;-->
+                                <!--<option selected th:each="FaceValue : ${faceValueListSelected}" th:text="${FaceValue.channel}+'&#45;&#45;'+${FaceValue.money}" th:value="${FaceValue.id}"></option>-->
+                                <!--&lt;!&ndash;未选中的成员&ndash;&gt;-->
+                                <!--<option th:each="FaceValue : ${faceValueListUnSelected}" th:text="${FaceValue.channel}+'&#45;&#45;'+${FaceValue.money}" th:value="${FaceValue.id}"></option>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                        <!--<input type="hidden" value="" id="faceValueIds" name="faceValueIds" th:value="${actFaceValueIds}"/>-->
+                        <!--<input type="hidden" value="" id="faceValues" name="faceValues" th:value="${faceValues}"/>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div id="config">
+                    <span class="label label-success">活动配置</span>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动配置</label><span style="color:#FF0000;">*</span>
+                        <div class="col-md-8">
+                            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                            <!-- <div class="portlet box blue">-->
+                            <div class="portlet-body">
+                                <div class="table-toolbar">
+                                    <div class="btn-group">
+                                        <button id="restrict_editable_new" class="btn green">添加 <i class="icon-plus"></i></button>
+                                    </div>
+                                </div>
+                                <table class="table table-striped table-hover table-bordered" id="restrict_editable">
+                                    <thead>
+                                    <tr>
+                                        <th>周期限定<span style="color:#FF0000;">*</span></th>
+                                        <th>周期<span style="color:#FF0000;">*</span></th>
+                                        <th>个人参与活动次数<span style="color:#FF0000;">*</span>(0默认为无限制)</th>
+                                        <th>编辑/保存</th>
+                                        <th>删除/取消</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="res : ${activity.restrict}">
+                                        <td th:text="${res.periodLimit}"></td>
+                                        <td th:text="${ItemUtil.getName(res.period,'RESTRICT_PERIOD')}"></td>
+                                        <td th:text="${res.restrictTimes}"></td>
+                                        <td><a class="edit" href="">编辑</a></td>
+                                        <td><a class="delete" href="">删除</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="display: none" id="hiddenDiv"></div>
+                            <!--</div>-->
+                            <!-- END EXAMPLE TABLE PORTLET-->
+                        </div>
+                    </div>
+                    <div id="rules">
+                        <span class="label label-success">活动规则</span>
+                        <div class="form-group" id="instalment">
+                            <label class="col-sm-4 control-label">分期规则</label><span style="color:#FF0000;">*</span>
+                            <div class="col-md-8">
+                                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                                <!-- <div class="portlet box blue">-->
+                                <div class="portlet-body">
+                                    <div class="table-toolbar">
+                                        <div class="btn-group">
+                                            <button id="instalment_editable_new" class="btn green">
+                                                添加 <i class="icon-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-hover table-bordered" id="instalment_editable">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 150px">分期数<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 185px">定期还款日(0默认为当日)<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">类型<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">还款间隔月<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">首期是否立即到账<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">简要说明</th>
+                                            <th style="width: 150px">详细说明</th>
+                                            <th style="width: 100px">编辑/保存</th>
+                                            <th style="width: 100px">删除/取消</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="actRule : ${actInstalments}">
+                                            <td th:text="${actRule.instalmentRule.periods}"></td>
+                                            <td th:text="${actRule.instalmentRule.regularFixDate}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.instalmentRule.type,'INSTALMENT_TYPE')}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.instalmentRule.regularFixMonth,'REGULAR_FIX_MONTH')}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.instalmentRule.isImmediateArrival,'IS_IMMEDIATE_ARRIVAL')}"></td>
+                                            <td th:text="${actRule.simpleComment}"></td>
+                                            <td th:text="${actRule.detailComment}"></td>
+                                            <td><a class="edit" href="">编辑</a></td>
+                                            <td><a class="delete" href="">删除</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="display: none" id="instalmentDiv"></div>
+                                <!--</div>-->
+                                <!-- END EXAMPLE TABLE PORTLET-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">折扣活动</label><span style="color:#FF0000;">*</span>
+                            <div class="col-md-8">
+                                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                                <!-- <div class="portlet box blue">-->
+                                <div class="portlet-body">
+                                    <div class="table-toolbar">
+                                        <div class="btn-group">
+                                            <input type="hidden" id="operator" value="update"/>
+                                            <button id="discount_editable_new" class="btn green">
+                                                添加 <i class="icon-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-hover table-bordered"
+                                            id="discount_editable">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 150px">折扣比例(%)<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">折扣类型<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">最小支付金额<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">最大支付金额<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">权重<span style="color:#FF0000;">*</span></th>
+                                            <th style="width: 150px">简要说明</th>
+                                            <th style="width: 150px">详细说明</th>
+                                            <th style="width: 100px">编辑/保存</th>
+                                            <th style="width: 100px">删除/取消</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="actRule : ${actDisCounts}">
+                                            <td th:text="${actRule.discountRule.discount}"></td>
+                                            <td th:text="${ItemUtil.getName(actRule.discountRule.type,'DISCOUNT_STATUS')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(actRule.discountRule.minPaymentAmt, 1, 'NONE', 2, 'POINT')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(actRule.discountRule.maxPaymentAmt, 1, 'NONE', 2, 'POINT')}"></td>
+                                            <td th:text="${actRule.priority}"></td>
+                                            <td th:text="${actRule.simpleComment}"></td>
+                                            <td th:text="${actRule.detailComment}"></td>
+                                            <td><a class="edit" href="">编辑</a></td>
+                                            <td><a class="delete" href="">删除</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="display: none" id="discountDiv"></div>
+                                <!--</div>-->
+                                <!-- END EXAMPLE TABLE PORTLET-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用渠道模态框-->
+<div class="modal fade" id="channelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myModalLabel">适用渠道</h4>
+            </div>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="channelFrom">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>渠道编号：</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input id="channelId" type="text" class="form-control" placeholder="输入渠道编号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>渠道名称(%)：</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input id="channelName" type="text" class="form-control" placeholder="输入渠道名称">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer" style="align-items: center; width: 55%;border-top: 0px;">
+                        <button id="searchChannel" onclick="initChannelTable()" type="button" class="btn btn-primary">
+                            查询
+                        </button>
+                    </div>
+                </form>
+                <table id="channel_table"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="margin-left:40px;" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="channelBtn">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用商户模态框-->
+<div class="modal fade" id="mchModal" tabindex="-1" role="dialog" aria-labelledby="myMchModalLabel">
+    <div class="modal-dialog" role="document" style="width:600px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myMchModalLabel">适用商户</h4>
+            </div>
+            <div class="modal-body" style="height: 470px;overflow-y:auto;overflow-x:auto">
+                <div id="mchTree"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group" id="button">
+                    <div class="col-sm-offset-1 col-sm-6" style="margin-left: 3px;width:100%;">
+                        <div style=" text-align:left;">
+                            <span color="#FF0000">*</span><input type="checkbox" id="checkAll">是否全选
+                        </div>
+                        </p>
+                        <div style="text-align: center">
+                            <button style="margin-left:40px;" type="button" data-dismiss="modal" id="btnCancel" class="btn default">取消</button>
+                            <button type="button" class="btn blue   btn-info btn-search" id="mchBtn">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用产品信息模态框-->
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="myProductModalLabel">
+    <div class="modal-dialog" role="document" style="width:600px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myProductModalLabel">适用产品</h4>
+            </div>
+            <div class="modal-body" style="height: 550px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="productFrom">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>产品类型：</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input id="productType" type="text" class="form-control" placeholder="输入产品类型">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>产品名称(%)：</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input id="productName" type="text" class="form-control" placeholder="输入产品名称">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer" style="align-items: center; width: 55%;border-top: 0px;">
+                        <button id="searchProduct" onclick="initProductTable()" type="button" class="btn btn-primary">
+                            查询
+                        </button>
+                    </div>
+                </form>
+                <table id="product_table"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="margin-left:40px;" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="productBtn">提交</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--适用机构模态框-->
+<div class="modal fade" id="instModal" tabindex="-1" role="dialog" aria-labelledby="myInstModalLabel">
+    <div class="modal-dialog" role="document" style="width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="myInstModalLabel">适用机构</h4>
+            </div>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <div id="instTree"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="margin-left:40px;" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="instBtn">提交</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/commons/util/selectItem.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/marketing/mk-activity-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/jquery-multi-select/js/jquery.multi-select.js}"></script>
+<script type="text/javascript" th:src="@{/metronic/plugins/jquery-multi-select/js/jquery.quicksearch.js}"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+
+</html>

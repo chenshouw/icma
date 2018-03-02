@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${pageTitle}"></title>
+<head th:include="/commons/head::header" />
+<link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+</head>
+<body class="page-header-fixed" id="itemBody">
+	<div th:replace="/commons/page_head::pageHead"></div>
+	<div class="clearfix"></div>
+	<div class="page-container">
+		<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+		<div class="page-content">
+			<ul class="page-breadcrumb breadcrumb">
+				<li th:utext="${locationMenu}"></li>
+				<li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>新增</a></li>
+			</ul>
+			<form class="form-horizontal" role="form" id="itemForm" method="post">
+				<div class="form-group">
+					<label for="category" class="col-sm-4 control-label">类型<span style="color:red;">*</span></label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" name="category" id="category" placeholder="请输入类型" style="width: 300px;">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="name" class="col-sm-4 control-label">名称<span style="color:red;">*</span></label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" name="name" id="name" placeholder="请输入名称" style="width: 300px;">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="description" class="col-sm-4 control-label">描述</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" name="description" id="description" placeholder="请输入描述" style="width: 300px;">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="status" class="col-sm-4 control-label">请选择状态<span style="color:red;">*</span></label>
+					    <div class="col-sm-6" style="width: 330px;">
+                            <select name="status" class="form-control" id="status" data-type="select" data-category="STATUS" th:data-value="${itemDto.status}"></select>
+                        </div>
+				</div>
+
+                <div class="form-group">
+                    <label for="orderId" class="col-sm-4 control-label">序号<span style="color:red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="orderId" name="orderId" placeholder="请输入序号" style="width: 300px;">
+                    </div>
+                </div>
+
+				<div class="form-group">
+					<label for="itemDetails" class="col-sm-4 control-label">选项</label>
+                    <div class="col-md-8">
+                        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                       <!-- <div class="portlet box blue">-->
+                            <div class="portlet-body">
+                                <div class="table-toolbar">
+                                    <div class="btn-group">
+                                        <button id="sample_editable_1_new" class="btn green">
+                                            添加 <i class="icon-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
+                                    <thead>
+                                    <tr>
+                                        <th>编&nbsp;号<span style="color:red;">*</span></th>
+                                        <th>名&nbsp;称<span style="color:red;">*</span></th>
+                                        <th>描&nbsp;述</th>
+                                        <th>状&nbsp;态<span style="color:red;">*</span></th>
+                                        <th>序&nbsp;号<span style="color:red;">*</span></th>
+                                        <th>父级编号<span style="color:red;">*</span></th>
+                                        <th>编辑/保存</th>
+                                        <th>删除/取消</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        <!--</div>-->
+                        <!-- END EXAMPLE TABLE PORTLET-->
+                    </div>
+
+
+
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-6">
+						<button style="background-color: gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+						<button style="margin-left: 30px; background-color: #0362FD;" type="button" class="btn btn-info btn-search" id="btnSave">提交</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div th:replace="/commons/scripts::scripts" /></div>
+	<div th:replace="/commons/foot::foot"></div>
+	<script>
+		jQuery(document).ready(function() {
+			App.init();
+            TableEditable.init();
+		});
+	</script>
+</body>
+<script type="text/javascript" th:src="@{/js/commons/table-editable/jquery.dataTables.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/system-data/item-add.js}" charset="utf-8"></script>
+</html>

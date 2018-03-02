@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body class="page-header-fixed" id="listBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="cardPresent_giving">
+                    <a href="#" class='btn blue ' th:onclick="'javascript:giveCard()'" id="giveCardBtn"><span>赠卡</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="cardPresent_search">
+            <form action="/account-manage/card-present/search" id="cardPresentForm" method="get">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="batchno">批次号（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="batchNo" name="batchNo" placeholder="请输入批次号"
+                                       th:value="${cardPresentVo.batchNo}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">名称（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="请输入名称"
+                                       th:value="${cardPresentVo.name}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>创建日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="createTimeBegin" id="createTimeBegin"
+                                       maxlength="19" placeholder="请选择开始时间" th:value="${cardPresentVo.createTimeBegin}"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" name="createTimeEnd" id="createTimeEnd"
+                                       maxlength="19" placeholder="请选择结束时间" th:value="${cardPresentVo.createTimeEnd}"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>批次号</th>
+                                <th>名称</th>
+                                <th>人数</th>
+                                <th>卡数</th>
+                                <th>描述</th>
+                                <th>操作员</th>
+                                <th>日期</th>
+                                <shiro:hasPermission name="cardPresent_getDetails">
+                                    <th style="width:50px;">操作</th>
+                                </shiro:hasPermission>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cardPresent : ${list}">
+                                <td th:text="${cardPresent.batchNo}"></td>
+                                <td th:text="${cardPresent.name}"></td>
+                                <td th:text="${cardPresent.peopleNumber}"></td>
+                                <td th:text="${cardPresent.panNumber}"></td>
+                                <td th:text="${cardPresent.memo}"></td>
+                                <td th:text="${cardPresent.createBy}"></td>
+                                <td th:text="${#calendars.format(cardPresent.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasPermission name="cardPresent_getDetails">
+                                    <td>
+                                        <a class="btn green btn-xs"
+                                           th:onclick="'javascript:findPhoneGroup(\''+${cardPresent.batchNo}+'\','+${cardPresent.id}+')'">详情</a>
+                                    </td>
+                                </shiro:hasPermission>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="cardPresentForm"></div>
+            </form>
+
+            <form id="detailForm" method="post" action="/account-manage/card-present/to-cardDetail">
+                <input type="hidden" id="batchNos" name="batchNo">
+                <input type="hidden" id="id" name="id">
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/account/card-present-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

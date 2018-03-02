@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>-->
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="rightBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>修改</a>
+	      	</li>
+	     </ul>                                                        
+	     <form class="form-horizontal" role="form" id="updateForm" th:method="post" th:object="${right}">
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     权限编码<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" th:field="*{rightCode}"  name="rightCode" id="rightCode"  placeholder="请输入权限编码(例如：user-add)" readonly/>
+                     <input type="hidden" th:field="*{rightId}" name="id">
+                 </div>
+                 <div class="cos-sm-2"></div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label" >
+                     权限名称<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" th:field="*{rightName}" name="rightName" id="rightName" placeholder="请输入权限名称(例如：权限管理-新增)"/>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label" >
+                     权限描述<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" th:field="*{rightDesc}" name="rightDesc" id="rightDesc" placeholder="请输入权限描述(例如：权限管理-新增)"/>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label for="menuId" class="col-sm-4 control-label">所属菜单<font color="#FF0000">*</font></label><div class="cos-sm-3"><font color="#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择功能菜单，一般为最后一级子节点</font></label></div>
+                 <div class="col-sm-6">
+                     <input type="hidden" name="menuId" id="menuId" th:value="${right.menuId}"/>
+                     <input type="hidden" name="parentMenuId" id="parentMenuId" />
+                     <input type="hidden" name="parentMenuId1" id="parentMenuId1" th:value="${right.parentMenuId}"/>
+                     <div class="portlet-body">
+                         <div id="tree_cl">
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="form-group">
+                 <div class="col-sm-offset-4 col-sm-6">
+                     <button style="background-color:gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+                     <button  style="margin-left:30px;background-color:#0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                 </div>
+             </div>
+            </form>
+	</div>
+</div>
+
+    <div th:replace="/commons/scripts::scripts"/></div>
+    <div th:replace="/commons/foot::foot"></div>
+	<script>
+		jQuery(document).ready(function() {
+			App.init();
+
+            $("#tree_cl").jstree({
+                "core" : {
+                    "themes" : {
+                        "stripes" : true,
+                    },
+                    "animation": 0,
+                    'data': {
+                        'url': function (node) {
+                            return '/system-data/menu/getMenuTree';
+                        }
+                    }
+                },
+                "types" : {
+                    "default" : {
+                        "icon" : "glyphicon glyphicon-flash"
+                    },
+                    "demo" : {
+                        "icon" : "glyphicon glyphicon-ok"
+                    }
+                },
+                "plugins": ["types","status"],
+            }).on('changed.jstree', function (e,data) {
+                var inst = data.instance;
+                var nodeId = inst.get_node(data.selected[0]).id;
+                var parentMenuId1 = $("#parentMenuId1").val();
+                var currentNode = $('#tree_cl').jstree("get_node", nodeId);
+                if(!$('#tree_cl').jstree("is_leaf", currentNode)){
+                    BootboxExt.alert("请选择最后一级功能菜单",function (inst) {
+                        $('#tree_cl').jstree("deselect_node", nodeId)
+                        if(parentMenuId1 == 0 ){
+                            $('#tree_cl').jstree("select_node", parentMenuId1)
+                        }else{
+                            $('#tree_cl').jstree("select_node", parentMenuId1)
+                        }
+                    });
+                }else {
+                    $("#parentMenuId").val(nodeId);
+                }
+            }).bind("loaded.jstree", function (e, data) {
+                var inst = data.instance;
+                var parentMenuId1 = $("#parentMenuId1").val();
+                var menuId = $("#menuId").val()
+                if(parentMenuId1 == 0 ){
+                    var obj = inst.get_node(parentMenuId);
+                    inst.select_node(obj);
+                }else{
+                    var obj = inst.get_node(parentMenuId1);
+                    inst.select_node(obj);
+                }
+            });
+		});
+	</script>
+</body>
+<script type="text/javascript" th:src="@{/js/rights/right-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

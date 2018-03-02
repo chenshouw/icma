@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed" id="listBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>查询</a>
+            </li>
+            <li class="btn-group">
+                <shiro:hasPermission name="receiptVoucher_add">
+                    <a th:href="toadd" class='btn blue ' style="margin-right: 10px;"><span>新增</span></a>
+                </shiro:hasPermission>
+
+                <shiro:hasPermission name="receiptVoucher_export">
+                    <button class='btn blue ' id="export"><span>导出</span></button>
+                </shiro:hasPermission>
+
+                <shiro:hasPermission name="receiptVoucher_batchImport">
+                    <a href="#" class='btn white '></a>
+                    <button onclick="clearFile()" class='btn blue ' id="batchImportBtn" type="button" data-toggle="modal"
+                            data-target="#batchImportModal"><span>批量导入</span></button>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="receiptVoucher_search">
+            <form action="/sell-card/receipt-voucher/search" id="receiptVoucherForm" method="post">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>发卡机构</label>
+                            <div class="input-icon">
+                                <select name="issuId" id="issuId" class="form-control"
+                                        th:field="${receiptVoucherVo.issuId}">
+                                    <option value="">请选择</option>
+                                    <option th:each="minst : ${minstList}" th:text="${minst.instId}+'-'+${minst.instName}"
+                                            th:value="${minst.instId}" th:selected="selected"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>收款收据号(%)</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="sksj" name="sksj"
+                                       th:value="${receiptVoucherVo.sksj}" placeholder="请输入收款收据号" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>客户号（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="custNo" name="custNo"
+                                       th:value="${receiptVoucherVo.custNo}" placeholder="请输入客户号" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>付款单位（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="payer" name="payer"
+                                       th:value="${receiptVoucherVo.payer}" placeholder="请输入付款单位" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>凭证金额</label>
+                        <div class="input-group spinner">
+                            <input type="number" class="form-control" id="popAmtBegin" name="popAmtBegin"
+                                   th:value="${receiptVoucherVo.popAmtBegin}" placeholder="凭证金额" maxlength="12">
+                            <span class="input-group-addon">至</span>
+                            <input type="number" class="form-control" id="popAmtEnd" name="popAmtEnd"
+                                   th:value="${receiptVoucherVo.popAmtEnd}" placeholder="凭证金额" maxlength="12">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>在途金额</label>
+                        <div class="input-group spinner">
+                            <input type="number" class="form-control" id="ztzjAmtBegin" name="ztzjAmtBegin"
+                                   th:value="${receiptVoucherVo.ztzjAmtBegin}" placeholder="在途金额" maxlength="12">
+                            <span class="input-group-addon">至</span>
+                            <input type="number" class="form-control" id="ztzjAmtEnd" name="ztzjAmtEnd"
+                                   th:value="${receiptVoucherVo.ztzjAmtEnd}" placeholder="在途金额" maxlength="12">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>已使用金额</label>
+                        <div class="input-group spinner">
+                            <input type="number" class="form-control" id="usedAmtBegin" name="usedAmtBegin"
+                                   th:value="${receiptVoucherVo.usedAmtBegin}" placeholder="已使用金额" maxlength="12">
+                            <span class="input-group-addon">至</span>
+                            <input type="number" class="form-control" id="usedAmtEnd" name="usedAmtEnd"
+                                   th:value="${receiptVoucherVo.usedAmtEnd}" placeholder="已使用金额" maxlength="12">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>操作员</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="teller" name="teller"
+                                       th:value="${receiptVoucherVo.teller}" placeholder="请输入操作员" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>录入/修改日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${receiptVoucherVo.modiTimeBegin}"
+                                       name="modiTimeBegin" id="modiTimeBegin" maxlength="19" placeholder="请选择开始时间"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="modiTimeBeginClear" type="button"><i
+                                             class="icon-remove"></i></button>
+                               </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${receiptVoucherVo.modiTimeEnd}"
+                                       name="modiTimeEnd" id="modiTimeEnd" maxlength="19" placeholder="请选择结束时间"
+                                       readonly/>
+                                <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="modiTimeEndClear" type="button"><i
+                                              class="icon-remove"></i></button>
+                               </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>发卡机构</th>
+                                <th>收款收据号</th>
+                                <th>客户号</th>
+                                <!--<th>客户名称</th>-->
+                                <th>凭证金额（元）</th>
+                                <th>已使用金额（元）</th>
+                                <th>在途金额（元）</th>
+                                <th>付款单位</th>
+                                <th>操作员</th>
+                                <th style="width: 110px;">录入/修改时间</th>
+                                <th>备注</th>
+                                <shiro:hasAnyPermissions name="receiptVoucher_update,receiptVoucher_delete">
+                                    <th style="width: 90px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="receipt : ${list}">
+                                <td th:text="${receipt?.minst?.instName}?: _"></td>
+                                <td th:text="${receipt.sksj}"></td>
+                                <td th:text="${#strings.toString(receipt.custNo)}"></td>
+                                <!--<td th:text="${receipt.custName}"></td>-->
+                                <!--<td th:text="${#numbers.formatDecimal(receipt.popAmt, 1, 'NONE', 2, 'POINT')}"></td>-->
+                                <td th:text="${#numbers.formatCurrency(receipt.popAmt)}"></td>
+                               <!-- <td th:text="${receipt.usedAmt}"></td>
+                                <td th:text="${receipt.ztzjAmt}"></td>-->
+                                <!--<td th:text="${#numbers.formatDecimal(receipt.usedAmt, 1, 'NONE', 2, 'POINT')}"></td>-->
+                                <td th:text="${#numbers.formatCurrency(receipt.usedAmt)}"></td>
+                                <!--<td th:text="${#numbers.formatDecimal(receipt.ztzjAmt, 1, 'NONE', 2, 'POINT')}"></td>-->
+                                <td th:text="${#numbers.formatCurrency(receipt.ztzjAmt)}"></td>
+                                <td th:text="${receipt.payer}"></td>
+                                <td th:text="${receipt.teller}"></td>
+                                <td th:text="${#calendars.format(receipt.modiDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${receipt.memo}"></td>
+                                <shiro:hasAnyPermissions name="receiptVoucher_update,receiptVoucher_delete">
+                                    <td>
+                                        <shiro:hasPermission name="receiptVoucher_update">
+                                            <a th:href="@{toupdate(id=${receipt.sksj})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="receiptVoucher_delete">
+                                            <a data-toggle="modal" href="#static" class='btn red btn-xs '
+                                               th:onclick="'javascript:deletereceiptVoucher(\''+${receipt.sksj}+'\');'"
+                                               style="margin-left: 5px;">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="receiptVoucherForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+
+<!--导入数据操作层-->
+<div id="batchImportModal" class="modal fade" role="dialog"
+     aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="myModalLabel">批量导入</h4>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:right;padding:5px">
+                    <a id="downId" onclick="down()">
+                        <span style="font-size:larger;font-weight:200;color:red">收款凭证批量导入-模板.xlsx</span>
+                    </a>
+                </div>
+                <div class="form-group" id="passwordDiv">
+                    <label>选择收款凭证数据文件</label>
+                    <input class="form-control" type="file" id="batchFile">
+                </div>
+                <div><span color="red" id="content"></span></div>
+                <div class="progress progress-striped active" style="display: none">
+                    <div id="progressBar" class="progress-bar progress-bar-info"
+                         role="progressbar" aria-valuemin="0" aria-valuenow="0"
+                         aria-valuemax="100" style="width: 0%">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="batchUploadBtn" type="submit" name="submit" class="btn btn-success" value="上传"/>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        $("#issuId").select2({
+            formatNoMatches: function(term) {
+                return "未找到数据";
+            }
+        });
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/sell-card/receipt-voucher-list.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/fileinput.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/fileinput/bootstrap-fileinput.js}" charset="utf-8"></script>
+
+</body>
+</html>

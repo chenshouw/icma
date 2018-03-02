@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="tidInfoBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>详情</a>
+            </li>
+            <li class="btn-group">
+                <a onclick="javascript:history.go(-1)" class='btn blue '><span>返回</span></a>
+            </li>
+        </ul>
+        <form class="form-horizontal" th:object="${tidInfo}">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>终端号：</label>
+                    <label th:text="*{tid}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>终端名称：</label>
+                    <label th:text="*{tidName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>终端简称：</label>
+                    <label th:text="*{tidShortName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>商户简称：</label>
+                    <label th:text="*{midShortName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>子商户简称：</label>
+                    <label th:text="*{subMidShortName}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>状态：</label>
+                    <label sl:type="TID_STATUS" sl:text="*{status}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>操作人：</label>
+                    <label th:text="*{teller}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>操作时间：</label>
+                    <label th:text="*{#calendars.format(modifyTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>流水号：</label>
+                    <label th:text="*{#numbers.formatInteger(trace,6)}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>机器指纹：</label>
+                    <label th:text="*{machineCode}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>激活时间：</label>
+                    <label th:text="*{#calendars.format(activateTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>最后签到时间：</label>
+                    <label th:text="*{#calendars.format(signTime,'yyyy-MM-dd HH:mm:ss')}"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>备注：</label>
+                    <label th:text="*{memo}"></label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+</html>

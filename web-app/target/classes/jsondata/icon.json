@@ -1,0 +1,422 @@
+[
+	{
+		"icon": "icon-glass"
+	},
+	{
+		"icon": "icon-heart"
+	},
+	{
+		"icon": "icon-film"
+	},
+	{
+		"icon": "icon-ok"
+	},
+	{
+		"icon": "icon-off"
+	},
+	{
+		"icon": "icon-home"
+	},
+	{
+		"icon": "icon-download-alt"
+	},
+	{
+		"icon": "icon-play-circle"
+	},
+	{
+		"icon": "icon-lock"
+	},
+	{
+		"icon": "icon-volume-down"
+	},
+	{
+		"icon": "icon-tag"
+	},
+	{
+		"icon": "icon-print"
+	},
+	{
+		"icon": "icon-italic"
+	},
+	{
+		"icon": "icon-align-center"
+	},
+	{
+		"icon": "icon-indent-left"
+	},
+	{
+		"icon": "icon-pencil"
+	},
+    {
+        "icon": "icon-edit"
+    },
+    {
+        "icon": "icon-step-backward"
+    },
+    {
+        "icon": "icon-pause"
+    },
+    {
+        "icon": "icon-step-forward"
+    },
+    {
+        "icon": "icon-plus-sign"
+    },
+    {
+        "icon": "icon-question-sign"
+    },
+    {
+        "icon": "icon-ok-circle"
+    },
+    {
+        "icon": "icon-arrow-up"
+    },
+    {
+        "icon": "icon-resize-small"
+    },
+    {
+        "icon": "icon-exclamation-sign"
+    },
+    {
+        "icon": "icon-eye-open"
+    },
+    {
+        "icon": "icon-calendar"
+    },
+    {
+        "icon": "icon-chevron-up"
+    },
+    {
+        "icon": "icon-folder-close"
+    },
+    {
+        "icon": "icon-hdd"
+    },
+    {
+        "icon": "icon-thumbs-up"
+    },
+    {
+        "icon": "icon-hand-up"
+    },
+    {
+        "icon": "icon-circle-arrow-up"
+    },
+    {
+        "icon": "icon-tasks"
+    },
+    {
+        "icon": "icon-music"
+    },
+    {
+        "icon": "icon-star"
+    },
+    {
+        "icon": "icon-th-large"
+    },
+    {
+        "icon": "icon-remove"
+    },
+    {
+        "icon": "icon-signal"
+    },
+    {
+        "icon": "icon-file"
+    },
+    {
+        "icon": "icon-download"
+    },
+    {
+        "icon": "icon-repeat"
+    },
+    {
+        "icon": "icon-flag"
+    },
+    {
+        "icon": "icon-volume-up"
+    },
+    {
+        "icon": "icon-tags"
+    },
+    {
+        "icon": "icon-camera"
+    },
+    {
+        "icon": "icon-text-height"
+    },
+    {
+        "icon": "icon-align-right"
+    },
+    {
+        "icon": "icon-indent-right"
+    },
+    {
+        "icon": "icon-map-marker"
+    },
+    {
+        "icon": "icon-share"
+    },
+    {
+        "icon": "icon-fast-backward"
+    },
+    {
+        "icon": "icon-stop"
+    },
+    {
+        "icon": "icon-eject"
+    },
+    {
+        "icon": "icon-minus-sign"
+    },
+    {
+        "icon": "icon-info-sign"
+    },
+    {
+        "icon": "icon-ban-circle"
+    },
+    {
+        "icon": "icon-arrow-down"
+    },
+    {
+        "icon": "icon-plus"
+    },
+    {
+        "icon": "icon-gift"
+    },
+    {
+        "icon": "icon-eye-close"
+    },
+    {
+        "icon": "icon-random"
+    },
+    {
+        "icon": "icon-chevron-down"
+    },
+    {
+        "icon": "icon-folder-open"
+    },
+    {
+        "icon": "icon-bullhorn"
+    },
+    {
+        "icon": "icon-thumbs-down"
+    },
+    {
+        "icon": "icon-hand-down"
+    },
+    {
+        "icon": "icon-circle-arrow-down"
+    },
+    {
+        "icon": "icon-filter"
+    },
+    {
+        "icon": "icon-search"
+    },
+    {
+        "icon": "icon-star-empty"
+    },
+    {
+        "icon": "icon-th"
+    },
+    {
+        "icon": "icon-zoom-in"
+    },
+    {
+        "icon": "icon-cog"
+    },
+    {
+        "icon": "icon-time"
+    },
+    {
+        "icon": "icon-upload"
+    },
+    {
+        "icon": "icon-refresh"
+    },
+    {
+        "icon": "icon-headphones"
+    },
+    {
+        "icon": "icon-qrcode"
+    },
+    {
+        "icon": "icon-book"
+    },
+    {
+        "icon": "icon-font"
+    },
+    {
+        "icon": "icon-text-width"
+    },
+    {
+        "icon": "icon-align-justify"
+    },
+    {
+        "icon": "icon-facetime-video"
+    },
+    {
+        "icon": "icon-adjust"
+    },
+    {
+        "icon": "icon-check"
+    },
+    {
+        "icon": "icon-backward"
+    },
+    {
+        "icon": "icon-forward"
+    },
+    {
+        "icon": "icon-chevron-left"
+    },
+    {
+        "icon": "icon-remove-sign"
+    },
+    {
+        "icon": "icon-screenshot"
+    },
+    {
+        "icon": "icon-arrow-left"
+    },
+    {
+        "icon": "icon-share-alt"
+    },
+    {
+        "icon": "icon-minus"
+    },
+    {
+        "icon": "icon-leaf"
+    },
+    {
+        "icon": "icon-warning-sign"
+    },
+    {
+        "icon": "icon-comment"
+    },
+    {
+        "icon": "icon-retweet"
+    },
+    {
+        "icon": "icon-resize-vertical"
+    },
+    {
+        "icon": "icon-bell"
+    },
+    {
+        "icon": "icon-hand-right"
+    },
+    {
+        "icon": "icon-circle-arrow-right"
+    },
+    {
+        "icon": "icon-globe"
+    },
+    {
+        "icon": "icon-briefcase"
+    },
+    {
+        "icon": "icon-envelope"
+    },
+    {
+        "icon": "icon-user"
+    },
+    {
+        "icon": "icon-th-list"
+    },
+    {
+        "icon": "icon-zoom-out"
+    },
+    {
+        "icon": "icon-trash"
+    },
+    {
+        "icon": "icon-road"
+    },
+    {
+        "icon": "icon-inbox"
+    },
+    {
+        "icon": "icon-list-alt"
+    },
+    {
+        "icon": "icon-volume-off"
+    },
+    {
+        "icon": "icon-barcode"
+    },
+    {
+        "icon": "icon-bookmark"
+    },
+    {
+        "icon": "icon-bold"
+    },
+    {
+        "icon": "icon-align-left"
+    },
+    {
+        "icon": "icon-list"
+    },
+    {
+        "icon": "icon-picture"
+    },
+    {
+        "icon": "icon-tint"
+    },
+    {
+        "icon": "icon-move"
+    },
+    {
+        "icon": "icon-play"
+    },
+    {
+        "icon": "icon-fast-forward"
+    },
+    {
+        "icon": "icon-chevron-right"
+    },
+    {
+        "icon": "icon-ok-sign"
+    },
+    {
+        "icon": "icon-remove-circle"
+    },
+    {
+        "icon": "icon-arrow-right"
+    },
+    {
+        "icon": "icon-resize-full"
+    },
+    {
+        "icon": "icon-asterisk"
+    },
+    {
+        "icon": "icon-fire"
+    },
+    {
+        "icon": "icon-plane"
+    },
+    {
+        "icon": "icon-magnet"
+    },
+    {
+        "icon": "icon-shopping-cart"
+    },
+    {
+        "icon": "icon-resize-horizontal"
+    },
+    {
+        "icon": "icon-certificate"
+    },
+    {
+        "icon": "icon-hand-left"
+    },
+    {
+        "icon": "icon-circle-arrow-left"
+    },
+    {
+        "icon": "icon-wrench"
+    },
+    {
+        "icon": "icon-fullscreen"
+    }
+]

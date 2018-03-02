@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link rel="stylesheet" th:href="@{/css/table/bootstrap-table.min.css}">
+</head>
+<body class="page-header-fixed" id="shopGrpDefBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>新增</a>
+            </li>
+        </ul>
+
+        <form id="shopGrpDefForm" class="form-horizontal" role="form"  method="post">
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                        门店分组<font color="#FF0000">*</font>
+                    </label>
+                    <div class="col-md-2">
+                        <input type="text" id="shopGrp" name="shopGrp" class="form-control" maxlength="20" onblur="shopGrpIsExit()" readonly>
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="text" id="grpName" name="grpName" class="form-control" readonly>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button"  class="btn blue btn-default" data-toggle="modal" data-target="#shopGrpModal" onclick="initShopGrpTables();">
+                        门店分组管理
+                    </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                        门店编号<font color="#FF0000">*</font>
+                    </label>
+                    <div class="col-md-2">
+                        <input type="text" id="shopIds" name="shopIds" class="form-control" maxlength="20" onblur="shopIdIsExit()" readonly>
+                    </div>
+
+                    <div class="col-md-4">
+                        <input type="text" id="shopNames" name="shopNames" class="form-control" readonly>
+                        <input type="hidden" id="flag" name="flag" class="form-control" th:value="add">
+                        <input type="hidden" id="acqId" name="acqId" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button"  class="btn blue btn-default" data-toggle="modal" onclick="initShopInfoTables();">
+                            门店管理
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-6">
+                        <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                        <button  style="margin-left:30px;"  type="button" class="btn blue   btn-info btn-search"  id="btnSave">提交</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="shopGrpModal" tabindex="-1" role="dialog" aria-labelledby="shopGrpModelLabel">
+    <div class="modal-dialog" role="document" style="width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="shopGrpModelLabel">门店信息</h4>
+            </div>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="shopGrpFrom">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>门店分组代码(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="shopGrpId" type="text" class="form-control" placeholder="输入门店代码">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>门店分组名称(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="shopGrpName" type="text" class="form-control" placeholder="输入门店名称">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-inline">
+                        <div class="col-md-5"></div>
+                        <button onclick="initShopGrpTables()" type="button"
+                                class="btn btn-primary">查询
+                        </button>
+                        <button onclick="cleanShopGrpQueary()" type="button"
+                                class="btn btn-primary">重置
+                        </button>
+                    </div>
+                </form>
+                <table id="shop_grp_tables"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="shopGrpBtn">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="shopInfoModel" tabindex="-1" role="dialog" aria-labelledby="shopInfoModelLabel">
+    <div class="modal-dialog" role="document" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="shopInfoModelLabel">门店信息</h4>
+            </div>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="shopInfoFrom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>门店代码(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="shopInfoId" type="text" class="form-control" placeholder="输入门店代码">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>门店名称(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="shopName" type="text" class="form-control" placeholder="输入门店名称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>业务员代码(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="ywyId" type="text" class="form-control" placeholder="输入业务员代码">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="col-md-5"></div>
+                        <button onclick="initShopInfoTables()" type="button"
+                                class="btn btn-primary">查询
+                        </button>
+                        <button onclick="cleanShopInfoQueary()" type="button"
+                                class="btn btn-primary">重置
+                        </button>
+                    </div>
+                </form>
+                <table id="shop_info_tables"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="shopInfoBtn">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script type="application/javascript">
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/mch/shop-grp-def-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}"
+        charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}"
+        charset="utf-8"></script>
+</html>

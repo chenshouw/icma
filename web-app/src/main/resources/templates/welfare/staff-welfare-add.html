@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+
+<body class="page-header-fixed" id="addBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>发放福利</a>
+            </li>
+            <li class="btn-group">
+                <a href="javascript:void(0);" class='btn blue ' onclick="history.go(-1)"><span>返回</span></a>
+            </li>
+        </ul>
+        <form class="form-horizontal" id="welfareForm" enctype="multipart/form-data" method="post"
+                action="/welfare/staff-welfare/export-welfare">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    产品类型<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-3">
+                    <select id="parProductType" name="parProductType" class="form-control">
+                        <option th:value="${parProductType.parProductType}" th:text="${parProductType.productGroupName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    发卡机构<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-3">
+                    <select id="issuId" name="issuId" class="form-control">
+                        <option value="">请选择发卡机构</option>
+                        <option th:each="minst: ${minsts}" th:value="${minst.instId}" th:text="${minst.instId} + '-'+ ${minst.instName}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    客户号<font color="#FF0000">*</font>
+                </label>
+                <div class="col-md-2">
+                    <input type="text" name="custNo" id="custNo" class="form-control"  readonly>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="text" id="cliName" name="cliName" class="form-control"  readonly>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="button"  class="btn blue btn-default" data-toggle="modal" onclick="initMcustTables();">
+                        客户号管理
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    产品子类型<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-3">
+                    <input type="hidden" class="form-control" name="productTypeGroup" id="productTypeGroup"/>
+                    <select id="productType" name="productType" class="form-control" disabled>
+                        <option value="">请选择产品子类型</option>
+                    </select>
+                    <!--<select th:if="${isSecondLevel == true}" id="productType" name="productType" class="form-control" disabled>
+                        <option value="">请选择产品子类型</option>
+                        <option th:each="productType: ${productTypes}" th:value="${productType.productType}" th:text="${productType.productName}"></option>
+                    </select>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    发放月份<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="month" id="month" maxlength="19" placeholder="请选择福利发放时间" readonly/>
+                        <span class="input-group-btn">
+                            <button class="btn default date-reset" id="monthClear" type="button"><i class="icon-remove"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    发放文件<font color="#FF0000">*</font>
+                </label>
+                <div class="col-sm-3">
+                    <div id="fileDiv"><input type="file" name="file" id="file" onchange="batchFileChange()"/></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnSave">确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div th:fragment="merchant">
+    <div class="modal fade" id="excelTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document" style="width:1100px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">详情</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>员工编号</th>
+                                    <th>姓名</th>
+                                    <th>手机号码</th>
+                                    <th>充值金额</th>
+                                    <th>邮箱</th>
+                                    <th>状态</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbExcel">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;margin-bottom: 8px;">
+                    <button type="button" class="btn default" data-dismiss="modal" onclick="closeExcelTable();">取消
+                    </button>
+                    <button style="margin-left:40px;" type="button" class="btn blue   btn-info btn-search" id="excelSub"
+                            onclick="subExcel()">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="mcustModal" tabindex="-1" role="dialog" aria-labelledby="mcustModalLabel">
+    <div class="modal-dialog" role="document" style="width:1300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+                <h4 class="modal-title" id="mcustModalLabel">客户信息</h4>
+            </div>
+            <div class="modal-body" style="height: 600px;overflow-y:auto;overflow-x:auto">
+                <form method="post" id="mcustFrom">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>客户号(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="custNoParam" type="text" class="form-control" placeholder="输入客户号">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>客户名称(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="cliNameParam" type="text" class="form-control" placeholder="输入客户名称">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>身份证(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="certNo" type="text" class="form-control" placeholder="输入身份证">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>操作员(%)：</label>
+                                <div class="input-icon right">
+                                    <i class="icon-edit"></i>
+                                    <input id="teller" type="text" class="form-control" placeholder="输入操作员">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-inline">
+                        <div class="col-md-5"></div>
+                        <button onclick="initMcustTables()" type="button"
+                                class="btn btn-primary">查询
+                        </button>
+                        <button onclick="cleanMcustQueary()" type="button"
+                                class="btn btn-primary">重置
+                        </button>
+                    </div>
+                </form>
+                <table id="mcust_tables"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="mcustBtn">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+
+<script type="text/javascript" th:src="@{/js/welfare/staff-welfare-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table-zh-CN.min.js}" charset="utf-8"></script>
+<script type="text/javascript"
+        th:src="@{/metronic/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.ja.js}"
+        charset="utf-8"></script>
+</body>
+</html>

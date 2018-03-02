@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+	<head th:include="/commons/head::header" />
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link rel="stylesheet" th:href="@{/css/select/bootstrap-select.min.css}">
+</head>
+<body class="page-header-fixed" id="productAccBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+	<div th:replace="/commons/page_sidebar::pageSidebar"></div>
+	<div class="page-content">
+	     <ul class="page-breadcrumb breadcrumb">
+	      	<li th:utext="${locationMenu}"></li>
+	      	<li>
+	      		<i class='icon-angle-right'></i>
+	      		<a href='javascript:void(0);'>新增</a>
+	      	</li>
+	     </ul>
+	     <form id="addForm"  class="form-horizontal" role="form" th:action="@{add}"  method="post">
+             <div class="form-group">
+                 <label class="col-sm-4 control-label" >账户属性名称<font color="#FF0000">*</font></label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" id="accAttrName" name="accAttrName" placeholder="请输入账户属性名称" />
+                 </div>
+             </div>
+              <div class="form-group" >
+                <label class="col-sm-4 control-label">
+                    账户属性<font color="#FF0000">*</font>
+                </label>
+                  <div class="col-sm-6">
+                      <select name="accAttr" id="accAttr" class="form-control" data-type="select" data-category="DEAL_TRANS_ACCATTR" onchange="changeAccAttr();"></select>
+                  </div>
+              </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     账户类型<font color="#FF0000">*</font>
+                 </label>
+                 <input type="hidden" name="accType" id="accType">
+                 <div class="col-sm-6" id="div1">
+                     <select class="form-control" name="accType2" id="accType2" data-placeholder="请选择账户类型"onchange="changeAccType()">
+                         <option value="">请选择</option>
+                         <option th:each="AccType : ${accTypes}" th:value="${AccType.accType}" th:text="${AccType.accName}"></option>
+                     </select>
+                 </div>
+                 <div class="col-sm-6" style="display: none" id="div2">
+                     <select  name="accType1" id="accType1" class="selectpicker show-tick form-control" multiple data-live-search="false" data-placeholder="请选择账户类型" tabindex="1" onchange="changeAccType()">
+                         <option th:each="AccType : ${accTypes}" th:value="${AccType.accType}" th:text="${AccType.accName}"></option>
+                     </select>
+                 </div>
+             </div>
+             <div class="form-group" >
+                 <label class="col-sm-4 control-label">
+                     标识<font color="#FF0000">*</font>
+                 </label>
+                 <div class="col-sm-6">
+                     <select name="flag" id="flag" class="form-control" data-type="select" data-category="PRODUCT_TYPE_STATUS" ></select>
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label class="col-sm-4 control-label" >备注</label>
+                 <div class="col-sm-6">
+                     <input type="text" class="form-control" id="memo" name="memo" placeholder="请输入备注" />
+                     <input type="text"  style="display: none" />
+                 </div>
+             </div>
+              <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                   <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                   <button  style="margin-left:30px;"  type="button" class="btn blue   btn-info btn-search"  id="btnSave">提交</button>
+                </div>
+              </div>
+        </form>
+	</div>
+</div>
+<div id="addAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>添加完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/></div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/media/product-acc-add.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+<script th:src="@{/js/commons/bootstrap-select.min.js}"></script>
+</html>

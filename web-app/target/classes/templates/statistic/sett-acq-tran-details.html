@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>显示明细</a>
+            </li>
+            <li class="btn-group"><a href="#" class="btn blue " onclick="history.go(-1)"><span>返回</span></a></li>
+        </ul>
+        <form class="form-horizontal">
+            <ul class="nav nav-tabs" id="inputTab">
+                <li class="active"><a href="#baseSetting">显示明细</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="baseSetting">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">发卡机构代码</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.issuId?: ''}" class="form-control" readonly="">
+                            </div>
+                            <label class="col-sm-2 control-label">发卡机构名称</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${issuCardMinst?.instName?: ''}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">受理机构代码</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.acqId?: ''}" class="form-control" readonly="">
+                            </div>
+                            <label class="col-sm-2 control-label">受理机构名称</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.minst?.instName?: ''}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交易网点代码</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.orgCode?: ''}" class="form-control" readonly="">
+                            </div>
+                            <label class="col-sm-2 control-label">交易网点名称</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${orgCodeMinst?.instName?: ''}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">渠道代码</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.channelId?: ''}" class="form-control" readonly="">
+                            </div>
+                            <label class="col-sm-2 control-label">渠道名称</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.channel?.instName?: ''}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">产品类型</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.proType?.productName?: ''}" class="form-control" readonly="">
+                            </div>
+                            <label class="col-sm-2 control-label">账户类型</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.acType?.accName?: ''}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">开卡交易笔数</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${#numbers.formatDecimal(settAccTranVo?.cnt1?: 0, 1, 'NONE', 0, 'POINT')}" class="form-control" readonly="">
+                            </div>
+
+                            <label class="col-sm-2 control-label">开卡交易金额(元)</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${#numbers.formatCurrency(settAccTranVo?.amt1?: 0)}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">充值交易笔数</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${#numbers.formatDecimal(settAccTranVo?.cnt2?: 0, 1, 'NONE', 0, 'POINT')}" class="form-control" readonly="">
+                            </div>
+
+                            <label class="col-sm-2 control-label">充值交易金额(元)</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${#numbers.formatCurrency(settAccTranVo?.amt2?: 0)}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+
+                            <label class="col-sm-2 control-label">结算日期</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${settAccTranVo.settDate?: ''}" class="form-control" readonly="">
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/form-validate/additional-methods-extend.js}" charset="utf-8"></script>
+</html>

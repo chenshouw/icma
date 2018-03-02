@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th{
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed" id="listBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="mobilePhone_add">
+                    <a href="toadd" class='btn blue ' style="margin-right: 10px;"><span>新增</span></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="mobilePhone_export">
+                    <a href="javascript:void(0);" class='btn blue ' id="export"><span>导出</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+
+        <shiro:hasPermission name="mobilePhone_search">
+            <form action="/account-manage/mobile-phone/search" id="mobileForm" method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">姓名（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="name" name="name"
+                                        th:value="${mobilePhone?.name}?: _" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">身份证</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="identifyId" name="identifyId"
+                                        th:value="${mobilePhone?.identifyId} ?: _" placeholder="请输入身份证">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>性别</label>
+                            <div class="input-icon">
+                                <select name="sex" id="sex" class="form-control" data-type="select"
+                                        data-category="USER_SEX" th:data-value="${mobilePhone?.sex}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" id="status" class="form-control" data-type="select"
+                                        data-category="STATUS" th:data-value="${mobilePhone?.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">所属中心（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="center" name="center"
+                                        th:value="${mobilePhone?.center}" placeholder="请输入所属中心">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">部门（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="department" name="department"
+                                        th:value="${mobilePhone?.department}" placeholder="请输入部门">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>职位（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="position" name="position"
+                                        th:value="${mobilePhone?.position}" placeholder="请输入职位">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">操作员</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="teller" name="teller"
+                                        th:value="${mobilePhone?.teller}" placeholder="请输入操作员">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">手机号（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="phoneNum" name="phoneNum"
+                                        th:value="${mobilePhone?.phoneNum}" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="name">运营商</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="operators" name="operators"
+                                        th:value="${mobilePhone?.operators}" placeholder="请输入名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>创建日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${mobilePhone?.createTimeBegin}"
+                                        name="createTimeBegin" id="createTimeBegin" maxlength="19"
+                                        placeholder="请选择开始时间"/>
+                                <span class="input-group-btn">
+                                     <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                             class="icon-remove"></i></button>
+                               </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${mobilePhone?.createTimeEnd} "
+                                        name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束时间"/>
+                                <span class="input-group-btn">
+                                      <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                              class="icon-remove"></i></button>
+                               </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>身份证</th>
+                                <th>所属中心</th>
+                                <th>所属机构</th>
+                                <th>部门</th>
+                                <th>职位</th>
+                                <th>手机号</th>
+                                <th>运营商</th>
+                                <th>邮箱</th>
+                                <th>状态</th>
+                                <th>操作员</th>
+                                <th>创建日期</th>
+                                <shiro:hasAnyPermissions name="mobilePhone_update,mobilePhone_delete">
+                                    <th style="width: 180px;">操作</th>
+                                </shiro:hasAnyPermissions>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="mobile : ${list}">
+                                <td th:text="${mobile.id}" style="display: none"></td>
+                                <td th:text="${mobile.name}"></td>
+                                <td sl:type="USER_SEX" sl:text="${mobile.sex}"></td>
+                                <td th:text="${mobile.identifyId}"></td>
+                                <td th:text="${mobile.center}"></td>
+                                <td th:text="${mobile.instName}"></td>
+                                <td th:text="${mobile.department}"></td>
+                                <td th:text="${mobile.position}"></td>
+                                <td th:text="${mobile.phoneNum}"></td>
+                                <td th:text="${mobile.operators}"></td>
+                                <td th:text="${mobile.email}"></td>
+                                <td sl:type="STATUS" sl:text="${mobile.status}"></td>
+                                <td th:text="${mobile.teller}"></td>
+                                <td th:text="${#calendars.format(mobile.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasAnyPermissions name="mobilePhone_update,mobilePhone_delete">
+                                    <td>
+                                        <shiro:hasPermission name="mobilePhone_update">
+                                            <a th:href="@{toupdate(id=${mobile.id})}" class='btn blue btn-xs'>修改</a>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="mobilePhone_delete">
+                                            <a data-toggle="modal" href="#static" class='btn red btn-xs'
+                                                    th:onclick="'javascript:deleteMobilePhone(\''+${mobile.id}+'\');'"
+                                                    style="margin-left: 5px;">删除</a>
+                                        </shiro:hasPermission>
+                                    </td>
+                                </shiro:hasAnyPermissions>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="mobileForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/account/mobile-phone-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

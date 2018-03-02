@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+</head>
+<body class="page-header-fixed" id="updateBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+        <form id="updateForm" class="form-horizontal" role="form" th:action="@{update}" method="post">
+
+            <div class="form-group">
+                <input type="hidden" name="id" th:value="${mobilePhone.id}"/>
+                <label class="col-sm-4 control-label">
+                    姓名<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="name" id="name" th:value="${mobilePhone.name}" placeholder="请输入姓名" maxlength="30" required="required"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    性别<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <select name="sex" id="sex" class="form-control" data-type="select" data-category="USER_SEX" th:data-value="${mobilePhone.sex}" required="required"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    身份证&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="identifyId" id="subMid" th:value="${mobilePhone.identifyId}" isIDCard="true" placeholder="请输入身份证" maxlength="18"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    所属中心&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="center" id="center" th:value="${mobilePhone.center}" placeholder="请输入所属中心" maxlength="30"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    部门&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="department" id="department" th:value="${mobilePhone.department}" placeholder="请输入部门" maxlength="30"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    职位&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="position" id="position" th:value="${mobilePhone.position}" placeholder="请输入职位" maxlength="30"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    手机号<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="oldPhoneNum" id="oldPhoneNum" th:value="${mobilePhone.phoneNum}" style="display: none"/>
+                    <input type="text" class="form-control" name="phoneNum" id="phoneNum" th:value="${mobilePhone.phoneNum}" placeholder="请输入手机号" required="required" maxlength="11"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    运营商&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="operators" id="operators" th:value="${mobilePhone.operators}" placeholder="请输入运营商" maxlength="30"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    邮箱&nbsp;&nbsp;
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="email" id="email" th:value="${mobilePhone.email}" placeholder="请输入邮箱" maxlength="80"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">
+                    状态<span style="color:red;">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <select name="status" id="status" class="form-control" data-type="select" data-category="STATUS" th:data-value="${mobilePhone.status}" required="required"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="instId" class="col-sm-4 control-label">所属组织机构<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <div class="portlet-body">
+                        <input type="hidden" name="instId" id="instId"/>
+                        <input type="hidden" name="instId1" id="instId1" th:value="${mobilePhone.instId}"/>
+                        <div id="tree_cl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default  btn-info btn-search">取消</button>
+                    <button style="margin-left:30px;" type="button" class="btn blue   btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script type="application/javascript">
+    jQuery(document).ready(function () {
+        App.init();
+
+        $("#tree_cl").jstree({
+            "core" : {
+                "themes" : {
+                    "stripes" : true,
+                },
+                "animation": 0,
+                'data': {
+                    'url': function (node) {
+                        return '/account-manage/mobile-phone/getInstTree';
+                    }
+                }
+            },
+            "types" : {
+                "default" : {
+                    "icon" : "glyphicon glyphicon-flash"
+                },
+                "demo" : {
+                    "icon" : "glyphicon glyphicon-ok"
+                }
+            },
+            "plugins": ["types","status"],
+        }).on('changed.jstree', function (e,data) {
+            $("#instId").val(data.instance.get_node(data.selected[0]).id);
+        }).bind("loaded.jstree", function (e, data) {
+            data.instance.open_all();
+            var inst = data.instance;
+            var obj;
+            var instId1 = $("#instId1").val()
+            if (instId1 == "" || instId1 == null) {
+                //  obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
+            } else {
+                obj = inst.get_node(instId1);
+            }
+            inst.select_node(obj);
+        });
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/account/mobile-phone-update.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/commons/jstree.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/table/bootstrap-table.js}" charset="utf-8"></script>
+</html>

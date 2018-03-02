@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body class="page-header-fixed" id="faceValueBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li>
+                <i class='icon-angle-right'></i>
+                <a href='javascript:void(0);'>修改</a>
+            </li>
+        </ul>
+        <form class="form-horizontal" role="form" th:action="@{update}" th:object="${faceValue}" method="post" id="updateFrom">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">渠道<span style="color:#FF0000">*</span></label>
+                <div class="col-sm-6">
+                    <select id="channel" name="channel" class="form-control">
+                        <option value="">请选择</option>
+                        <option th:each="mchannel: ${mchannels}" th:selected="${mchannel.channels==faceValue.channel}" th:value="${mchannel.channels}" th:text="${mchannel.name}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="id" style="display:none" th:field="*{id}"/>
+                <input type="hidden" id="maxValue" name="maxValue" th:value="${maxValue}"/>
+                <input type="hidden" id="oldFaceValue" name="oldFaceValue" th:value="${faceValue.money}"/>
+                <label for="money" class="col-sm-4 control-label">面值金额<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="money" th:field="*{money}"/>
+                </div>
+                <div class="col-sm- 2">
+                    实际金额=面值金额
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">状态<font color="#FF0000">*</font></label>
+                <div class="col-sm-6">
+                    <select name="status" class="form-control" data-type="select" data-category="FACE_VALUE_STATUS" th:data-value="*{status}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="memo" class="col-sm-4 control-label">备注</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="memo" th:field="*{memo}" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="margin-left:50px;" onclick="history.go(-1)" type="button" class="btn  default btn-info btn-search">取消</button>
+                    <button style="margin-left:40px;" type="button" class="btn blue   btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="updateAlert" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>修改完成</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn green" id="btn1">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        /*  UIExtendedModals.init();*/
+    });
+</script>
+<script th:src="@{/js/basic-data/face-value.js}" type="text/javascript"></script>
+<script th:src="@{/js/basic-data/face-value-check.js}" type="text/javascript"></script>
+</body>
+</html>

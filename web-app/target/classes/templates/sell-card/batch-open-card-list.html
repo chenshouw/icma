@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body class="page-header-fixed">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li class="btn-group">
+                <shiro:hasPermission name="sell-card-manage_open_card">
+                    <a class='btn blue ' href="/sell-card/batch-open-card/toadd"><span>开卡</span></a>
+                </shiro:hasPermission>
+            </li>
+        </ul>
+        <shiro:hasPermission name="sell-card-manage_batch-open-card-search">
+            <form action="/sell-card/batch-open-card/search" id="batchOpenCardForm" method="post">
+                <!-- 搜索内容start -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>产品子类型</label>
+                            <div class="input-icon">
+                                <select id="productType" name="productType" class="form-control">
+                                    <option value="">请选择</option>
+                                    <option th:each="productType: ${productTypes}" th:value="${productType.productType}" th:text="${productType.productName}"
+                                            th:selected="(${'_'+productType.productType=='_'+batchOpenCardVo.productType})"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="txnAmt">卡面金额</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="number" class="form-control" id="txnAmt" name="txnAmt"
+                                        th:value="${batchOpenCardVo.txnAmt}" placeholder="请输卡面金额" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="panNum">开卡数量</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="panNum" name="panNum"
+                                        th:value="${batchOpenCardVo.panNum}" placeholder="请输入开卡数量" maxlength="10" onkeyup="(this.v=function(){this.value=this.value.replace(/[^\d]/g,'');}).call(this)" onblur="this.v();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="orderId">订单号</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="orderId" name="orderId"
+                                        th:value="${batchOpenCardVo.orderId}" placeholder="请输入订单号" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-icon">
+                                <select name="status" class="form-control" data-type="select" data-category="BATCH_OPEN_CARD_STATUS"
+                                        th:data-value="${batchOpenCardVo.status}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="createBy">开卡人（%）</label>
+                            <div class="input-icon right">
+                                <i class="icon-edit"></i>
+                                <input type="text" class="form-control" id="createBy" name="createBy"
+                                        th:value="${batchOpenCardVo.createBy}" placeholder="请输入开卡人" maxlength="30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>开卡日期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:value="${batchOpenCardVo.createTimeBegin}"
+                                        name="createTimeBegin" id="createTimeBegin" maxlength="19" placeholder="请选择开始日期"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeBeginClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                                <span class="input-group-addon">至</span>
+                                <input type="text" class="form-control" th:value="${batchOpenCardVo.createTimeEnd}"
+                                        name="createTimeEnd" id="createTimeEnd" maxlength="19" placeholder="请选择结束日期"
+                                        readonly/>
+                                <span class="input-group-btn">
+                                <button class="btn default date-reset" id="createTimeEndClear" type="button"><i
+                                        class="icon-remove"></i></button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="search()"
+                                class="btn blue btn-block btn-sm">查询<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" onclick="cleanQuery()"
+                                class="btn blue btn-block btn-sm">重置<i class="m-icon-swapright m-icon-white"></i></button>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>产品子类型</th>
+                                <th>客户号</th>
+                                <th>客户名称</th>
+                                <th>卡面金额</th>
+                                <th>开卡数量</th>
+                                <th>账户类型</th>
+                                <th>订单号</th>
+                                <th>系统订单号</th>
+                                <th>状态</th>
+                                <th>开卡人</th>
+                                <th>开卡时间</th>
+                                <th>更新时间</th>
+                                <shiro:hasPermission name="sell-card-manage_batch-open-card-detail">
+                                    <th width="70px">操作</th>
+                                </shiro:hasPermission>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="boc : ${list}">
+                                <td th:text="${boc.productName}"></td>
+                                <td th:text="${boc.custNo}"></td>
+                                <td th:text="${boc.cliName}"></td>
+                                <td th:text="${#numbers.formatCurrency(boc.txnAmt)}"></td>
+                                <td th:text="${boc.panNum}"></td>
+                                <td th:text="${boc.accName}"></td>
+                                <td th:text="${boc.orderId}"></td>
+                                <td th:text="${boc.sysOrderId}"></td>
+                                <td sl:type="BATCH_OPEN_CARD_STATUS" sl:text="${boc.status}"></td>
+                                <td th:text="${boc.createBy}"></td>
+                                <td th:text="${#calendars.format(boc.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${#calendars.format(boc.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <shiro:hasPermission name="sell-card-manage_batch-open-card-detail">
+                                    <td>
+                                        <a th:href="@{detail(id=${boc.id})}" class='btn green btn-xs'>详细</a>
+                                    </td>
+                                </shiro:hasPermission>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:utext="${pageHtml}" class="row page_info" data-search="batchOpenCardForm"></div>
+            </form>
+        </shiro:hasPermission>
+    </div>
+</div>
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+<script type="text/javascript" th:src="@{/js/sell-card/batch-open-card-list.js}" charset="utf-8"></script>
+
+</body>
+</html>

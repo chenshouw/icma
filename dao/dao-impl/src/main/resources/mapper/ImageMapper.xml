@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hengsir.icma.dao.mapper.ImageMapper">
+
+    <resultMap id="imageResult" type="org.hengsir.icma.entity.Image">
+        <id property="imageId" column="IMAGE_ID"></id>
+        <result property="imageName" column="IMAGE_NAME"></result>
+        <result property="imageCode" column="IMAGE_CODE"></result>
+        <result property="imageUrl" column="IMAGE_URL"></result>
+        <result property="personId" column="PERSON_ID"></result>
+        <result property="faceId" column="FACE_ID" />
+    </resultMap>
+
+    <insert id="addImg" parameterType="org.hengsir.icma.entity.Image">
+        INSERT INTO T_IMAGE(IMAGE_NAME,
+        <if test="null != imageUrl and '' != imageUrl">
+            IMAGE_URL,
+        </if>
+        IMAGE_CODE,FACE_ID)
+        VALUES(#{imageName},
+        <if test="null != imageUrl and '' != imageUrl">
+            #{imageUrl},
+        </if>
+        #{imageCode},#{faceId})
+    </insert>
+
+    <delete id="deleteImg" parameterType="java.util.List">
+        DELETE FROM T_IMAGE WHERE FACE_ID IN 
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="findAll" resultMap="imageResult" useCache="false">
+        SELECT * FROM T_IMAGE
+        <where>
+            <if test="null != imageId and '' != imageId">
+                AND IMAGE_ID = #{imageId}
+            </if>
+            <if test="null != imageName and '' != imageName">
+                AND IMAGE_NAME = #{imageName}
+            </if>
+            <if test="null != imageCode and '' != imageCode">
+                AND IMAGE_CODE = #{imageCode}
+            </if>
+            <if test="null != imageUrl and '' != imageUrl">
+                AND IMAGE_URL = #{imageUrl}
+            </if>
+
+        </where>
+        ORDER BY IMAGE_ID ASC
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="imageResult" useCache="false">
+        SELECT * FROM T_IMAGE
+        WHERE IMAGE_ID = #{imageId}
+    </select>
+
+    <select id="findByPerson" parameterType="org.hengsir.icma.entity.Person" resultMap="imageResult" useCache="false">
+        SELECT * FROM T_IMAGE
+        WHERE PERSON_ID = #{personId}
+    </select>
+
+</mapper>

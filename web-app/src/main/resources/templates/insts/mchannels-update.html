@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"></title>
+    <head th:include="/commons/head::header"/>
+    <link th:href="@{/metronic/css/pages/error.css}" rel="stylesheet" type="text/css"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+</head>
+<body class="page-header-fixed" id="itemBody">
+<div th:replace="/commons/page_head::pageHead"></div>
+<div class="clearfix"></div>
+<div class="page-container">
+    <div th:replace="/commons/page_sidebar::pageSidebar"></div>
+    <div class="page-content">
+        <ul class="page-breadcrumb breadcrumb">
+            <li th:utext="${locationMenu}"></li>
+            <li><i class='icon-angle-right'></i> <a href='javascript:void(0);'>修改</a></li>
+        </ul>
+        <form class="form-horizontal" role="form" id="itemForm" method="post">
+            <div class="form-group">
+                <label for="channels" class="col-sm-4 control-label">渠道编码<span style="color:red;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="channels" id="channels" th:readonly="true" th:value="${mchannels.channels}" placeholder="请输入渠道编码" style="width: 300px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-4 control-label">渠道名称<span style="color:red;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="name" id="name" th:value="${mchannels.name}" placeholder="请输入渠道名称" style="width: 300px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="productType">产品子类型<span style="color:red;">*</span></label>
+                <div class="col-sm-6" style="width: 330px;">
+                    <select id="productType" name="productType" class="form-control">
+                        <option value="">请选择</option>
+                        <option th:each="productType: ${productTypes}" th:selected="${productType.productType==mchannels.productType}" th:value="${productType.productType}" th:text="${productType.productName+'['+productType.minst.shortName+']'}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="keyupdTime" class="col-sm-4 control-label">秘钥更新日期<span style="color:red;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="keyupdTime" id="keyupdTime" th:value="${mchannels.keyupdTime}" placeholder="请输入秘钥更新日期" readonly style="width: 300px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="keyupdPeriod" class="col-sm-4 control-label">秘钥更新周期（天）<span style="color:red;">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="keyupdPeriod" name="keyupdPeriod" th:value="${mchannels.keyupdPeriod}" placeholder="请输入秘钥更新周期" style="width: 300px;">
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <label for="teller" class="col-sm-4 control-label">操作员</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="teller" name="teller" th:value="${mchannels.teller}" placeholder="请输入操作员" style="width: 300px;">
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label for="status" class="col-sm-4 control-label">状态<span style="color:red;">*</span></label>
+                <div class="col-sm-6" style="width: 330px;">
+                    <select name="status" class="form-control" id="status" data-type="select" data-category="CHANNELS_STATUS" th:data-value="${mchannels.status}"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <button style="background-color: gray;" onclick="history.go(-1)" type="button" class="btn btn-info btn-search">取消</button>
+                    <button style="margin-left: 30px; background-color: #0362FD;" type="button" class="btn btn-info btn-search" id="btnUpdate">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/commons/scripts::scripts"/>
+</div>
+<div th:replace="/commons/foot::foot"></div>
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+    });
+</script>
+</body>
+<script type="text/javascript" th:src="@{/js/insts/mchannels.js}" charset="utf-8"></script>
+</html>
